@@ -1,5 +1,7 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -127,7 +129,13 @@
       font-weight: 800;
     }
 
+    .logout:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
     @media (max-width: 750px) {
+
       header {
         padding: 0 15px;
       }
@@ -139,11 +147,14 @@
       .categories {
         grid-template-columns: 1fr;
       }
+
     }
   </style>
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -151,17 +162,41 @@
     JEUFREX
   </div>
 
+
   <nav>
-    <a href="index.html">Ana Sayfa</a>
-    <a href="games.html">🎮 Oyunlar</a>
-    <a href="music.html">🎵 Müzik</a>
-    <a href="videos.html">🎬 Videolar</a>
-    <a href="community.html">👥 Topluluk</a>
-    <a href="explore.html">✨ Keşfet</a>
+
+    <a href="index.html">
+      Ana Sayfa
+    </a>
+
+    <a href="games.html">
+      🎮 Oyunlar
+    </a>
+
+    <a href="music.html">
+      🎵 Müzik
+    </a>
+
+    <a href="videos.html">
+      🎬 Videolar
+    </a>
+
+    <a href="community.html">
+      👥 Topluluk
+    </a>
+
+    <a href="explore.html">
+      ✨ Keşfet
+    </a>
+
   </nav>
 
-  <!-- Artık sabit profile.html değil -->
-  <a href="profile.html" class="profile" id="profileLink">
+
+  <a
+    href="profile.html"
+    class="profile"
+    id="profileLink"
+  >
     👤 Profil
   </a>
 
@@ -169,6 +204,7 @@
 
 
 <main>
+
 
   <section class="welcome">
 
@@ -186,62 +222,143 @@
 
   <section class="categories">
 
+
     <a href="games.html" class="card">
-      <div class="icon">🎮</div>
-      <h2>Oyunlar</h2>
-      <p>Oyunları keşfet ve oyna.</p>
+
+      <div class="icon">
+        🎮
+      </div>
+
+      <h2>
+        Oyunlar
+      </h2>
+
+      <p>
+        Oyunları keşfet ve oyna.
+      </p>
+
     </a>
+
 
     <a href="music.html" class="card">
-      <div class="icon">🎵</div>
-      <h2>Müzik</h2>
-      <p>Yeni müzikleri keşfet.</p>
+
+      <div class="icon">
+        🎵
+      </div>
+
+      <h2>
+        Müzik
+      </h2>
+
+      <p>
+        Yeni müzikleri keşfet.
+      </p>
+
     </a>
+
 
     <a href="videos.html" class="card">
-      <div class="icon">🎬</div>
-      <h2>Videolar</h2>
-      <p>Yeni videoları izle.</p>
+
+      <div class="icon">
+        🎬
+      </div>
+
+      <h2>
+        Videolar
+      </h2>
+
+      <p>
+        Yeni videoları izle.
+      </p>
+
     </a>
+
 
     <a href="community.html" class="card">
-      <div class="icon">👥</div>
-      <h2>Topluluk</h2>
-      <p>Topluluğa katıl ve paylaş.</p>
+
+      <div class="icon">
+        👥
+      </div>
+
+      <h2>
+        Topluluk
+      </h2>
+
+      <p>
+        Topluluğa katıl ve paylaş.
+      </p>
+
     </a>
+
 
     <a href="explore.html" class="card">
-      <div class="icon">✨</div>
-      <h2>Keşfet</h2>
-      <p>Yeni içerikler ve kullanıcılar keşfet.</p>
+
+      <div class="icon">
+        ✨
+      </div>
+
+      <h2>
+        Keşfet
+      </h2>
+
+      <p>
+        Yeni içerikler ve kullanıcılar keşfet.
+      </p>
+
     </a>
 
-    <!-- Profil kartı -->
-    <a href="profile.html" class="card" id="profileCard">
-      <div class="icon">👤</div>
-      <h2>Profil</h2>
-      <p>Profilini görüntüle.</p>
+
+    <a
+      href="profile.html"
+      class="card"
+      id="profileCard"
+    >
+
+      <div class="icon">
+        👤
+      </div>
+
+      <h2>
+        Profil
+      </h2>
+
+      <p>
+        Profilini görüntüle.
+      </p>
+
     </a>
+
 
   </section>
 
 
-  <button class="logout" id="logoutButton">
+  <button
+    class="logout"
+    id="logoutButton"
+  >
     🚪 Çıkış Yap
   </button>
+
 
 </main>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
 <script>
+
+  // ==========================================
+  // SUPABASE
+  // ==========================================
 
   const SUPABASE_URL =
     "https://cqxxobmvycesunyxicjj.supabase.co";
 
+
   const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12ZWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+
 
   const supabaseClient =
     window.supabase.createClient(
@@ -251,81 +368,263 @@
 
 
   // ==========================================
-  // KULLANICIYI VE GÜNCEL PROFİLİ YÜKLE
+  // ELEMENTLER
   // ==========================================
 
-async function checkUser() {
-  const {
-    data: { user },
-    error: authError
-  } = await supabaseClient.auth.getUser();
+  const welcomeText =
+    document.getElementById("welcomeText");
 
-  if (authError || !user) {
-    window.location.href = "login.html";
-    return;
-  }
+  const profileLink =
+    document.getElementById("profileLink");
 
-  const { data: profile, error } = await supabaseClient
-    .from("profiles")
-    .select("username, display_name")
-    .eq("id", user.id)
-    .single();
+  const profileCard =
+    document.getElementById("profileCard");
 
-  if (error) {
-    console.error("PROFİL HATASI:", error);
-    document.getElementById("welcomeText").textContent =
-      "Hoş geldin! 👋";
-    return;
-  }
-
-  const username = profile.username || "@kullanici";
-
-  document.getElementById("welcomeText").textContent =
-    `Hoş geldin, ${username}! 👋`;
-
-  const cleanUsername = username.replace(/^@/, "");
-
-  const profileUrl =
-    "profile.html?user=" +
-    encodeURIComponent(cleanUsername);
-
-  document.getElementById("profileLink").href = profileUrl;
-
-  document.getElementById("profileCard").href = profileUrl;
-
-  console.log("SUPABASE PROFİLİ:", profile);
-}
-
-  }
+  const logoutButton =
+    document.getElementById("logoutButton");
 
 
   // ==========================================
-  // ÇIKIŞ
+  // KULLANICIYI KONTROL ET
   // ==========================================
 
-document
-  .getElementById("logoutButton")
-  .addEventListener("click", async function () {
+  async function checkUser() {
 
-    const button = this;
+    try {
 
-    button.disabled = true;
-    button.textContent = "Çıkış yapılıyor...";
+      const {
+        data: {
+          user
+        },
+        error: authError
+      } =
+        await supabaseClient.auth.getUser();
 
-    const { error } = await supabaseClient.auth.signOut();
 
-    if (error) {
-      console.error("Çıkış hatası:", error);
+      if (authError) {
 
-      button.disabled = false;
-      button.textContent = "🚪 Çıkış Yap";
+        console.error(
+          "AUTH HATASI:",
+          authError
+        );
 
-      alert("Çıkış yapılamadı: " + error.message);
-      return;
+        window.location.replace(
+          "login.html"
+        );
+
+        return;
+
+      }
+
+
+      if (!user) {
+
+        window.location.replace(
+          "login.html"
+        );
+
+        return;
+
+      }
+
+
+      // ======================================
+      // PROFİLİ SUPABASE'DEN AL
+      // ======================================
+
+      const {
+        data: profile,
+        error: profileError
+      } =
+        await supabaseClient
+          .from("profiles")
+          .select(
+            "username, display_name"
+          )
+          .eq(
+            "id",
+            user.id
+          )
+          .maybeSingle();
+
+
+      if (profileError) {
+
+        console.error(
+          "PROFİL HATASI:",
+          profileError
+        );
+
+        welcomeText.textContent =
+          "Hoş geldin! 👋";
+
+        return;
+
+      }
+
+
+      // ======================================
+      // KULLANICI ADI
+      // ======================================
+
+      const username =
+        profile?.username ||
+        user.user_metadata?.username ||
+        "@kullanici";
+
+
+      const displayUsername =
+        username.startsWith("@")
+          ? username
+          : "@" + username;
+
+
+      welcomeText.textContent =
+        `Hoş geldin, ${displayUsername}! 👋`;
+
+
+      // ======================================
+      // PROFİL LİNKİ
+      // ======================================
+
+      const cleanUsername =
+        displayUsername.replace(
+          /^@/,
+          ""
+        );
+
+
+      const profileUrl =
+        "profile.html?user=" +
+        encodeURIComponent(
+          cleanUsername
+        );
+
+
+      profileLink.href =
+        profileUrl;
+
+
+      profileCard.href =
+        profileUrl;
+
+
+      console.log(
+        "JEUFREX KULLANICI:",
+        user.id
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "BEKLENMEYEN HATA:",
+        error
+      );
+
+      window.location.replace(
+        "login.html"
+      );
+
     }
 
-    window.location.replace("login.html");
-  });
+  }
+
+
+  // ==========================================
+  // ÇIKIŞ YAP
+  // ==========================================
+
+  logoutButton.addEventListener(
+    "click",
+    async function() {
+
+      logoutButton.disabled =
+        true;
+
+      logoutButton.textContent =
+        "Çıkış yapılıyor...";
+
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signOut({
+            scope: "global"
+          });
+
+
+        if (error) {
+
+          console.error(
+            "ÇIKIŞ HATASI:",
+            error
+          );
+
+          logoutButton.disabled =
+            false;
+
+          logoutButton.textContent =
+            "🚪 Çıkış Yap";
+
+          alert(
+            "Çıkış yapılamadı:\n" +
+            error.message
+          );
+
+          return;
+
+        }
+
+
+        // Oturumun gerçekten temizlendiğini kontrol et
+
+        const {
+          data
+        } =
+          await supabaseClient.auth.getSession();
+
+
+        if (data.session) {
+
+          console.warn(
+            "Oturum hâlâ mevcut görünüyor."
+          );
+
+        }
+
+
+        // Login sayfasına kesin yönlendir
+
+        window.location.replace(
+          "login.html"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "ÇIKIŞ SIRASINDA HATA:",
+          error
+        );
+
+        logoutButton.disabled =
+          false;
+
+        logoutButton.textContent =
+          "🚪 Çıkış Yap";
+
+        alert(
+          "Çıkış sırasında hata oluştu:\n" +
+          error.message
+        );
+
+      }
+
+    }
+  );
 
 
   // ==========================================
@@ -335,6 +634,7 @@ document
   checkUser();
 
 </script>
+
 
 </body>
 </html>
