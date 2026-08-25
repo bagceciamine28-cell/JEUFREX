@@ -1,1 +1,82 @@
+```yaml
+name: Update Music List
+
+on:
+  push:
+    paths:
+      - "music/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-music:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Repository'i indir
+        uses: actions/checkout@v4
+
+      - name: Music klasörünü kontrol et
+        run: mkdir -p music
+
+      - name: music-list.json oluştur
+        shell: python
+        run: |
+          import json
+          import os
+
+          folder = "music"
+          output = "music-list.json"
+
+          songs = []
+
+          for filename in os.listdir(folder):
+              if filename.lower().endswith(".mp3"):
+                  songs.append({
+                      "name": filename,
+                      "path": "music/" + filename
+                  })
+
+          songs.sort(
+              key=lambda x: x["name"].lower()
+          )
+
+          with open(
+              output,
+              "w",
+              encoding="utf-8"
+          ) as f:
+              json.dump(
+                  songs,
+                  f,
+                  ensure_ascii=False,
+                  indent=2
+              )
+
+          print(f"{len(songs)} müzik bulundu.")
+
+      - name: Değişiklikleri kontrol et
+        id: changes
+        run: |
+          if git diff --quiet music-list.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Listeyi kaydet
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "JEUFREX Music Bot"
+          git config user.email "actions@github.com"
+
+          git add music-list.json
+
+          git commit -m "🎵 Update music list"
+
+          git push
+```
 
