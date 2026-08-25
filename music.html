@@ -6,10 +6,7 @@
 
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Müzik | JEUFREX</title>
 
@@ -23,6 +20,7 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   color: white;
+  min-height: 100vh;
 
   background:
     radial-gradient(
@@ -36,13 +34,10 @@ body {
       transparent 30%
     ),
     #09090f;
-
-  min-height: 100vh;
 }
 
 header {
   min-height: 70px;
-
   padding: 12px 35px;
 
   display: flex;
@@ -67,7 +62,6 @@ header {
 
   font-size: 25px;
   font-weight: 900;
-
   letter-spacing: 1px;
 }
 
@@ -90,13 +84,8 @@ nav a:hover {
 }
 
 main {
-  width: min(
-    1100px,
-    calc(100% - 30px)
-  );
-
+  width: min(1100px, calc(100% - 30px));
   margin: auto;
-
   padding: 50px 0;
 }
 
@@ -116,7 +105,7 @@ main {
   box-shadow:
     0 25px 80px rgba(0,0,0,.3);
 
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
 .badge {
@@ -154,6 +143,59 @@ h1 {
   line-height: 1.6;
 }
 
+.toolbar {
+  display: flex;
+  gap: 12px;
+
+  margin-bottom: 25px;
+
+  flex-wrap: wrap;
+}
+
+.search {
+  flex: 1;
+
+  min-width: 220px;
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  background: rgba(255,255,255,.08);
+
+  color: white;
+
+  padding: 15px 18px;
+
+  border-radius: 15px;
+
+  outline: none;
+
+  font-size: 14px;
+}
+
+.search::placeholder {
+  color: #888;
+}
+
+.search:focus {
+  border-color: rgba(255,255,255,.35);
+}
+
+.music-count {
+  display: flex;
+  align-items: center;
+
+  padding: 0 17px;
+
+  border-radius: 15px;
+
+  background: rgba(255,255,255,.08);
+
+  color: #bbb;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
 #musicList {
   display: grid;
   gap: 20px;
@@ -182,6 +224,17 @@ h1 {
 
   box-shadow:
     0 20px 60px rgba(0,0,0,.25);
+
+  transition:
+    transform .2s,
+    border-color .2s;
+}
+
+.music-card:hover {
+  transform: translateY(-3px);
+
+  border-color:
+    rgba(255,255,255,.2);
 }
 
 .cover {
@@ -224,7 +277,6 @@ h1 {
 
 .artist {
   color: #aaa;
-
   margin-bottom: 20px;
 }
 
@@ -262,6 +314,19 @@ audio {
   color: #aaa;
 
   font-size: 16px;
+}
+
+.empty {
+  padding: 50px;
+
+  border-radius: 22px;
+
+  background:
+    rgba(255,255,255,.06);
+
+  text-align: center;
+
+  color: #aaa;
 }
 
 .error {
@@ -313,92 +378,86 @@ footer {
     height: 220px;
   }
 
+  .music-count {
+    padding: 13px 17px;
+  }
+
 }
 
 </style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
-<a
-  href="index.html"
-  class="logo"
->
-  JEUFREX
+<a href="index.html" class="logo">
+JEUFREX
 </a>
-
 
 <nav>
 
-<a href="index.html">
-  Ana Sayfa
-</a>
+<a href="index.html">Ana Sayfa</a>
 
-<a href="games.html">
-  🎮 Oyunlar
-</a>
+<a href="games.html">🎮 Oyunlar</a>
 
-<a href="music.html">
-  🎵 Müzik
-</a>
+<a href="music.html">🎵 Müzik</a>
 
-<a href="videos.html">
-  🎬 Videolar
-</a>
+<a href="videos.html">🎬 Videolar</a>
 
-<a href="community.html">
-  👥 Topluluk
-</a>
+<a href="community.html">👥 Topluluk</a>
 
-<a href="explore.html">
-  ✨ Keşfet
-</a>
+<a href="explore.html">✨ Keşfet</a>
 
 </nav>
 
 </header>
 
-
 <main>
-
 
 <section class="hero">
 
 <span class="badge">
-  ✨ ADMIN ORIGINALS
+✨ ADMIN ORIGINALS
 </span>
 
-
 <h1>
-  Müzik 🎵
+Müzik 🎵
 </h1>
 
-
 <p>
-  JEUFREX'in özgün müzikleri.
-  Yeni bir MP3 yüklediğinde
-  otomatik olarak burada görünecek.
+JEUFREX'in özgün müzikleri.
+Yeni MP3 dosyaları eklendikçe
+bu sayfa otomatik olarak güncellenir.
 </p>
 
 </section>
 
+<div class="toolbar">
+
+<input
+  id="search"
+  class="search"
+  type="search"
+  placeholder="🔍 Şarkı ara..."
+>
+
+<div class="music-count">
+🎵 <span id="count">0</span>&nbsp; şarkı
+</div>
+
+</div>
 
 <section id="musicList">
 
 <div class="loading">
-  🎵 Müzikler yükleniyor...
+🎵 Müzikler yükleniyor...
 </div>
 
 </section>
 
-
 </main>
-
 
 <footer>
 
@@ -406,41 +465,43 @@ footer {
 
 </footer>
 
-
 <script>
 
+const MUSIC_JSON =
+  "music-list.json";
 
-// ==================================================
-// JEUFREX GITHUB REPOSITORY
-// ==================================================
+const musicList =
+  document.getElementById("musicList");
 
-const GITHUB_OWNER =
-  "bagceciamine28-cell";
+const search =
+  document.getElementById("search");
 
-const GITHUB_REPO =
-  "JEUFREX";
+const count =
+  document.getElementById("count");
 
-const MUSIC_FOLDER =
-  "music";
+let allMusic = [];
+
+let players = [];
 
 
-// ==================================================
-// DOSYA ADINI BAŞLIĞA ÇEVİR
-// ==================================================
+/* ==========================================
+   BAŞLIK TEMİZLE
+========================================== */
 
 function cleanTitle(filename) {
 
   return filename
     .replace(/\.mp3$/i, "")
     .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 
 }
 
 
-// ==================================================
-// MÜZİK KARTI OLUŞTUR
-// ==================================================
+/* ==========================================
+   KART
+========================================== */
 
 function createMusicCard(file) {
 
@@ -449,7 +510,6 @@ function createMusicCard(file) {
 
   card.className =
     "music-card";
-
 
   const cover =
     document.createElement("div");
@@ -495,7 +555,7 @@ function createMusicCard(file) {
     "metadata";
 
   audio.src =
-    file.download_url;
+    file.path;
 
 
   const original =
@@ -516,85 +576,118 @@ function createMusicCard(file) {
 
   info.appendChild(original);
 
-
   card.appendChild(cover);
 
   card.appendChild(info);
-
 
   return card;
 
 }
 
 
-// ==================================================
-// GITHUB'TAN MÜZİKLERİ AL
-// ==================================================
+/* ==========================================
+   LİSTELE
+========================================== */
+
+function renderMusic(list) {
+
+  musicList.innerHTML =
+    "";
+
+  count.textContent =
+    list.length;
+
+
+  if (!list.length) {
+
+    musicList.innerHTML = `
+
+      <div class="empty">
+        🔍 Bu isimde müzik bulunamadı.
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  list.forEach(file => {
+
+    musicList.appendChild(
+      createMusicCard(file)
+    );
+
+  });
+
+
+  players =
+    document.querySelectorAll("audio");
+
+
+  players.forEach(player => {
+
+    player.addEventListener(
+      "play",
+      () => {
+
+        players.forEach(other => {
+
+          if (
+            other !== player
+          ) {
+
+            other.pause();
+
+          }
+
+        });
+
+      }
+    );
+
+  });
+
+}
+
+
+/* ==========================================
+   MÜZİKLERİ AL
+========================================== */
 
 async function loadMusic() {
 
-  const musicList =
-    document.getElementById(
-      "musicList"
-    );
-
-
   try {
 
-    const apiUrl =
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${MUSIC_FOLDER}`;
-
-
     const response =
-      await fetch(apiUrl);
+      await fetch(
+        MUSIC_JSON + "?v=" + Date.now()
+      );
 
 
     if (!response.ok) {
 
       throw new Error(
-        `GitHub API hatası: ${response.status}`
+        "music-list.json bulunamadı."
       );
 
     }
 
 
-    const files =
+    const data =
       await response.json();
 
 
-    const musicFiles =
-      files.filter(
+    allMusic =
+      data.filter(
         file =>
-          file.type === "file" &&
-          /\.mp3$/i.test(
-            file.name
-          )
+          /\.mp3$/i.test(file.name)
       );
 
 
-    if (
-      musicFiles.length === 0
-    ) {
-
-      musicList.innerHTML = `
-
-        <div class="loading">
-
-          🎵 Henüz müzik eklenmemiş.
-
-        </div>
-
-      `;
-
-      return;
-
-    }
-
-
-    // Alfabetik sıralama
-
-    musicFiles.sort(
-      (a, b) =>
+    allMusic.sort(
+      (a,b) =>
         a.name.localeCompare(
           b.name,
           "tr"
@@ -602,67 +695,15 @@ async function loadMusic() {
     );
 
 
-    musicList.innerHTML =
-      "";
-
-
-    musicFiles.forEach(
-      file => {
-
-        musicList.appendChild(
-          createMusicCard(file)
-        );
-
-      }
+    renderMusic(
+      allMusic
     );
-
-
-    // ==================================================
-    // AYNI ANDA SADECE 1 ŞARKI ÇALSIN
-    // ==================================================
-
-    const players =
-      document.querySelectorAll(
-        "audio"
-      );
-
-
-    players.forEach(
-      player => {
-
-        player.addEventListener(
-          "play",
-          () => {
-
-            players.forEach(
-              other => {
-
-                if (
-                  other !== player
-                ) {
-
-                  other.pause();
-
-                }
-
-              }
-            );
-
-          }
-        );
-
-      }
-    );
-
 
   }
-  catch (error) {
 
-    console.error(
-      "Müzik yükleme hatası:",
-      error
-    );
+  catch(error) {
 
+    console.error(error);
 
     musicList.innerHTML = `
 
@@ -685,14 +726,44 @@ async function loadMusic() {
 }
 
 
-// ==================================================
-// BAŞLAT
-// ==================================================
+/* ==========================================
+   ARAMA
+========================================== */
+
+search.addEventListener(
+  "input",
+  () => {
+
+    const query =
+      search.value
+        .toLowerCase()
+        .trim();
+
+
+    const filtered =
+      allMusic.filter(
+        file =>
+          cleanTitle(file.name)
+            .toLowerCase()
+            .includes(query)
+      );
+
+
+    renderMusic(
+      filtered
+    );
+
+  }
+);
+
+
+/* ==========================================
+   BAŞLAT
+========================================== */
 
 loadMusic();
 
 </script>
-
 
 </body>
 
