@@ -1,0 +1,939 @@
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JEUFREX Dodge</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0d0d0d;
+  color: white;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+header {
+  height: 65px;
+  background: #171717;
+  border-bottom: 1px solid #303030;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 25px;
+}
+
+.logo {
+  color: white;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.back {
+  color: #aaa;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.back:hover {
+  color: white;
+}
+
+.game-wrapper {
+  height: calc(100vh - 65px);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+}
+
+.topbar {
+  width: min(500px, 94vw);
+
+  display: flex;
+  justify-content: space-between;
+
+  font-weight: 900;
+}
+
+.stat {
+  background: #202020;
+  padding: 9px 13px;
+  border-radius: 10px;
+}
+
+#game {
+  position: relative;
+
+  width: min(500px, 94vw);
+  height: min(650px, 78vh);
+
+  background:
+    linear-gradient(
+      #151515 1px,
+      transparent 1px
+    );
+
+  background-size: 100% 40px;
+
+  border: 4px solid #333;
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 20px 70px rgba(0,0,0,.6);
+}
+
+.player {
+  position: absolute;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 12px;
+
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 27px;
+
+  z-index: 5;
+
+  box-shadow:
+    0 0 20px rgba(255,255,255,.5);
+}
+
+.enemy {
+  position: absolute;
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 10px;
+
+  background: #555;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 23px;
+}
+
+.coin {
+  position: absolute;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 20px;
+}
+
+.overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background: rgba(0,0,0,.78);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  z-index: 20;
+
+  padding: 25px;
+}
+
+.overlay h1 {
+  font-size: 38px;
+  margin: 0 0 10px;
+}
+
+.overlay p {
+  color: #bbb;
+  line-height: 1.6;
+}
+
+button {
+  border: none;
+
+  background: white;
+  color: #111;
+
+  padding: 13px 25px;
+
+  border-radius: 12px;
+
+  font-weight: 900;
+
+  cursor: pointer;
+
+  font-size: 15px;
+}
+
+button:hover {
+  transform: scale(1.04);
+}
+
+.controls {
+  color: #888;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media(max-width:550px) {
+
+  #game {
+    height: 75vh;
+  }
+
+  .player {
+    width: 42px;
+    height: 42px;
+  }
+
+  .enemy {
+    width: 40px;
+    height: 40px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<a href="games.html" class="logo">
+JEUFREX 🎮
+</a>
+
+<a href="games.html" class="back">
+← Oyunlara Dön
+</a>
+
+</header>
+
+<div class="game-wrapper">
+
+<div class="topbar">
+
+<div>
+⚡ JEUFREX Dodge
+</div>
+
+<div class="stat">
+🏆 <span id="score">0</span>
+</div>
+
+</div>
+
+<div id="game">
+
+<div id="player" class="player">
+🚀
+</div>
+
+<div id="overlay" class="overlay">
+
+<h1>⚡ JEUFREX Dodge</h1>
+
+<p>
+Engellerden kaç!<br>
+⭐ Yıldızları topla ve mümkün olduğunca uzun dayan.
+</p>
+
+<button id="start">
+▶ Oyunu Başlat
+</button>
+
+</div>
+
+</div>
+
+<div class="controls">
+⌨️ A / D veya ← / → &nbsp; • &nbsp; 📱 Parmağınla sürükle
+</div>
+
+</div>
+
+<script>
+
+const game =
+document.getElementById("game");
+
+const player =
+document.getElementById("player");
+
+const overlay =
+document.getElementById("overlay");
+
+const startButton =
+document.getElementById("start");
+
+const scoreElement =
+document.getElementById("score");
+
+
+let playerX = 0;
+
+let enemies = [];
+
+let coins = [];
+
+let score = 0;
+
+let running = false;
+
+let lastTime = 0;
+
+let spawnTimer = 0;
+
+let coinTimer = 0;
+
+let difficulty = 1;
+
+let animation;
+
+
+/* =========================
+   OYUNCU
+========================= */
+
+function resetPlayer() {
+
+  playerX =
+    (game.clientWidth - player.offsetWidth) / 2;
+
+  player.style.left =
+    playerX + "px";
+
+  player.style.bottom =
+    "25px";
+
+}
+
+
+/* =========================
+   BAŞLAT
+========================= */
+
+function startGame() {
+
+  cancelAnimationFrame(animation);
+
+  document
+    .querySelectorAll(".enemy")
+    .forEach(e => e.remove());
+
+  document
+    .querySelectorAll(".coin")
+    .forEach(e => e.remove());
+
+  enemies = [];
+
+  coins = [];
+
+  score = 0;
+
+  difficulty = 1;
+
+  spawnTimer = 0;
+
+  coinTimer = 0;
+
+  scoreElement.textContent = "0";
+
+  resetPlayer();
+
+  overlay.style.display =
+    "none";
+
+  running = true;
+
+  lastTime =
+    performance.now();
+
+  animation =
+    requestAnimationFrame(
+      gameLoop
+    );
+
+}
+
+
+/* =========================
+   DÜŞMAN OLUŞTUR
+========================= */
+
+function createEnemy() {
+
+  const enemy =
+    document.createElement("div");
+
+  enemy.className =
+    "enemy";
+
+  enemy.textContent =
+    "💥";
+
+  const maxX =
+    game.clientWidth - 45;
+
+  const x =
+    Math.random() * maxX;
+
+  enemy.style.left =
+    x + "px";
+
+  enemy.style.top =
+    "-50px";
+
+  game.appendChild(enemy);
+
+  enemies.push({
+    element: enemy,
+    x: x,
+    y: -50,
+    speed:
+      180 +
+      Math.random() * 100 +
+      difficulty * 20
+  });
+
+}
+
+
+/* =========================
+   YILDIZ
+========================= */
+
+function createCoin() {
+
+  const coin =
+    document.createElement("div");
+
+  coin.className =
+    "coin";
+
+  coin.textContent =
+    "⭐";
+
+  const maxX =
+    game.clientWidth - 30;
+
+  const x =
+    Math.random() * maxX;
+
+  coin.style.left =
+    x + "px";
+
+  coin.style.top =
+    "-35px";
+
+  game.appendChild(coin);
+
+  coins.push({
+    element: coin,
+    x: x,
+    y: -35,
+    speed:
+      150 +
+      Math.random() * 70
+  });
+
+}
+
+
+/* =========================
+   ÇARPIŞMA
+========================= */
+
+function collision(
+  a,
+  b
+) {
+
+  return (
+    a.x <
+      b.x + b.width &&
+    a.x + a.width >
+      b.x &&
+    a.y <
+      b.y + b.height &&
+    a.y + a.height >
+      b.y
+  );
+
+}
+
+
+/* =========================
+   OYUN DÖNGÜSÜ
+========================= */
+
+function gameLoop(
+  timestamp
+) {
+
+  if (!running)
+    return;
+
+  const delta =
+    Math.min(
+      (timestamp - lastTime) / 1000,
+      .05
+    );
+
+  lastTime =
+    timestamp;
+
+  /* SKOR */
+
+  score +=
+    delta * 10;
+
+  scoreElement.textContent =
+    Math.floor(score);
+
+
+  /* ZORLUK */
+
+  difficulty =
+    1 +
+    score / 150;
+
+
+  /* ENGEL ÜRET */
+
+  spawnTimer +=
+    delta;
+
+  const spawnDelay =
+    Math.max(
+      .25,
+      .85 -
+      difficulty * .05
+    );
+
+  if (
+    spawnTimer >
+    spawnDelay
+  ) {
+
+    spawnTimer = 0;
+
+    createEnemy();
+
+  }
+
+
+  /* YILDIZ ÜRET */
+
+  coinTimer +=
+    delta;
+
+  if (
+    coinTimer > 1.8
+  ) {
+
+    coinTimer = 0;
+
+    createCoin();
+
+  }
+
+
+  /* OYUNCU */
+
+  const playerRect =
+    player.getBoundingClientRect();
+
+  const gameRect =
+    game.getBoundingClientRect();
+
+  const playerBox = {
+
+    x:
+      playerRect.left -
+      gameRect.left,
+
+    y:
+      playerRect.top -
+      gameRect.top,
+
+    width:
+      playerRect.width,
+
+    height:
+      playerRect.height
+
+  };
+
+
+  /* ENGELLER */
+
+  enemies =
+    enemies.filter(
+      enemy => {
+
+        enemy.y +=
+          enemy.speed *
+          delta;
+
+        enemy.element.style.top =
+          enemy.y + "px";
+
+
+        const enemyBox = {
+
+          x: enemy.x,
+
+          y: enemy.y,
+
+          width: 45,
+
+          height: 45
+
+        };
+
+
+        if (
+          collision(
+            playerBox,
+            enemyBox
+          )
+        ) {
+
+          gameOver();
+
+          return false;
+
+        }
+
+
+        if (
+          enemy.y >
+          game.clientHeight
+        ) {
+
+          enemy.element.remove();
+
+          return false;
+
+        }
+
+
+        return true;
+
+      }
+    );
+
+
+  /* YILDIZLAR */
+
+  coins =
+    coins.filter(
+      coin => {
+
+        coin.y +=
+          coin.speed *
+          delta;
+
+        coin.element.style.top =
+          coin.y + "px";
+
+
+        const coinBox = {
+
+          x: coin.x,
+
+          y: coin.y,
+
+          width: 30,
+
+          height: 30
+
+        };
+
+
+        if (
+          collision(
+            playerBox,
+            coinBox
+          )
+        ) {
+
+          score += 50;
+
+          coin.element.remove();
+
+          return false;
+
+        }
+
+
+        if (
+          coin.y >
+          game.clientHeight
+        ) {
+
+          coin.element.remove();
+
+          return false;
+
+        }
+
+
+        return true;
+
+      }
+    );
+
+
+  animation =
+    requestAnimationFrame(
+      gameLoop
+    );
+
+}
+
+
+/* =========================
+   OYUN BİTTİ
+========================= */
+
+function gameOver() {
+
+  running = false;
+
+  cancelAnimationFrame(
+    animation
+  );
+
+  const finalScore =
+    Math.floor(score);
+
+  overlay.innerHTML = `
+
+    <h1>💥 Oyun Bitti!</h1>
+
+    <p>
+      Skorun:
+      <strong>${finalScore}</strong>
+      🏆
+    </p>
+
+    <button id="restart">
+      🔄 Tekrar Oyna
+    </button>
+
+  `;
+
+  overlay.style.display =
+    "flex";
+
+
+  document
+    .getElementById("restart")
+    .addEventListener(
+      "click",
+      startGame
+    );
+
+}
+
+
+/* =========================
+   KLAVYE
+========================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (!running)
+      return;
+
+    const step = 35;
+
+    if (
+      event.key === "ArrowLeft" ||
+      event.key.toLowerCase() === "a"
+    ) {
+
+      playerX -= step;
+
+    }
+
+    if (
+      event.key === "ArrowRight" ||
+      event.key.toLowerCase() === "d"
+    ) {
+
+      playerX += step;
+
+    }
+
+
+    playerX =
+      Math.max(
+        0,
+        Math.min(
+          game.clientWidth -
+          player.offsetWidth,
+          playerX
+        )
+      );
+
+
+    player.style.left =
+      playerX + "px";
+
+  }
+);
+
+
+/* =========================
+   MOUSE
+========================= */
+
+let dragging = false;
+
+
+game.addEventListener(
+  "mousedown",
+  () => {
+    dragging = true;
+  }
+);
+
+document.addEventListener(
+  "mouseup",
+  () => {
+    dragging = false;
+  }
+);
+
+game.addEventListener(
+  "mousemove",
+  event => {
+
+    if (!dragging || !running)
+      return;
+
+    const rect =
+      game.getBoundingClientRect();
+
+    playerX =
+      event.clientX -
+      rect.left -
+      player.offsetWidth / 2;
+
+    playerX =
+      Math.max(
+        0,
+        Math.min(
+          game.clientWidth -
+          player.offsetWidth,
+          playerX
+        )
+      );
+
+    player.style.left =
+      playerX + "px";
+
+  }
+);
+
+
+/* =========================
+   DOKUNMATİK
+========================= */
+
+game.addEventListener(
+  "touchmove",
+  event => {
+
+    if (!running)
+      return;
+
+    const touch =
+      event.touches[0];
+
+    const rect =
+      game.getBoundingClientRect();
+
+    playerX =
+      touch.clientX -
+      rect.left -
+      player.offsetWidth / 2;
+
+    playerX =
+      Math.max(
+        0,
+        Math.min(
+          game.clientWidth -
+          player.offsetWidth,
+          playerX
+        )
+      );
+
+    player.style.left =
+      playerX + "px";
+
+  },
+  { passive: true }
+);
+
+
+/* =========================
+   BAŞLAT
+========================= */
+
+startButton.addEventListener(
+  "click",
+  startGame
+);
+
+window.addEventListener(
+  "resize",
+  resetPlayer
+);
+
+resetPlayer();
+
+</script>
+
+</body>
+</html>
+```
