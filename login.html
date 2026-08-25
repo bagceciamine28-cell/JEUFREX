@@ -1,10 +1,12 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Giriş Yap | JEUFREX</title>
+  <title>JEUFREX</title>
 
   <style>
     * {
@@ -13,397 +15,667 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-family: Arial, sans-serif;
-      background: #f4f5f7;
+      background: #f5f6f8;
       color: #171717;
     }
 
-    .container {
-      width: min(440px, calc(100% - 30px));
+    header {
+      height: 70px;
       background: white;
-      padding: 35px;
-      border-radius: 24px;
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid #e5e5e5;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 35px;
+
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .logo {
-      text-align: center;
-      font-size: 30px;
+      color: #111;
+      text-decoration: none;
+
+      font-size: 25px;
       font-weight: 900;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
     }
 
-    .subtitle {
-      text-align: center;
-      color: #777;
-      margin-bottom: 28px;
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
 
-    label {
-      display: block;
-      margin-top: 17px;
-      margin-bottom: 7px;
+    nav a {
+      color: #555;
+      text-decoration: none;
+
       font-size: 14px;
       font-weight: 700;
     }
 
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #d9d9df;
-      border-radius: 12px;
-      font-size: 15px;
-      outline: none;
+    nav a:hover {
+      color: #000;
     }
 
-    input:focus {
-      border-color: #111;
+    main {
+      width: min(1000px, calc(100% - 30px));
+      margin: 50px auto;
     }
 
-    button {
-      width: 100%;
-      margin-top: 25px;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
+    .hero {
+      background: white;
+      border-radius: 25px;
+
+      padding: 45px;
+
+      box-shadow:
+        0 8px 30px rgba(0, 0, 0, .05);
+
+      margin-bottom: 30px;
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+
+      font-size: 36px;
+      font-weight: 900;
+    }
+
+    .hero p {
+      margin: 0;
+
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 20px;
+    }
+
+    .card {
+      display: block;
+
+      background: white;
+
+      border-radius: 20px;
+
+      padding: 25px;
+
+      text-decoration: none;
+      color: #111;
+
+      box-shadow:
+        0 6px 25px rgba(0, 0, 0, .05);
+
+      transition:
+        transform .15s,
+        box-shadow .15s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+
+      box-shadow:
+        0 12px 35px rgba(0, 0, 0, .09);
+    }
+
+    .icon {
+      font-size: 35px;
+
+      margin-bottom: 15px;
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 0;
+
+      color: #777;
+
+      font-size: 14px;
+
+      line-height: 1.5;
+    }
+
+    .profile-card {
+      margin-top: 30px;
+
+      background: white;
+
+      border-radius: 20px;
+
+      padding: 20px 25px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      box-shadow:
+        0 6px 25px rgba(0, 0, 0, .05);
+    }
+
+    .profile-info {
+      display: flex;
+
+      align-items: center;
+
+      gap: 15px;
+    }
+
+    .avatar {
+      width: 50px;
+      height: 50px;
+
+      border-radius: 50%;
+
       background: #111;
       color: white;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-weight: 900;
+      font-size: 20px;
     }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: wait;
+    .profile-name {
+      font-weight: 900;
     }
 
-    #message {
-      display: none;
-      margin-top: 18px;
-      padding: 13px;
-      border-radius: 11px;
-      font-size: 14px;
-      line-height: 1.4;
-    }
+    .profile-username {
+      margin-top: 4px;
 
-    .register {
-      text-align: center;
-      margin-top: 22px;
       color: #777;
+
+      font-size: 13px;
+    }
+
+    .profile-button {
+      background: #111;
+
+      color: white;
+
+      padding: 11px 17px;
+
+      border-radius: 11px;
+
+      text-decoration: none;
+
+      font-weight: 800;
+
       font-size: 14px;
     }
 
-    .register a {
-      color: #111;
-      font-weight: 700;
-      text-decoration: none;
+    .loading {
+      color: #777;
+    }
+
+    @media (max-width: 800px) {
+
+      header {
+        padding: 0 15px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero {
+        padding: 30px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 500px) {
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-card {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .profile-button {
+        width: 100%;
+        text-align: center;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<header>
 
-    <div class="logo">
-      JEUFREX
+  <a
+    href="index.html"
+    class="logo"
+  >
+    JEUFREX
+  </a>
+
+  <nav>
+
+    <a href="index.html">
+      Ana Sayfa
+    </a>
+
+    <a href="games.html">
+      🎮 Oyunlar
+    </a>
+
+    <a href="music.html">
+      🎵 Müzik
+    </a>
+
+    <a href="videos.html">
+      🎬 Videolar
+    </a>
+
+    <a href="community.html">
+      👥 Topluluk
+    </a>
+
+    <a href="explore.html">
+      ✨ Keşfet
+    </a>
+
+    <a href="profile.html">
+      👤 Profil
+    </a>
+
+  </nav>
+
+</header>
+
+
+<main>
+
+  <!-- =====================================
+       KARŞILAMA
+  ====================================== -->
+
+  <section class="hero">
+
+    <h1 id="welcomeText">
+      Hoş geldin! 👋
+    </h1>
+
+    <p>
+      JEUFREX'te oyunları, müzikleri,
+      videoları ve topluluğu keşfet.
+    </p>
+
+  </section>
+
+
+  <!-- =====================================
+       KATEGORİLER
+  ====================================== -->
+
+  <section class="grid">
+
+    <a
+      href="games.html"
+      class="card"
+    >
+
+      <div class="icon">
+        🎮
+      </div>
+
+      <h2>
+        Oyunlar
+      </h2>
+
+      <p>
+        Oyunları keşfet ve eğlen.
+      </p>
+
+    </a>
+
+
+    <a
+      href="music.html"
+      class="card"
+    >
+
+      <div class="icon">
+        🎵
+      </div>
+
+      <h2>
+        Müzik
+      </h2>
+
+      <p>
+        Müzikleri keşfet ve dinle.
+      </p>
+
+    </a>
+
+
+    <a
+      href="videos.html"
+      class="card"
+    >
+
+      <div class="icon">
+        🎬
+      </div>
+
+      <h2>
+        Videolar
+      </h2>
+
+      <p>
+        İlginç videoları keşfet.
+      </p>
+
+    </a>
+
+
+    <a
+      href="community.html"
+      class="card"
+    >
+
+      <div class="icon">
+        👥
+      </div>
+
+      <h2>
+        Topluluk
+      </h2>
+
+      <p>
+        Topluluğa katıl ve paylaş.
+      </p>
+
+    </a>
+
+
+    <a
+      href="explore.html"
+      class="card"
+    >
+
+      <div class="icon">
+        ✨
+      </div>
+
+      <h2>
+        Keşfet
+      </h2>
+
+      <p>
+        Yeni içerikleri keşfet.
+      </p>
+
+    </a>
+
+
+    <a
+      href="profile.html"
+      class="card"
+    >
+
+      <div class="icon">
+        👤
+      </div>
+
+      <h2>
+        Profil
+      </h2>
+
+      <p>
+        Profilini görüntüle ve düzenle.
+      </p>
+
+    </a>
+
+  </section>
+
+
+  <!-- =====================================
+       PROFİL
+  ====================================== -->
+
+  <section class="profile-card">
+
+    <div class="profile-info">
+
+      <div
+        id="avatar"
+        class="avatar"
+      >
+        ?
+      </div>
+
+      <div>
+
+        <div
+          id="profileName"
+          class="profile-name"
+        >
+          Yükleniyor...
+        </div>
+
+        <div
+          id="profileUsername"
+          class="profile-username"
+        >
+          @kullanici
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="subtitle">
-      Hesabına giriş yap.
-    </div>
 
-    <form id="loginForm">
+    <a
+      href="profile.html"
+      class="profile-button"
+    >
+      👤 Profili Gör
+    </a>
 
-      <label for="email">
-        E-posta
-      </label>
+  </section>
 
-      <input
-        id="email"
-        type="email"
-        placeholder="ornek@gmail.com"
-        autocomplete="email"
-        required
-      >
-
-      <label for="password">
-        Şifre
-      </label>
-
-      <input
-        id="password"
-        type="password"
-        placeholder="Şifren"
-        autocomplete="current-password"
-        required
-      >
-
-      <button
-        id="loginButton"
-        type="submit"
-      >
-        Giriş Yap
-      </button>
-
-      <div id="message"></div>
-
-    </form>
-
-    <div class="register">
-      Hesabın yok mu?
-      <a href="register.html">
-        Kayıt Ol
-      </a>
-    </div>
-
-  </div>
+</main>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- SUPABASE -->
 
-  <script>
-
-    // ==========================================
-    // SUPABASE
-    // ==========================================
-
-    const SUPABASE_URL =
-      "https://cqxxobmvycesunyxicjj.supabase.co";
-
-    const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
-
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-    // ==========================================
-    // ELEMENTLER
-    // ==========================================
+<script>
 
-    const form =
-      document.getElementById("loginForm");
+  // ==========================================
+  // SUPABASE
+  // ==========================================
 
-    const button =
-      document.getElementById("loginButton");
+  const SUPABASE_URL =
+    "https://cqxxobmvycesunyxicjj.supabase.co";
 
-    const message =
-      document.getElementById("message");
+  const SUPABASE_KEY =
+    "BURAYA ÇALIŞAN ANON KEY'İNİ KOY";
 
 
-    // ==========================================
-    // MESAJ
-    // ==========================================
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-    function showMessage(
-      text,
-      success = false
-    ) {
 
-      message.style.display = "block";
+  // ==========================================
+  // ELEMENTLER
+  // ==========================================
 
-      message.textContent = text;
+  const welcomeText =
+    document.getElementById(
+      "welcomeText"
+    );
 
-      if (success) {
+  const profileName =
+    document.getElementById(
+      "profileName"
+    );
 
-        message.style.background =
-          "#e9f8ee";
+  const profileUsername =
+    document.getElementById(
+      "profileUsername"
+    );
 
-        message.style.color =
-          "#176b35";
+  const avatar =
+    document.getElementById(
+      "avatar"
+    );
 
-      } else {
 
-        message.style.background =
-          "#fff0f0";
+  // ==========================================
+  // PROFİLİ YÜKLE
+  // ==========================================
 
-        message.style.color =
-          "#a30000";
+  async function loadCurrentProfile() {
 
+    const {
+      data: {
+        user
       }
+    } =
+      await supabaseClient
+        .auth
+        .getUser();
+
+
+    // Giriş yapılmamışsa login
+
+    if (!user) {
+
+      window.location.href =
+        "login.html";
+
+      return;
 
     }
 
 
-    // ==========================================
-    // GİRİŞ
-    // ==========================================
+    // Supabase profiles tablosundan
+    // HER SEFERİNDE güncel bilgiyi al
 
-    form.addEventListener(
-      "submit",
-      async function(event) {
-
-        event.preventDefault();
-
-
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim();
-
-
-        const password =
-          document
-            .getElementById("password")
-            .value;
+    const {
+      data: profile,
+      error
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select(
+          "display_name, username"
+        )
+        .eq(
+          "id",
+          user.id
+        )
+        .maybeSingle();
 
 
-        button.disabled = true;
+    if (error) {
 
-        button.textContent =
-          "Giriş yapılıyor...";
+      console.error(
+        "Profil yüklenemedi:",
+        error
+      );
 
+      welcomeText.textContent =
+        "Hoş geldin! 👋";
 
-        try {
+      profileName.textContent =
+        "Kullanıcı";
 
-          // --------------------------------------
-          // SUPABASE AUTH GİRİŞİ
-          // --------------------------------------
+      profileUsername.textContent =
+        "@kullanici";
 
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signInWithPassword({
+      return;
 
-              email: email,
-
-              password: password
-
-            });
+    }
 
 
-          if (error) {
-            throw error;
-          }
+    const name =
+      profile?.display_name ||
+      "Kullanıcı";
 
 
-          if (!data.user) {
-            throw new Error(
-              "Kullanıcı bilgisi alınamadı."
-            );
-          }
+    const username =
+      profile?.username ||
+      "@kullanici";
 
 
-          // --------------------------------------
-          // PROFİL / BAN KONTROLÜ
-          // --------------------------------------
+    // ======================================
+    // ANA KARŞILAMA
+    // ======================================
 
-          const {
-            data: profile,
-            error: profileError
-          } =
-            await supabaseClient
-              .from("profiles")
-              .select(
-                "is_banned"
-              )
-              .eq(
-                "id",
-                data.user.id
-              )
-              .maybeSingle();
+    welcomeText.textContent =
+      `Hoş geldin, ${name}! 👋`;
 
 
-          if (profileError) {
+    // ======================================
+    // PROFİL KARTI
+    // ======================================
 
-            console.error(
-              profileError
-            );
-
-            // Güvenli tarafta kal:
-            // Profil kontrolü yapılamıyorsa
-            // girişe devam ettirme.
-
-            await supabaseClient.auth.signOut();
-
-            throw new Error(
-              "Hesap durumu kontrol edilemedi. Lütfen tekrar deneyin."
-            );
-
-          }
+    profileName.textContent =
+      name;
 
 
-          // --------------------------------------
-          // BANLI MI?
-          // --------------------------------------
-
-          if (
-            profile &&
-            profile.is_banned === true
-          ) {
-
-            await supabaseClient.auth.signOut();
-
-            showMessage(
-              "🚫 Bu hesap admin tarafından banlanmış. Giriş yapamazsın."
-            );
-
-            button.disabled = false;
-
-            button.textContent =
-              "Giriş Yap";
-
-            return;
-
-          }
+    profileUsername.textContent =
+      username;
 
 
-          // --------------------------------------
-          // BAŞARILI
-          // --------------------------------------
+    avatar.textContent =
+      name
+        .charAt(0)
+        .toUpperCase();
 
-          showMessage(
-            "🎉 Giriş başarılı! JEUFREX açılıyor...",
-            true
-          );
+  }
 
 
-          setTimeout(
-            function() {
+  // ==========================================
+  // BAŞLAT
+  // ==========================================
 
-              window.location.href =
-                "index.html";
+  loadCurrentProfile();
 
-            },
-            800
-          );
-
-
-        } catch (error) {
-
-          console.error(error);
-
-          showMessage(
-            "Giriş başarısız: " +
-            (
-              error.message ||
-              "Bilinmeyen hata."
-            )
-          );
-
-          button.disabled = false;
-
-          button.textContent =
-            "Giriş Yap";
-
-        }
-
-      }
-    );
-
-  </script>
+</script>
 
 </body>
 </html>
