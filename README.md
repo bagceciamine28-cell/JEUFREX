@@ -1,0 +1,2 @@
+# JEUFREX
+JEUFREX web platform
