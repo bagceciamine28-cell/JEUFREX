@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -304,19 +303,29 @@ async function checkUser() {
   // ÇIKIŞ
   // ==========================================
 
-  document
-    .getElementById("logoutButton")
-    .addEventListener(
-      "click",
-      async function() {
+document
+  .getElementById("logoutButton")
+  .addEventListener("click", async function () {
 
-        await supabaseClient.auth.signOut();
+    const button = this;
 
-        window.location.href =
-          "login.html";
+    button.disabled = true;
+    button.textContent = "Çıkış yapılıyor...";
 
-      }
-    );
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+      console.error("Çıkış hatası:", error);
+
+      button.disabled = false;
+      button.textContent = "🚪 Çıkış Yap";
+
+      alert("Çıkış yapılamadı: " + error.message);
+      return;
+    }
+
+    window.location.replace("login.html");
+  });
 
 
   // ==========================================
