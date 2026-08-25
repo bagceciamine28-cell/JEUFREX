@@ -1,19 +1,14 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Admin Paneli | JEUFREX</title>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -21,179 +16,198 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f6f8;
+      background: #f4f5f7;
       color: #171717;
     }
 
     header {
-      height: 70px;
-      background: white;
-      border-bottom: 1px solid #e5e5e5;
+      background: #111;
+      color: white;
+      min-height: 70px;
+      padding: 0 30px;
 
       display: flex;
       align-items: center;
       justify-content: space-between;
-
-      padding: 0 35px;
+      gap: 20px;
     }
 
     .logo {
-      color: #111;
+      color: white;
       text-decoration: none;
-
-      font-size: 25px;
+      font-size: 24px;
       font-weight: 900;
     }
 
     .back {
-      color: #555;
+      color: #ddd;
       text-decoration: none;
       font-weight: 700;
     }
 
-    .back:hover {
-      color: #000;
-    }
-
     main {
       width: min(1100px, calc(100% - 30px));
-      margin: 40px auto;
+      margin: 35px auto;
     }
 
-    .loading {
-      background: white;
-      border-radius: 20px;
-
-      padding: 50px;
-
-      text-align: center;
-
-      color: #777;
-
-      box-shadow:
-        0 8px 30px rgba(0,0,0,.05);
-    }
-
-    #panel {
-      display: none;
-    }
-
-    .hero {
-      background: #111;
-      color: white;
-
-      border-radius: 25px;
-
-      padding: 35px;
-
+    h1 {
       margin-bottom: 25px;
-    }
-
-    .hero h1 {
-      margin: 0 0 10px;
-      font-size: 32px;
-    }
-
-    .hero p {
-      margin: 0;
-      color: #ccc;
     }
 
     .grid {
       display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      gap: 20px;
+      grid-template-columns: 350px 1fr;
+      gap: 25px;
     }
 
     .card {
       background: white;
-
       border-radius: 20px;
-
       padding: 25px;
-
-      box-shadow:
-        0 8px 30px rgba(0,0,0,.05);
+      box-shadow: 0 6px 25px rgba(0,0,0,.05);
     }
 
-    .card h2 {
-      margin-top: 0;
-    }
-
-    .icon {
-      font-size: 35px;
+    .search {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 15px;
       margin-bottom: 15px;
     }
 
-    .card p {
-      color: #666;
-      line-height: 1.5;
+    .user-list {
+      max-height: 600px;
+      overflow-y: auto;
     }
 
-    .status {
-      display: inline-block;
+    .user {
+      padding: 15px;
+      border: 1px solid #eee;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: .15s;
+    }
 
-      padding: 7px 12px;
+    .user:hover {
+      background: #f7f7f7;
+    }
 
-      border-radius: 20px;
+    .user.selected {
+      border-color: #111;
+      background: #f2f2f2;
+    }
 
-      background: #e9f8ee;
-      color: #176b35;
+    .user-name {
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
 
+    .user-username {
+      color: #777;
       font-size: 13px;
-      font-weight: 800;
     }
 
-    .danger {
-      background: #fff0f0;
-      color: #a30000;
-    }
-
-    .user-info {
-      background: white;
-
-      border-radius: 20px;
-
-      padding: 25px;
-
-      margin-top: 20px;
-
-      box-shadow:
-        0 8px 30px rgba(0,0,0,.05);
-    }
-
-    .user-info strong {
+    label {
       display: block;
-      margin-bottom: 6px;
+      font-weight: 800;
+      margin-top: 18px;
+      margin-bottom: 7px;
     }
 
-    .logout {
-      margin-top: 25px;
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px;
 
-      border: none;
-
+      border: 1px solid #ddd;
       border-radius: 12px;
 
-      padding: 12px 20px;
+      font-family: inherit;
+      font-size: 15px;
+    }
 
-      background: #eee;
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
 
-      color: #111;
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 18px;
+
+      background: #111;
+      color: white;
 
       font-weight: 800;
-
       cursor: pointer;
     }
 
-    .logout:hover {
-      background: #ddd;
+    button:hover {
+      opacity: .9;
+    }
+
+    button.danger {
+      background: #c62828;
+    }
+
+    button.admin {
+      background: #6d28d9;
+    }
+
+    button.secondary {
+      background: #eee;
+      color: #111;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: wait;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 13px;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 50px 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: #eee;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .badge.admin {
+      background: #eadcff;
+      color: #5b21b6;
+    }
+
+    .badge.banned {
+      background: #ffe0e0;
+      color: #a00000;
     }
 
     @media (max-width: 800px) {
-
       .grid {
         grid-template-columns: 1fr;
       }
@@ -201,35 +215,20 @@
       header {
         padding: 0 15px;
       }
-
-      .hero h1 {
-        font-size: 26px;
-      }
-
     }
-
   </style>
-
 </head>
-
 
 <body>
 
-
 <header>
 
-  <a
-    class="logo"
-    href="index.html"
-  >
-    JEUFREX
+  <a href="index.html" class="logo">
+    JEUFREX 👑
   </a>
 
-  <a
-    class="back"
-    href="profile.html"
-  >
-    👤 Profile Dön
+  <a href="profile.html" class="back">
+    Profile Dön
   </a>
 
 </header>
@@ -237,192 +236,152 @@
 
 <main>
 
+  <h1>👑 Admin Paneli</h1>
 
-  <!-- =====================================
-       YÜKLENİYOR
-  ====================================== -->
-
-  <div
-    id="loading"
-    class="loading"
-  >
-
-    👑 Admin yetkisi kontrol ediliyor...
-
-  </div>
+  <div class="grid">
 
 
-  <!-- =====================================
-       ADMIN PANELİ
-  ====================================== -->
+    <!-- KULLANICILAR -->
 
-  <div id="panel">
+    <section class="card">
 
+      <h2>👥 Kullanıcılar</h2>
 
-    <section class="hero">
+      <input
+        id="search"
+        class="search"
+        type="text"
+        placeholder="Kullanıcı ara..."
+      >
 
-      <h1>
-        👑 JEUFREX Admin Paneli
-      </h1>
-
-      <p>
-        JEUFREX yönetim merkezi
-      </p>
+      <div
+        id="userList"
+        class="user-list"
+      >
+        <div class="empty">
+          Kullanıcılar yükleniyor...
+        </div>
+      </div>
 
     </section>
 
 
-    <div class="grid">
+    <!-- DÜZENLEME -->
 
+    <section class="card">
 
-      <!-- KULLANICILAR -->
-
-      <div class="card">
-
-        <div class="icon">
-          👥
-        </div>
-
-        <h2>
-          Kullanıcılar
-        </h2>
-
-        <p>
-          Kullanıcı profillerini ve
-          hesap durumlarını yönet.
-        </p>
-
-        <span class="status">
-          Hazır
-        </span>
-
-      </div>
-
-
-      <!-- İÇERİK -->
-
-      <div class="card">
-
-        <div class="icon">
-          🎬
-        </div>
-
-        <h2>
-          İçerikler
-        </h2>
-
-        <p>
-          Videolar, müzikler ve topluluk
-          içeriklerini yönet.
-        </p>
-
-        <span class="status">
-          Hazır
-        </span>
-
-      </div>
-
-
-      <!-- TOPLULUK -->
-
-      <div class="card">
-
-        <div class="icon">
-          👥
-        </div>
-
-        <h2>
-          Topluluk
-        </h2>
-
-        <p>
-          Topluluk içeriklerini ve
-          raporları yönet.
-        </p>
-
-        <span class="status">
-          Hazır
-        </span>
-
-      </div>
-
-
-    </div>
-
-
-    <!-- =====================================
-         ADMIN BİLGİSİ
-    ====================================== -->
-
-    <div class="user-info">
-
-      <h2>
-        🔐 Admin Hesabı
-      </h2>
-
-      <strong>
-        Kullanıcı:
-      </strong>
-
-      <span id="adminEmail">
-        -
-      </span>
-
-      <br><br>
-
-      <strong>
-        Yetki:
-      </strong>
-
-      <span class="status">
-        ADMIN
-      </span>
-
-      <br><br>
-
-      <strong>
-        Güvenlik:
-      </strong>
-
-      <span class="status">
-        Şifreler gizli
-      </span>
-
-      <br>
-
-      <button
-        id="logoutButton"
-        class="logout"
+      <div
+        id="editorEmpty"
+        class="empty"
       >
-        🚪 Çıkış Yap
-      </button>
+        Düzenlemek için soldan bir kullanıcı seç.
+      </div>
 
-    </div>
 
+      <div
+        id="editor"
+        style="display:none;"
+      >
+
+        <h2>✏️ Kullanıcı Yönetimi</h2>
+
+
+        <label>
+          Görünen Ad
+        </label>
+
+        <input
+          id="displayName"
+          type="text"
+          placeholder="Görünen ad"
+        >
+
+
+        <label>
+          Kullanıcı Adı
+        </label>
+
+        <input
+          id="username"
+          type="text"
+          placeholder="@kullanici"
+        >
+
+
+        <label>
+          Biyografi
+        </label>
+
+        <textarea
+          id="bio"
+          placeholder="Biyografi"
+        ></textarea>
+
+
+        <div class="actions">
+
+          <button id="saveButton">
+            💾 Değişiklikleri Kaydet
+          </button>
+
+          <button
+            id="profileButton"
+            class="secondary"
+          >
+            👤 Profili Gör
+          </button>
+
+        </div>
+
+
+        <div class="actions">
+
+          <button
+            id="banButton"
+            class="danger"
+          >
+            🚫 Banla
+          </button>
+
+          <button
+            id="adminButton"
+            class="admin"
+          >
+            👑 Admin Yap
+          </button>
+
+        </div>
+
+
+        <div
+          id="status"
+          class="status"
+        ></div>
+
+      </div>
+
+    </section>
 
   </div>
 
-
 </main>
 
-
-<!-- =====================================
-     SUPABASE
-====================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
 <script>
 
-
-  // =====================================
-  // SUPABASE AYARLARI
-  // =====================================
+  // ==========================================
+  // SUPABASE
+  // ==========================================
 
   const SUPABASE_URL =
     "https://cqxxobmvycesunyxicjj.supabase.co";
 
+
+  // BURAYA profile.html'de kullandığın
+  // ÇALIŞAN Supabase anahtarını koy.
 
   const SUPABASE_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
@@ -435,237 +394,746 @@
     );
 
 
-  // =====================================
+  // ==========================================
   // ELEMENTLER
-  // =====================================
+  // ==========================================
 
-  const loading =
-    document.getElementById(
-      "loading"
-    );
+  const userList =
+    document.getElementById("userList");
+
+  const search =
+    document.getElementById("search");
+
+  const editor =
+    document.getElementById("editor");
+
+  const editorEmpty =
+    document.getElementById("editorEmpty");
+
+  const displayName =
+    document.getElementById("displayName");
+
+  const username =
+    document.getElementById("username");
+
+  const bio =
+    document.getElementById("bio");
+
+  const saveButton =
+    document.getElementById("saveButton");
+
+  const profileButton =
+    document.getElementById("profileButton");
+
+  const banButton =
+    document.getElementById("banButton");
+
+  const adminButton =
+    document.getElementById("adminButton");
+
+  const status =
+    document.getElementById("status");
 
 
-  const panel =
-    document.getElementById(
-      "panel"
-    );
+  let users = [];
+  let selectedUser = null;
+  let currentAdmin = null;
 
 
-  const adminEmail =
-    document.getElementById(
-      "adminEmail"
-    );
+  // ==========================================
+  // MESAJ
+  // ==========================================
+
+  function showStatus(
+    text,
+    success = true
+  ) {
+
+    status.style.display = "block";
+
+    status.textContent = text;
+
+    status.style.background =
+      success
+        ? "#e9f8ee"
+        : "#fff0f0";
+
+    status.style.color =
+      success
+        ? "#176b35"
+        : "#a00000";
+  }
 
 
-  const logoutButton =
-    document.getElementById(
-      "logoutButton"
-    );
-
-
-  // =====================================
+  // ==========================================
   // ADMIN KONTROLÜ
-  // =====================================
+  // ==========================================
 
   async function checkAdmin() {
-
-
-    // Giriş yapan kullanıcıyı al
 
     const {
       data: {
         user
-      },
-      error: authError
+      }
     } =
-      await supabaseClient
-        .auth
-        .getUser();
+      await supabaseClient.auth.getUser();
 
-
-    // Auth hatası
-
-    if (authError) {
-
-      console.error(
-        authError
-      );
-
-      window.location.href =
-        "login.html";
-
-      return;
-
-    }
-
-
-    // Giriş yapılmamış
 
     if (!user) {
 
       window.location.href =
         "login.html";
 
-      return;
-
+      return false;
     }
 
 
-    // Profilde admin bilgisini al
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", user.id)
+        .maybeSingle();
+
+
+    if (
+      error ||
+      !data ||
+      data.is_admin !== true
+    ) {
+
+      alert(
+        "Bu sayfaya sadece adminler erişebilir."
+      );
+
+      window.location.href =
+        "index.html";
+
+      return false;
+    }
+
+
+    currentAdmin = user;
+
+    return true;
+  }
+
+
+  // ==========================================
+  // KULLANICILARI GETİR
+  // ==========================================
+
+  async function loadUsers() {
 
     const {
-      data: profile,
-      error: profileError
+      data,
+      error
     } =
       await supabaseClient
         .from("profiles")
         .select(
-          "is_admin"
+          "id, display_name, username, bio, is_admin, is_banned"
         )
-        .eq(
-          "id",
-          user.id
-        )
-        .maybeSingle();
+        .order(
+          "display_name",
+          {
+            ascending: true
+          }
+        );
 
 
-    // Profil sorgusu başarısız
+    if (error) {
 
-    if (profileError) {
+      console.error(error);
 
-      console.error(
-        profileError
-      );
-
-      alert(
-        "Admin yetkisi kontrol edilemedi."
-      );
-
-      window.location.href =
-        "index.html";
+      userList.innerHTML =
+        `<div class="empty">
+          Kullanıcılar alınamadı.<br><br>
+          ${error.message}
+        </div>`;
 
       return;
-
     }
 
 
-    // Profil yok
+    users =
+      data || [];
 
-    if (!profile) {
 
-      alert(
-        "Profil bulunamadı."
-      );
+    renderUsers(users);
+  }
 
-      window.location.href =
-        "index.html";
+
+  // ==========================================
+  // LİSTE
+  // ==========================================
+
+  function renderUsers(list) {
+
+    userList.innerHTML = "";
+
+
+    if (!list.length) {
+
+      userList.innerHTML =
+        `<div class="empty">
+          Kullanıcı bulunamadı.
+        </div>`;
 
       return;
-
     }
 
 
-    // ADMIN DEĞİL
+    list.forEach(user => {
 
-    if (
-      profile.is_admin !== true
-    ) {
-
-      alert(
-        "⛔ Bu sayfaya erişim yetkiniz yok."
-      );
-
-      window.location.href =
-        "index.html";
-
-      return;
-
-    }
+      const item =
+        document.createElement("div");
 
 
-    // =====================================
-    // ADMIN
-    // =====================================
-
-    adminEmail.textContent =
-      user.email || "Gizli";
+      item.className =
+        "user";
 
 
-    loading.style.display =
-      "none";
+      if (
+        selectedUser &&
+        selectedUser.id === user.id
+      ) {
+
+        item.classList.add(
+          "selected"
+        );
+      }
 
 
-    panel.style.display =
-      "block";
+      item.innerHTML = `
 
+        <div class="user-name">
+          ${escapeHtml(
+            user.display_name ||
+            "Kullanıcı"
+          )}
+        </div>
+
+        <div class="user-username">
+          ${escapeHtml(
+            user.username ||
+            "@kullanici"
+          )}
+        </div>
+
+        ${
+          user.is_admin
+            ? `<span class="badge admin">
+                👑 ADMIN
+              </span>`
+            : ""
+        }
+
+        ${
+          user.is_banned
+            ? `<span class="badge banned">
+                🚫 BANLI
+              </span>`
+            : ""
+        }
+
+      `;
+
+
+      item.onclick =
+        () => selectUser(user);
+
+
+      userList.appendChild(item);
+
+    });
 
   }
 
 
-  // =====================================
-  // ÇIKIŞ
-  // =====================================
+  // ==========================================
+  // HTML GÜVENLİĞİ
+  // ==========================================
 
-  logoutButton.onclick =
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+
+  // ==========================================
+  // KULLANICI SEÇ
+  // ==========================================
+
+  function selectUser(user) {
+
+    selectedUser =
+      user;
+
+
+    editorEmpty.style.display =
+      "none";
+
+
+    editor.style.display =
+      "block";
+
+
+    displayName.value =
+      user.display_name || "";
+
+
+    username.value =
+      user.username || "";
+
+
+    bio.value =
+      user.bio || "";
+
+
+    banButton.textContent =
+      user.is_banned
+        ? "✅ Banı Kaldır"
+        : "🚫 Banla";
+
+
+    adminButton.textContent =
+      user.is_admin
+        ? "⬇️ Adminliği Kaldır"
+        : "👑 Admin Yap";
+
+
+    profileButton.onclick =
+      function() {
+
+        const clean =
+          (user.username || "")
+            .replace("@", "");
+
+
+        window.location.href =
+          "profile.html?user=" +
+          encodeURIComponent(clean);
+
+      };
+
+
+    renderUsers(
+      getFilteredUsers()
+    );
+
+
+    status.style.display =
+      "none";
+  }
+
+
+  // ==========================================
+  // FİLTRE
+  // ==========================================
+
+  function getFilteredUsers() {
+
+    const query =
+      search.value
+        .trim()
+        .toLowerCase();
+
+
+    if (!query) {
+      return users;
+    }
+
+
+    return users.filter(user => {
+
+      return (
+        (user.display_name || "")
+          .toLowerCase()
+          .includes(query)
+
+        ||
+
+        (user.username || "")
+          .toLowerCase()
+          .includes(query)
+      );
+
+    });
+
+  }
+
+
+  search.addEventListener(
+    "input",
+    function() {
+
+      renderUsers(
+        getFilteredUsers()
+      );
+
+    }
+  );
+
+
+  // ==========================================
+  // KAYDET
+  // ==========================================
+
+  saveButton.onclick =
     async function() {
 
+      if (!selectedUser) {
+        return;
+      }
 
-      logoutButton.disabled =
+
+      saveButton.disabled =
         true;
 
 
-      logoutButton.textContent =
-        "Çıkış yapılıyor...";
+      saveButton.textContent =
+        "Kaydediliyor...";
+
+
+      let newUsername =
+        username.value.trim();
+
+
+      if (!newUsername) {
+
+        showStatus(
+          "Kullanıcı adı boş bırakılamaz.",
+          false
+        );
+
+        saveButton.disabled =
+          false;
+
+        saveButton.textContent =
+          "💾 Değişiklikleri Kaydet";
+
+        return;
+      }
+
+
+      if (
+        !newUsername.startsWith("@")
+      ) {
+
+        newUsername =
+          "@" + newUsername;
+      }
+
+
+      // Kullanıcı adı başka hesapta mı?
+
+      const {
+        data: existing
+      } =
+      await supabaseClient
+        .from("profiles")
+        .select("id")
+        .eq(
+          "username",
+          newUsername
+        )
+        .neq(
+          "id",
+          selectedUser.id
+        )
+        .maybeSingle();
+
+
+      if (existing) {
+
+        showStatus(
+          "Bu kullanıcı adı zaten kullanılıyor.",
+          false
+        );
+
+        saveButton.disabled =
+          false;
+
+        saveButton.textContent =
+          "💾 Değişiklikleri Kaydet";
+
+        return;
+      }
 
 
       const {
+        data,
         error
       } =
-        await supabaseClient
-          .auth
-          .signOut();
+      await supabaseClient
+        .from("profiles")
+        .update({
+
+          display_name:
+            displayName.value.trim(),
+
+          username:
+            newUsername,
+
+          bio:
+            bio.value.trim()
+
+        })
+        .eq(
+          "id",
+          selectedUser.id
+        )
+        .select()
+        .single();
 
 
       if (error) {
 
-        console.error(
-          error
+        console.error(error);
+
+        showStatus(
+          "Kaydetme başarısız: " +
+          error.message,
+          false
         );
 
-        logoutButton.disabled =
-          false;
+      } else {
 
-        logoutButton.textContent =
-          "🚪 Çıkış Yap";
+        selectedUser =
+          data;
 
-        alert(
-          "Çıkış yapılamadı."
+
+        users =
+          users.map(user =>
+            user.id === data.id
+              ? data
+              : user
+          );
+
+
+        renderUsers(
+          getFilteredUsers()
         );
 
-        return;
+
+        showStatus(
+          "✅ Kullanıcı bilgileri güncellendi."
+        );
 
       }
 
 
-      window.location.href =
-        "login.html";
+      saveButton.disabled =
+        false;
 
+
+      saveButton.textContent =
+        "💾 Değişiklikleri Kaydet";
 
     };
 
 
-  // =====================================
+  // ==========================================
+  // BAN
+  // ==========================================
+
+  banButton.onclick =
+    async function() {
+
+      if (!selectedUser) {
+        return;
+      }
+
+
+      const newValue =
+        !selectedUser.is_banned;
+
+
+      const {
+        data,
+        error
+      } =
+      await supabaseClient
+        .from("profiles")
+        .update({
+          is_banned: newValue
+        })
+        .eq(
+          "id",
+          selectedUser.id
+        )
+        .select()
+        .single();
+
+
+      if (error) {
+
+        showStatus(
+          "Ban işlemi başarısız: " +
+          error.message,
+          false
+        );
+
+        return;
+      }
+
+
+      selectedUser =
+        data;
+
+
+      users =
+        users.map(user =>
+          user.id === data.id
+            ? data
+            : user
+        );
+
+
+      banButton.textContent =
+        data.is_banned
+          ? "✅ Banı Kaldır"
+          : "🚫 Banla";
+
+
+      renderUsers(
+        getFilteredUsers()
+      );
+
+
+      showStatus(
+        data.is_banned
+          ? "🚫 Kullanıcı banlandı."
+          : "✅ Kullanıcının banı kaldırıldı."
+      );
+
+    };
+
+
+  // ==========================================
+  // ADMIN YAP / ADMINLİĞİ KALDIR
+  // ==========================================
+
+  adminButton.onclick =
+    async function() {
+
+      if (!selectedUser) {
+        return;
+      }
+
+
+      if (
+        selectedUser.id ===
+        currentAdmin.id
+      ) {
+
+        showStatus(
+          "Kendi admin yetkini buradan kaldıramazsın.",
+          false
+        );
+
+        return;
+      }
+
+
+      const newValue =
+        !selectedUser.is_admin;
+
+
+      const {
+        data,
+        error
+      } =
+      await supabaseClient
+        .from("profiles")
+        .update({
+          is_admin: newValue
+        })
+        .eq(
+          "id",
+          selectedUser.id
+        )
+        .select()
+        .single();
+
+
+      if (error) {
+
+        showStatus(
+          "Admin işlemi başarısız: " +
+          error.message,
+          false
+        );
+
+        return;
+      }
+
+
+      selectedUser =
+        data;
+
+
+      users =
+        users.map(user =>
+          user.id === data.id
+            ? data
+            : user
+        );
+
+
+      adminButton.textContent =
+        data.is_admin
+          ? "⬇️ Adminliği Kaldır"
+          : "👑 Admin Yap";
+
+
+      renderUsers(
+        getFilteredUsers()
+      );
+
+
+      showStatus(
+        data.is_admin
+          ? "👑 Kullanıcı admin yapıldı."
+          : "Admin yetkisi kaldırıldı."
+      );
+
+    };
+
+
+  // ==========================================
   // BAŞLAT
-  // =====================================
+  // ==========================================
 
-  checkAdmin();
+  async function start() {
 
+    const allowed =
+      await checkAdmin();
+
+
+    if (!allowed) {
+      return;
+    }
+
+
+    await loadUsers();
+
+  }
+
+
+  start();
 
 </script>
 
-
 </body>
-
 </html>
 ```
-
