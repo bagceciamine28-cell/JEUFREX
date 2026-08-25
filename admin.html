@@ -174,6 +174,7 @@
       padding: 13px;
       border-radius: 12px;
       display: none;
+      line-height: 1.5;
     }
 
     .empty {
@@ -203,11 +204,6 @@
       color: #a00000;
     }
 
-    .badge.id {
-      background: #e8f0ff;
-      color: #2454a6;
-    }
-
     .danger-zone {
       margin-top: 30px;
       padding-top: 25px;
@@ -224,6 +220,16 @@
       font-size: 13px;
       line-height: 1.5;
       margin-bottom: 15px;
+    }
+
+    .debug {
+      margin-top: 20px;
+      padding: 12px;
+      background: #f1f1f1;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #555;
+      word-break: break-word;
     }
 
     @media (max-width: 800px) {
@@ -246,8 +252,8 @@
     JEUFREX 👑
   </a>
 
-  <a href="profile.html" class="back">
-    Profile Dön
+  <a href="index.html" class="back">
+    ← Ana Sayfa
   </a>
 
 </header>
@@ -272,13 +278,12 @@
         placeholder="Kullanıcı ara..."
       >
 
-      <div
-        id="userList"
-        class="user-list"
-      >
+      <div id="userList" class="user-list">
+
         <div class="empty">
           Kullanıcılar yükleniyor...
         </div>
+
       </div>
 
     </section>
@@ -288,18 +293,12 @@
 
     <section class="card">
 
-      <div
-        id="editorEmpty"
-        class="empty"
-      >
+      <div id="editorEmpty" class="empty">
         Düzenlemek için soldan bir kullanıcı seç.
       </div>
 
 
-      <div
-        id="editor"
-        style="display:none;"
-      >
+      <div id="editor" style="display:none;">
 
         <h2>✏️ Kullanıcı Yönetimi</h2>
 
@@ -342,10 +341,7 @@
             💾 Değişiklikleri Kaydet
           </button>
 
-          <button
-            id="profileButton"
-            class="secondary"
-          >
+          <button id="profileButton" class="secondary">
             👤 Profili Gör
           </button>
 
@@ -354,49 +350,35 @@
 
         <div class="actions">
 
-          <button
-            id="banButton"
-            class="danger"
-          >
+          <button id="banButton" class="danger">
             🚫 Banla
           </button>
 
-          <button
-            id="adminButton"
-            class="admin"
-          >
+          <button id="adminButton" class="admin">
             👑 Admin Yap
           </button>
 
         </div>
 
 
-        <!-- TEHLİKELİ İŞLEMLER -->
-
         <div class="danger-zone">
 
           <h3>⚠️ Tehlikeli İşlemler</h3>
 
           <p class="delete-warning">
-            Hesap silme işlemi kalıcıdır. Kullanıcının
-            giriş hesabı ve profili silinir. Bu işlem
-            geri alınamaz.
+            Hesap silme işlemi kalıcıdır.
+            Kullanıcının giriş hesabı ve profili silinir.
+            Bu işlem geri alınamaz.
           </p>
 
-          <button
-            id="deleteButton"
-            class="danger"
-          >
+          <button id="deleteButton" class="danger">
             🗑️ Hesabı Kalıcı Olarak Sil
           </button>
 
         </div>
 
 
-        <div
-          id="status"
-          class="status"
-        ></div>
+        <div id="status" class="status"></div>
 
       </div>
 
@@ -409,7 +391,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <script>
 
   // ==========================================
@@ -419,10 +400,8 @@
   const SUPABASE_URL =
     "https://cqxxobmvycesunyxicjj.supabase.co";
 
-
   const SUPABASE_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12ZWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
-
 
   const supabaseClient =
     window.supabase.createClient(
@@ -486,24 +465,18 @@
   // DURUM MESAJI
   // ==========================================
 
-  function showStatus(
-    text,
-    success = true
-  ) {
+  function showStatus(text, success = true) {
 
     status.style.display = "block";
 
     status.textContent = text;
 
     status.style.background =
-      success
-        ? "#e9f8ee"
-        : "#fff0f0";
+      success ? "#e9f8ee" : "#fff0f0";
 
     status.style.color =
-      success
-        ? "#176b35"
-        : "#a00000";
+      success ? "#176b35" : "#a00000";
+
   }
 
 
@@ -513,54 +486,154 @@
 
   async function checkAdmin() {
 
-    const {
-      data: {
-        user
+    try {
+
+      const {
+        data: {
+          user
+        },
+        error: authError
+      } =
+        await supabaseClient.auth.getUser();
+
+
+      console.log("Giriş yapan kullanıcı:", user);
+
+
+      if (authError) {
+
+        console.error(
+          "Auth hatası:",
+          authError
+        );
+
+        showPageError(
+          "Oturum kontrol edilemedi: " +
+          authError.message
+        );
+
+        return false;
       }
-    } =
-      await supabaseClient.auth.getUser();
 
 
-    if (!user) {
+      if (!user) {
 
-      window.location.href =
-        "login.html";
+        window.location.href =
+          "login.html";
 
-      return false;
-    }
-
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("profiles")
-        .select("is_admin")
-        .eq("id", user.id)
-        .maybeSingle();
+        return false;
+      }
 
 
-    if (
-      error ||
-      !data ||
-      data.is_admin !== true
-    ) {
+      const {
+        data: profile,
+        error
+      } =
+        await supabaseClient
+          .from("profiles")
+          .select(
+            "id, username, display_name, is_admin"
+          )
+          .eq(
+            "id",
+            user.id
+          )
+          .maybeSingle();
 
-      alert(
-        "Bu sayfaya sadece adminler erişebilir."
+
+      console.log(
+        "Profil:",
+        profile
       );
 
-      window.location.href =
-        "index.html";
+      console.log(
+        "Profil hatası:",
+        error
+      );
+
+
+      if (error) {
+
+        showPageError(
+          "Profil okunamadı: " +
+          error.message
+        );
+
+        return false;
+      }
+
+
+      if (!profile) {
+
+        showPageError(
+          "Bu kullanıcı için profiles kaydı bulunamadı."
+        );
+
+        return false;
+      }
+
+
+      if (profile.is_admin !== true) {
+
+        showPageError(
+          "Bu sayfaya sadece adminler erişebilir."
+        );
+
+        setTimeout(() => {
+
+          window.location.href =
+            "index.html";
+
+        }, 2000);
+
+        return false;
+      }
+
+
+      currentAdmin =
+        user;
+
+
+      return true;
+
+    } catch (error) {
+
+      console.error(error);
+
+      showPageError(
+        "Beklenmeyen hata: " +
+        error.message
+      );
 
       return false;
+
     }
 
+  }
 
-    currentAdmin = user;
 
-    return true;
+  // ==========================================
+  // SAYFA HATASI
+  // ==========================================
+
+  function showPageError(text) {
+
+    userList.innerHTML = "";
+
+    editor.style.display =
+      "none";
+
+    editorEmpty.style.display =
+      "block";
+
+    editorEmpty.innerHTML = `
+      <strong style="color:#a00000;">
+        ⚠️ Hata
+      </strong>
+      <br><br>
+      ${escapeHtml(text)}
+    `;
+
   }
 
 
@@ -569,6 +642,12 @@
   // ==========================================
 
   async function loadUsers() {
+
+    userList.innerHTML =
+      `<div class="empty">
+        Kullanıcılar yükleniyor...
+      </div>`;
+
 
     const {
       data,
@@ -593,11 +672,13 @@
 
       userList.innerHTML =
         `<div class="empty">
-          Kullanıcılar alınamadı.<br><br>
+          Kullanıcılar alınamadı.
+          <br><br>
           ${escapeHtml(error.message)}
         </div>`;
 
       return;
+
     }
 
 
@@ -606,6 +687,7 @@
 
 
     renderUsers(users);
+
   }
 
 
@@ -626,6 +708,7 @@
         </div>`;
 
       return;
+
     }
 
 
@@ -647,23 +730,31 @@
         item.classList.add(
           "selected"
         );
+
       }
+
+
+      const name =
+        escapeHtml(
+          user.display_name ||
+          "Kullanıcı"
+        );
+
+      const uname =
+        escapeHtml(
+          user.username ||
+          "@kullanici"
+        );
 
 
       item.innerHTML = `
 
         <div class="user-name">
-          ${escapeHtml(
-            user.display_name ||
-            "Kullanıcı"
-          )}
+          ${name}
         </div>
 
         <div class="user-username">
-          ${escapeHtml(
-            user.username ||
-            "@kullanici"
-          )}
+          ${uname}
         </div>
 
         ${
@@ -729,7 +820,6 @@
     editorEmpty.style.display =
       "none";
 
-
     editor.style.display =
       "block";
 
@@ -737,10 +827,8 @@
     displayName.value =
       user.display_name || "";
 
-
     username.value =
       user.username || "";
-
 
     bio.value =
       user.bio || "";
@@ -757,8 +845,6 @@
         ? "⬇️ Adminliği Kaldır"
         : "👑 Admin Yap";
 
-
-    // Kendi hesabını silme
 
     if (
       currentAdmin &&
@@ -785,14 +871,29 @@
     profileButton.onclick =
       function() {
 
-        const clean =
+        let clean =
           (user.username || "")
-            .replace("@", "");
+            .trim()
+            .replace(/^@/, "");
+
+
+        if (!clean) {
+
+          showStatus(
+            "Bu kullanıcının kullanıcı adı yok.",
+            false
+          );
+
+          return;
+
+        }
 
 
         window.location.href =
           "profile.html?user=" +
-          encodeURIComponent(clean);
+          encodeURIComponent(
+            "@" + clean
+          );
 
       };
 
@@ -821,9 +922,7 @@
 
 
     if (!query) {
-
       return users;
-
     }
 
 
@@ -875,7 +974,6 @@
       saveButton.disabled =
         true;
 
-
       saveButton.textContent =
         "Kaydediliyor...";
 
@@ -898,12 +996,11 @@
           "💾 Değişiklikleri Kaydet";
 
         return;
+
       }
 
 
-      if (
-        !newUsername.startsWith("@")
-      ) {
+      if (!newUsername.startsWith("@")) {
 
         newUsername =
           "@" + newUsername;
@@ -1031,7 +1128,6 @@
       saveButton.disabled =
         false;
 
-
       saveButton.textContent =
         "💾 Değişiklikleri Kaydet";
 
@@ -1139,6 +1235,7 @@
         );
 
         return;
+
       }
 
 
@@ -1245,7 +1342,7 @@
         confirm(
           `⚠️ DİKKAT!\n\n` +
           `"${name}" hesabını kalıcı olarak silmek istediğine emin misin?\n\n` +
-          `Bu işlem kullanıcının giriş hesabını ve profilini siler ve geri alınamaz.`
+          `Bu işlem geri alınamaz.`
         );
 
 
@@ -1254,22 +1351,8 @@
       }
 
 
-      const secondConfirm =
-        confirm(
-          `Son onay:\n\n` +
-          `"${name}" hesabı GERİ ALINAMAZ şekilde silinecek.\n\n` +
-          `Devam edilsin mi?`
-        );
-
-
-      if (!secondConfirm) {
-        return;
-      }
-
-
       deleteButton.disabled =
         true;
-
 
       deleteButton.textContent =
         "🗑️ Siliniyor...";
@@ -1293,14 +1376,9 @@
 
 
         if (error) {
-
-          console.error(error);
-
           throw new Error(
-            error.message ||
-            "Edge Function çalıştırılamadı."
+            error.message
           );
-
         }
 
 
@@ -1335,7 +1413,6 @@
         editor.style.display =
           "none";
 
-
         editorEmpty.style.display =
           "block";
 
@@ -1348,7 +1425,6 @@
         showStatus(
           "✅ Kullanıcı hesabı kalıcı olarak silindi."
         );
-
 
       } catch (error) {
 
@@ -1365,7 +1441,6 @@
 
       deleteButton.disabled =
         false;
-
 
       deleteButton.textContent =
         "🗑️ Hesabı Kalıcı Olarak Sil";
@@ -1399,4 +1474,3 @@
 
 </body>
 </html>
-```
