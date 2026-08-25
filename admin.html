@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Paneli | JEUFREX</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #171717;
+    }
+
+    header {
+      height: 70px;
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 35px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      text-decoration: none;
+      color: #111;
+    }
+
+    main {
+      width: min(1000px, calc(100% - 30px));
+      margin: 40px auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.05);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .danger {
+      color: #b00020;
+      font-weight: 800;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #777;
+    }
+
+    #panel {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <a class="logo" href="index.html">
+    JEUFREX
+  </a>
+
+  <a href="profile.html">
+    👤 Profil
+  </a>
+
+</header>
+
+
+<main>
+
+  <div id="loading" class="loading">
+    Admin yetkisi kontrol ediliyor...
+  </div>
+
+
+  <div id="panel">
+
+    <div class="card">
+
+      <h1>👑 Admin Paneli</h1>
+
+      <p>
+        JEUFREX yönetim merkezi
+      </p>
+
+      <p class="danger">
+        ⚠️ Bu alan yalnızca yetkili yöneticiler içindir.
+      </p>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>👥 Kullanıcı Yönetimi</h2>
+
+      <p>
+        Kullanıcı profilleri ve hesap durumları
+        burada yönetilecek.
+      </p>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>🎬 İçerik Yönetimi</h2>
+
+      <p>
+        Videolar, müzikler ve topluluk içerikleri
+        burada yönetilecek.
+      </p>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>📊 Site İstatistikleri</h2>
+
+      <p>
+        Kullanıcı ve içerik istatistikleri
+        burada gösterilecek.
+      </p>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+  const SUPABASE_URL =
+    "https://cqxxobmvycesunyxicjj.supabase.co";
+
+  const SUPABASE_KEY =
+    "MEVCUT_CALISAN_SUPABASE_KEY";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  async function checkAdmin() {
+
+    const {
+      data: {
+        user
+      }
+    } =
+      await supabaseClient
+        .auth
+        .getUser();
+
+
+    if (!user) {
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    /*
+      BURADA DAHA SONRA
+      GÜVENLİ ADMIN KONTROLÜ
+      YAPACAĞIZ.
+    */
+
+
+    document.getElementById(
+      "loading"
+    ).style.display = "none";
+
+
+    document.getElementById(
+      "panel"
+    ).style.display = "block";
+
+  }
+
+
+  checkAdmin();
+
+</script>
+
+</body>
+</html>
