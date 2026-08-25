@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Kayıt Ol | JEUFREX</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -15,59 +18,60 @@
       align-items: center;
       justify-content: center;
       font-family: Arial, sans-serif;
-      background: #f6f7f9;
+      background: #f4f5f7;
       color: #171717;
     }
 
-    .box {
-      width: min(430px, calc(100% - 32px));
+    .container {
+      width: min(440px, calc(100% - 30px));
       background: white;
-      padding: 34px;
-      border: 1px solid #e5e5e8;
-      border-radius: 22px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.07);
+      padding: 35px;
+      border-radius: 24px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
     }
 
     .logo {
       text-align: center;
-      font-size: 29px;
+      font-size: 30px;
       font-weight: 900;
       letter-spacing: 1px;
+      margin-bottom: 8px;
     }
 
     .subtitle {
       text-align: center;
       color: #777;
-      margin: 8px 0 28px;
+      margin-bottom: 28px;
     }
 
     label {
       display: block;
-      margin: 15px 0 7px;
-      font-weight: 700;
+      margin-top: 17px;
+      margin-bottom: 7px;
       font-size: 14px;
+      font-weight: 700;
     }
 
     input {
       width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #dcdce2;
-      border-radius: 11px;
-      outline: none;
+      padding: 14px;
+      border: 1px solid #d9d9df;
+      border-radius: 12px;
       font-size: 15px;
+      outline: none;
     }
 
     input:focus {
-      border-color: #171717;
+      border-color: #111;
     }
 
     button {
       width: 100%;
-      margin-top: 24px;
+      margin-top: 25px;
       padding: 14px;
-      border: 0;
-      border-radius: 11px;
-      background: #171717;
+      border: none;
+      border-radius: 12px;
+      background: #111;
       color: white;
       font-size: 15px;
       font-weight: 800;
@@ -75,80 +79,103 @@
     }
 
     button:disabled {
-      opacity: .6;
+      opacity: 0.6;
       cursor: wait;
     }
 
     #message {
       display: none;
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: 10px;
+      margin-top: 18px;
+      padding: 13px;
+      border-radius: 11px;
       font-size: 14px;
+      line-height: 1.4;
     }
 
     .login {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 22px;
       color: #777;
       font-size: 14px;
     }
 
     .login a {
-      color: #171717;
+      color: #111;
       font-weight: 700;
+      text-decoration: none;
     }
   </style>
 </head>
 
 <body>
 
-  <main class="box">
+  <div class="container">
 
-    <div class="logo">JEUFREX</div>
+    <div class="logo">
+      JEUFREX
+    </div>
 
     <div class="subtitle">
-      Hesabını oluştur ve keşfetmeye başla.
+      Hesabını oluştur ve JEUFREX'e katıl.
     </div>
 
     <form id="registerForm">
 
-      <label for="name">Ad</label>
+      <label for="name">
+        Ad
+      </label>
+
       <input
         id="name"
         type="text"
-        maxlength="50"
         placeholder="Adın"
+        maxlength="50"
+        autocomplete="name"
         required
       >
 
-      <label for="username">Kullanıcı adı</label>
+      <label for="username">
+        Kullanıcı adı
+      </label>
+
       <input
         id="username"
         type="text"
-        maxlength="30"
         placeholder="@kullaniciadi"
+        maxlength="30"
+        autocomplete="username"
         required
       >
 
-      <label for="email">E-posta</label>
+      <label for="email">
+        E-posta
+      </label>
+
       <input
         id="email"
         type="email"
         placeholder="ornek@gmail.com"
+        autocomplete="email"
         required
       >
 
-      <label for="password">Şifre</label>
+      <label for="password">
+        Şifre
+      </label>
+
       <input
         id="password"
         type="password"
-        minlength="8"
         placeholder="En az 8 karakter"
+        minlength="8"
+        autocomplete="new-password"
         required
       >
 
-      <button id="registerButton" type="submit">
+      <button
+        id="registerButton"
+        type="submit"
+      >
         Kayıt Ol
       </button>
 
@@ -158,111 +185,261 @@
 
     <div class="login">
       Zaten hesabın var mı?
-      <a href="login.html">Giriş Yap</a>
+      <a href="login.html">
+        Giriş Yap
+      </a>
     </div>
 
-  </main>
+  </div>
 
+
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
   <script>
+
+    // ==========================================
+    // SUPABASE AYARLARI
+    // ==========================================
+
     const SUPABASE_URL =
       "https://cqxxobmvycesunyxicjj.supabase.co";
 
     const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_C0BYpv-9sknEu1EXbeKLwQ_lMddpL5V";
+      "BURAYA_SB_PUBLISHABLE_ANAHTARINI_YAPISTIR";
 
-    const { createClient } =
-      supabase;
 
-    const client = createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
+    // ==========================================
+    // SUPABASE CLIENT
+    // ==========================================
 
-    const form = document.getElementById("registerForm");
-    const button = document.getElementById("registerButton");
-    const message = document.getElementById("message");
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    // ==========================================
+    // HTML ELEMENTLERİ
+    // ==========================================
+
+    const form =
+      document.getElementById("registerForm");
+
+    const button =
+      document.getElementById("registerButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    // ==========================================
+    // MESAJ GÖSTER
+    // ==========================================
 
     function showMessage(text, success = false) {
+
       message.style.display = "block";
+
       message.textContent = text;
-      message.style.background = success ? "#e9f8ee" : "#fff0f0";
-      message.style.color = success ? "#176b35" : "#a30000";
+
+      if (success) {
+
+        message.style.background = "#e9f8ee";
+        message.style.color = "#176b35";
+
+      } else {
+
+        message.style.background = "#fff0f0";
+        message.style.color = "#a30000";
+
+      }
+
     }
 
-    form.addEventListener("submit", async (event) => {
+
+    // ==========================================
+    // KULLANICI ADI
+    // ==========================================
+
+    function normalizeUsername(username) {
+
+      username = username.trim();
+
+      if (!username.startsWith("@")) {
+
+        username = "@" + username;
+
+      }
+
+      return username;
+
+    }
+
+
+    // ==========================================
+    // KAYIT
+    // ==========================================
+
+    form.addEventListener("submit", async function(event) {
+
       event.preventDefault();
+
 
       const name =
         document.getElementById("name").value.trim();
 
+
       let username =
-        document.getElementById("username").value.trim();
+        document.getElementById("username").value;
+
 
       const email =
         document.getElementById("email").value.trim();
 
+
       const password =
         document.getElementById("password").value;
 
-      if (!username.startsWith("@")) {
-        username = "@" + username;
+
+      username =
+        normalizeUsername(username);
+
+
+      // -------------------------------
+      // Kontroller
+      // -------------------------------
+
+      if (name.length < 2) {
+
+        showMessage(
+          "Lütfen geçerli bir ad gir."
+        );
+
+        return;
+
       }
+
 
       if (!/^@[a-zA-Z0-9_.-]{3,29}$/.test(username)) {
+
         showMessage(
-          "Kullanıcı adı 3-29 karakter olmalı ve sadece harf, rakam, _, . veya - içermeli."
+          "Kullanıcı adı 3-29 karakter olmalı. Harf, rakam, _, . ve - kullanılabilir."
         );
+
         return;
+
       }
+
 
       if (password.length < 8) {
-        showMessage("Şifren en az 8 karakter olmalı.");
+
+        showMessage(
+          "Şifre en az 8 karakter olmalı."
+        );
+
         return;
+
       }
 
+
+      // -------------------------------
+      // Buton
+      // -------------------------------
+
       button.disabled = true;
-      button.textContent = "Hesap oluşturuluyor...";
+
+      button.textContent =
+        "Hesap oluşturuluyor...";
+
 
       try {
 
-        const { data, error } =
-          await client.auth.signUp({
+        // -------------------------------
+        // Supabase Auth
+        // -------------------------------
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.signUp({
+
             email: email,
+
             password: password,
+
             options: {
+
               data: {
+
                 username: username,
+
                 display_name: name
+
               }
+
             }
+
           });
 
+
+        // -------------------------------
+        // Hata
+        // -------------------------------
+
         if (error) {
+
           throw error;
+
         }
 
+
+        // -------------------------------
+        // Başarılı
+        // -------------------------------
+
         showMessage(
-          "Hesabın oluşturuldu! E-posta doğrulaması gerekiyorsa gelen kutunu kontrol et.",
+
+          "🎉 Hesabın oluşturuldu! " +
+          "E-posta doğrulaması gerekiyorsa gelen kutunu kontrol et.",
+
           true
+
         );
+
 
         form.reset();
 
+
       } catch (error) {
 
+        console.error(error);
+
+
         showMessage(
-          error.message || "Kayıt sırasında bir hata oluştu."
+
+          "Kayıt başarısız: " +
+          (error.message || "Bilinmeyen hata.")
+
         );
 
-      } finally {
-
-        button.disabled = false;
-        button.textContent = "Kayıt Ol";
-
       }
+
+
+      // -------------------------------
+      // Butonu geri aç
+      // -------------------------------
+
+      button.disabled = false;
+
+      button.textContent =
+        "Kayıt Ol";
+
     });
+
   </script>
 
 </body>
