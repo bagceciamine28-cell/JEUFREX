@@ -255,104 +255,47 @@
   // KULLANICIYI VE GÜNCEL PROFİLİ YÜKLE
   // ==========================================
 
-  async function checkUser() {
+async function checkUser() {
+  const {
+    data: { user },
+    error: authError
+  } = await supabaseClient.auth.getUser();
 
-    const {
-      data: { user },
-      error: authError
-    } =
-      await supabaseClient.auth.getUser();
+  if (authError || !user) {
+    window.location.href = "login.html";
+    return;
+  }
 
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("username, display_name")
+    .eq("id", user.id)
+    .single();
 
-    // Giriş yapılmamışsa login'e gönder
+  if (error) {
+    console.error("PROFİL HATASI:", error);
+    document.getElementById("welcomeText").textContent =
+      "Hoş geldin! 👋";
+    return;
+  }
 
-    if (authError || !user) {
+  const username = profile.username || "@kullanici";
 
-      window.location.href = "login.html";
+  document.getElementById("welcomeText").textContent =
+    `Hoş geldin, ${username}! 👋`;
 
-      return;
+  const cleanUsername = username.replace(/^@/, "");
 
-    }
+  const profileUrl =
+    "profile.html?user=" +
+    encodeURIComponent(cleanUsername);
 
+  document.getElementById("profileLink").href = profileUrl;
 
-    // ==========================================
-    // PROFILES TABLOSUNDAN GÜNCEL BİLGİLERİ AL
-    // ==========================================
+  document.getElementById("profileCard").href = profileUrl;
 
-    const {
-      data: profile,
-      error: profileError
-    } =
-      await supabaseClient
-        .from("profiles")
-        .select("username, display_name")
-        .eq("id", user.id)
-        .maybeSingle();
-
-
-    if (profileError) {
-
-      console.error(
-        "Profil alınamadı:",
-        profileError
-      );
-
-      return;
-
-    }
-
-
-    const username =
-      profile?.username || "@kullanici";
-
-
-    const displayName =
-      profile?.display_name || "Kullanıcı";
-
-
-    // ==========================================
-    // HOŞ GELDİN MESAJI
-    // ==========================================
-
-    document
-      .getElementById("welcomeText")
-      .textContent =
-        "Hoş geldin, " +
-        username +
-        "! 👋";
-
-
-    // ==========================================
-    // PROFİL LİNKİ
-    // ==========================================
-
-    const cleanUsername =
-      username
-        .replace(/^@/, "");
-
-
-    const profileUrl =
-      "profile.html?user=" +
-      encodeURIComponent(cleanUsername);
-
-
-    document
-      .getElementById("profileLink")
-      .href =
-        profileUrl;
-
-
-    document
-      .getElementById("profileCard")
-      .href =
-        profileUrl;
-
-
-    console.log(
-      "Giriş yapan kullanıcı:",
-      displayName,
-      username
-    );
+  console.log("SUPABASE PROFİLİ:", profile);
+}
 
   }
 
