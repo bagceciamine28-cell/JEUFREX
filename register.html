@@ -6,9 +6,7 @@
   <title>Kayıt Ol | JEUFREX</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -21,7 +19,7 @@
       color: #171717;
     }
 
-    .register-box {
+    .box {
       width: min(430px, calc(100% - 32px));
       background: white;
       padding: 34px;
@@ -32,16 +30,15 @@
 
     .logo {
       text-align: center;
-      font-size: 28px;
+      font-size: 29px;
       font-weight: 900;
       letter-spacing: 1px;
-      margin-bottom: 8px;
     }
 
     .subtitle {
       text-align: center;
       color: #777;
-      margin-bottom: 28px;
+      margin: 8px 0 28px;
     }
 
     label {
@@ -77,28 +74,36 @@
       cursor: pointer;
     }
 
-    button:hover {
-      opacity: .9;
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    #message {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
     }
 
     .login {
       text-align: center;
       margin-top: 20px;
-      font-size: 14px;
       color: #777;
+      font-size: 14px;
     }
 
     .login a {
       color: #171717;
       font-weight: 700;
-      text-decoration: none;
     }
   </style>
 </head>
 
 <body>
 
-  <main class="register-box">
+  <main class="box">
 
     <div class="logo">JEUFREX</div>
 
@@ -106,12 +111,13 @@
       Hesabını oluştur ve keşfetmeye başla.
     </div>
 
-    <form>
+    <form id="registerForm">
 
       <label for="name">Ad</label>
       <input
         id="name"
         type="text"
+        maxlength="50"
         placeholder="Adın"
         required
       >
@@ -120,6 +126,7 @@
       <input
         id="username"
         type="text"
+        maxlength="30"
         placeholder="@kullaniciadi"
         required
       >
@@ -136,14 +143,16 @@
       <input
         id="password"
         type="password"
-        placeholder="Şifren"
         minlength="8"
+        placeholder="En az 8 karakter"
         required
       >
 
-      <button type="submit">
+      <button id="registerButton" type="submit">
         Kayıt Ol
       </button>
+
+      <div id="message"></div>
 
     </form>
 
@@ -153,6 +162,108 @@
     </div>
 
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      "https://cqxxobmvycesunyxicjj.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "BURAYA_SENIN_PUBLISHABLE_KEYIN_GELECEK";
+
+    const { createClient } =
+      supabase;
+
+    const client = createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    const form = document.getElementById("registerForm");
+    const button = document.getElementById("registerButton");
+    const message = document.getElementById("message");
+
+    function showMessage(text, success = false) {
+      message.style.display = "block";
+      message.textContent = text;
+      message.style.background = success ? "#e9f8ee" : "#fff0f0";
+      message.style.color = success ? "#176b35" : "#a30000";
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const name =
+        document.getElementById("name").value.trim();
+
+      let username =
+        document.getElementById("username").value.trim();
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      if (!username.startsWith("@")) {
+        username = "@" + username;
+      }
+
+      if (!/^@[a-zA-Z0-9_.-]{3,29}$/.test(username)) {
+        showMessage(
+          "Kullanıcı adı 3-29 karakter olmalı ve sadece harf, rakam, _, . veya - içermeli."
+        );
+        return;
+      }
+
+      if (password.length < 8) {
+        showMessage("Şifren en az 8 karakter olmalı.");
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Hesap oluşturuluyor...";
+
+      try {
+
+        const { data, error } =
+          await client.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: {
+                username: username,
+                display_name: name
+              }
+            }
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        showMessage(
+          "Hesabın oluşturuldu! E-posta doğrulaması gerekiyorsa gelen kutunu kontrol et.",
+          true
+        );
+
+        form.reset();
+
+      } catch (error) {
+
+        showMessage(
+          error.message || "Kayıt sırasında bir hata oluştu."
+        );
+
+      } finally {
+
+        button.disabled = false;
+        button.textContent = "Kayıt Ol";
+
+      }
+    });
+  </script>
 
 </body>
 </html>
