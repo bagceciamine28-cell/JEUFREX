@@ -20,9 +20,9 @@
     }
 
     header {
+      min-height: 70px;
       background: #111;
       color: white;
-      min-height: 70px;
       padding: 0 30px;
 
       display: flex;
@@ -63,7 +63,7 @@
       background: white;
       border-radius: 20px;
       padding: 25px;
-      box-shadow: 0 6px 25px rgba(0,0,0,.05);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, .05);
     }
 
     .search {
@@ -73,6 +73,7 @@
       border-radius: 12px;
       font-size: 15px;
       margin-bottom: 15px;
+      outline: none;
     }
 
     .user-list {
@@ -86,7 +87,6 @@
       border-radius: 14px;
       margin-bottom: 10px;
       cursor: pointer;
-      transition: .15s;
     }
 
     .user:hover {
@@ -123,6 +123,7 @@
       border-radius: 12px;
       font-family: inherit;
       font-size: 15px;
+      outline: none;
     }
 
     textarea {
@@ -175,6 +176,7 @@
       border-radius: 12px;
       display: none;
       line-height: 1.5;
+      white-space: pre-wrap;
     }
 
     .empty {
@@ -222,14 +224,14 @@
       margin-bottom: 15px;
     }
 
-    .debug {
-      margin-top: 20px;
-      padding: 12px;
-      background: #f1f1f1;
-      border-radius: 10px;
-      font-size: 12px;
-      color: #555;
-      word-break: break-word;
+    .login-debug {
+      background: #fff3cd;
+      color: #664d03;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: none;
+      line-height: 1.5;
     }
 
     @media (max-width: 800px) {
@@ -252,8 +254,8 @@
     JEUFREX 👑
   </a>
 
-  <a href="index.html" class="back">
-    ← Ana Sayfa
+  <a href="profile.html" class="back">
+    Profile Dön
   </a>
 
 </header>
@@ -262,6 +264,8 @@
 <main>
 
   <h1>👑 Admin Paneli</h1>
+
+  <div id="debug" class="login-debug"></div>
 
   <div class="grid">
 
@@ -301,7 +305,6 @@
       <div id="editor" style="display:none;">
 
         <h2>✏️ Kullanıcı Yönetimi</h2>
-
 
         <label>
           Görünen Ad
@@ -367,7 +370,6 @@
 
           <p class="delete-warning">
             Hesap silme işlemi kalıcıdır.
-            Kullanıcının giriş hesabı ve profili silinir.
             Bu işlem geri alınamaz.
           </p>
 
@@ -401,7 +403,8 @@
     "https://cqxxobmvycesunyxicjj.supabase.co";
 
   const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12ZWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+
 
   const supabaseClient =
     window.supabase.createClient(
@@ -453,6 +456,9 @@
   const status =
     document.getElementById("status");
 
+  const debug =
+    document.getElementById("debug");
+
 
   let users = [];
 
@@ -462,7 +468,7 @@
 
 
   // ==========================================
-  // DURUM MESAJI
+  // DURUM
   // ==========================================
 
   function showStatus(text, success = true) {
@@ -480,159 +486,156 @@
   }
 
 
+  function showDebug(text) {
+
+    debug.style.display = "block";
+
+    debug.textContent = text;
+
+  }
+
+
+  // ==========================================
+  // HTML GÜVENLİĞİ
+  // ==========================================
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+
   // ==========================================
   // ADMIN KONTROLÜ
   // ==========================================
 
   async function checkAdmin() {
 
-    try {
-
-      const {
-        data: {
-          user
-        },
-        error: authError
-      } =
-        await supabaseClient.auth.getUser();
+    console.log("Admin kontrolü başladı.");
 
 
-      console.log("Giriş yapan kullanıcı:", user);
+    const {
+      data: sessionData,
+      error: sessionError
+    } =
+      await supabaseClient.auth.getSession();
 
 
-      if (authError) {
+    if (sessionError) {
 
-        console.error(
-          "Auth hatası:",
-          authError
-        );
-
-        showPageError(
-          "Oturum kontrol edilemedi: " +
-          authError.message
-        );
-
-        return false;
-      }
-
-
-      if (!user) {
-
-        window.location.href =
-          "login.html";
-
-        return false;
-      }
-
-
-      const {
-        data: profile,
-        error
-      } =
-        await supabaseClient
-          .from("profiles")
-          .select(
-            "id, username, display_name, is_admin"
-          )
-          .eq(
-            "id",
-            user.id
-          )
-          .maybeSingle();
-
-
-      console.log(
-        "Profil:",
-        profile
-      );
-
-      console.log(
-        "Profil hatası:",
-        error
-      );
-
-
-      if (error) {
-
-        showPageError(
-          "Profil okunamadı: " +
-          error.message
-        );
-
-        return false;
-      }
-
-
-      if (!profile) {
-
-        showPageError(
-          "Bu kullanıcı için profiles kaydı bulunamadı."
-        );
-
-        return false;
-      }
-
-
-      if (profile.is_admin !== true) {
-
-        showPageError(
-          "Bu sayfaya sadece adminler erişebilir."
-        );
-
-        setTimeout(() => {
-
-          window.location.href =
-            "index.html";
-
-        }, 2000);
-
-        return false;
-      }
-
-
-      currentAdmin =
-        user;
-
-
-      return true;
-
-    } catch (error) {
-
-      console.error(error);
-
-      showPageError(
-        "Beklenmeyen hata: " +
-        error.message
+      showDebug(
+        "Oturum kontrolünde hata:\n" +
+        sessionError.message
       );
 
       return false;
 
     }
 
-  }
+
+    const session =
+      sessionData?.session;
 
 
-  // ==========================================
-  // SAYFA HATASI
-  // ==========================================
+    if (!session || !session.user) {
 
-  function showPageError(text) {
+      showDebug(
+        "Bu tarayıcıda aktif giriş oturumu bulunamadı."
+      );
 
-    userList.innerHTML = "";
+      return false;
 
-    editor.style.display =
-      "none";
+    }
 
-    editorEmpty.style.display =
-      "block";
 
-    editorEmpty.innerHTML = `
-      <strong style="color:#a00000;">
-        ⚠️ Hata
-      </strong>
-      <br><br>
-      ${escapeHtml(text)}
-    `;
+    const user =
+      session.user;
+
+
+    console.log(
+      "Giriş yapan kullanıcı:",
+      user.id
+    );
+
+
+    const {
+      data: profile,
+      error: profileError
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select("id, username, display_name, is_admin")
+        .eq("id", user.id)
+        .maybeSingle();
+
+
+    if (profileError) {
+
+      console.error(
+        "Profil kontrol hatası:",
+        profileError
+      );
+
+
+      showDebug(
+        "profiles tablosu okunamadı.\n\n" +
+        "Hata: " +
+        profileError.message +
+        "\n\n" +
+        "Muhtemel sebep: profiles tablosunun RLS politikası."
+      );
+
+      return false;
+
+    }
+
+
+    if (!profile) {
+
+      showDebug(
+        "Giriş yapan hesabın profiles tablosunda kaydı bulunamadı.\n\n" +
+        "Kullanıcı ID:\n" +
+        user.id
+      );
+
+      return false;
+
+    }
+
+
+    console.log(
+      "Profil:",
+      profile
+    );
+
+
+    if (profile.is_admin !== true) {
+
+      showDebug(
+        "Bu hesap admin değil.\n\n" +
+        "Kullanıcı: " +
+        (profile.username || user.email || "Bilinmiyor") +
+        "\n\n" +
+        "is_admin değeri: " +
+        String(profile.is_admin)
+      );
+
+      return false;
+
+    }
+
+
+    currentAdmin = user;
+
+    console.log("ADMIN KONTROLÜ BAŞARILI.");
+
+    return true;
 
   }
 
@@ -644,9 +647,7 @@
   async function loadUsers() {
 
     userList.innerHTML =
-      `<div class="empty">
-        Kullanıcılar yükleniyor...
-      </div>`;
+      '<div class="empty">Kullanıcılar yükleniyor...</div>';
 
 
     const {
@@ -671,20 +672,19 @@
       console.error(error);
 
       userList.innerHTML =
-        `<div class="empty">
-          Kullanıcılar alınamadı.
-          <br><br>
+        `
+        <div class="empty">
+          Kullanıcılar alınamadı.<br><br>
           ${escapeHtml(error.message)}
-        </div>`;
+        </div>
+        `;
 
       return;
 
     }
 
 
-    users =
-      data || [];
-
+    users = data || [];
 
     renderUsers(users);
 
@@ -703,9 +703,7 @@
     if (!list.length) {
 
       userList.innerHTML =
-        `<div class="empty">
-          Kullanıcı bulunamadı.
-        </div>`;
+        '<div class="empty">Kullanıcı bulunamadı.</div>';
 
       return;
 
@@ -718,8 +716,7 @@
         document.createElement("div");
 
 
-      item.className =
-        "user";
+      item.className = "user";
 
 
       if (
@@ -727,34 +724,23 @@
         selectedUser.id === user.id
       ) {
 
-        item.classList.add(
-          "selected"
-        );
+        item.classList.add("selected");
 
       }
-
-
-      const name =
-        escapeHtml(
-          user.display_name ||
-          "Kullanıcı"
-        );
-
-      const uname =
-        escapeHtml(
-          user.username ||
-          "@kullanici"
-        );
 
 
       item.innerHTML = `
 
         <div class="user-name">
-          ${name}
+          ${escapeHtml(
+            user.display_name || "Kullanıcı"
+          )}
         </div>
 
         <div class="user-username">
-          ${uname}
+          ${escapeHtml(
+            user.username || "@kullanici"
+          )}
         </div>
 
         ${
@@ -792,36 +778,17 @@
 
 
   // ==========================================
-  // HTML GÜVENLİĞİ
-  // ==========================================
-
-  function escapeHtml(value) {
-
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-
-  }
-
-
-  // ==========================================
   // KULLANICI SEÇ
   // ==========================================
 
   function selectUser(user) {
 
-    selectedUser =
-      user;
+    selectedUser = user;
 
 
-    editorEmpty.style.display =
-      "none";
+    editorEmpty.style.display = "none";
 
-    editor.style.display =
-      "block";
+    editor.style.display = "block";
 
 
     displayName.value =
@@ -846,35 +813,19 @@
         : "👑 Admin Yap";
 
 
-    if (
+    deleteButton.disabled =
       currentAdmin &&
-      user.id === currentAdmin.id
-    ) {
-
-      deleteButton.disabled =
-        true;
-
-      deleteButton.textContent =
-        "🔒 Kendi Hesabın";
-
-    } else {
-
-      deleteButton.disabled =
-        false;
-
-      deleteButton.textContent =
-        "🗑️ Hesabı Kalıcı Olarak Sil";
-
-    }
+      user.id === currentAdmin.id;
 
 
     profileButton.onclick =
       function() {
 
         let clean =
-          (user.username || "")
-            .trim()
-            .replace(/^@/, "");
+          user.username || "";
+
+        clean =
+          clean.replace(/^@/, "");
 
 
         if (!clean) {
@@ -891,20 +842,14 @@
 
         window.location.href =
           "profile.html?user=" +
-          encodeURIComponent(
-            "@" + clean
-          );
+          encodeURIComponent(clean);
 
       };
 
 
-    renderUsers(
-      getFilteredUsers()
-    );
+    renderUsers(getFilteredUsers());
 
-
-    status.style.display =
-      "none";
+    status.style.display = "none";
 
   }
 
@@ -922,7 +867,9 @@
 
 
     if (!query) {
+
       return users;
+
     }
 
 
@@ -960,7 +907,7 @@
 
 
   // ==========================================
-  // PROFİLİ KAYDET
+  // PROFİL KAYDET
   // ==========================================
 
   saveButton.onclick =
@@ -971,8 +918,7 @@
       }
 
 
-      saveButton.disabled =
-        true;
+      saveButton.disabled = true;
 
       saveButton.textContent =
         "Kaydediliyor...";
@@ -989,8 +935,7 @@
           false
         );
 
-        saveButton.disabled =
-          false;
+        saveButton.disabled = false;
 
         saveButton.textContent =
           "💾 Değişiklikleri Kaydet";
@@ -1015,27 +960,20 @@
         await supabaseClient
           .from("profiles")
           .select("id")
-          .eq(
-            "username",
-            newUsername
-          )
-          .neq(
-            "id",
-            selectedUser.id
-          )
+          .eq("username", newUsername)
+          .neq("id", selectedUser.id)
           .maybeSingle();
 
 
       if (usernameError) {
 
         showStatus(
-          "Kullanıcı adı kontrol edilemedi: " +
+          "Kullanıcı adı kontrol edilemedi:\n" +
           usernameError.message,
           false
         );
 
-        saveButton.disabled =
-          false;
+        saveButton.disabled = false;
 
         saveButton.textContent =
           "💾 Değişiklikleri Kaydet";
@@ -1052,8 +990,7 @@
           false
         );
 
-        saveButton.disabled =
-          false;
+        saveButton.disabled = false;
 
         saveButton.textContent =
           "💾 Değişiklikleri Kaydet";
@@ -1081,28 +1018,22 @@
               bio.value.trim()
 
           })
-          .eq(
-            "id",
-            selectedUser.id
-          )
+          .eq("id", selectedUser.id)
           .select()
           .single();
 
 
       if (error) {
 
-        console.error(error);
-
         showStatus(
-          "Kaydetme başarısız: " +
+          "Kaydetme başarısız:\n" +
           error.message,
           false
         );
 
       } else {
 
-        selectedUser =
-          data;
+        selectedUser = data;
 
 
         users =
@@ -1125,8 +1056,7 @@
       }
 
 
-      saveButton.disabled =
-        false;
+      saveButton.disabled = false;
 
       saveButton.textContent =
         "💾 Değişiklikleri Kaydet";
@@ -1159,10 +1089,7 @@
           .update({
             is_banned: newValue
           })
-          .eq(
-            "id",
-            selectedUser.id
-          )
+          .eq("id", selectedUser.id)
           .select()
           .single();
 
@@ -1170,7 +1097,7 @@
       if (error) {
 
         showStatus(
-          "Ban işlemi başarısız: " +
+          "Ban işlemi başarısız:\n" +
           error.message,
           false
         );
@@ -1180,8 +1107,7 @@
       }
 
 
-      selectedUser =
-        data;
+      selectedUser = data;
 
 
       users =
@@ -1213,7 +1139,7 @@
 
 
   // ==========================================
-  // ADMIN YAP / ADMINLİĞİ KALDIR
+  // ADMIN YAP / KALDIR
   // ==========================================
 
   adminButton.onclick =
@@ -1225,8 +1151,8 @@
 
 
       if (
-        selectedUser.id ===
-        currentAdmin.id
+        currentAdmin &&
+        selectedUser.id === currentAdmin.id
       ) {
 
         showStatus(
@@ -1252,10 +1178,7 @@
           .update({
             is_admin: newValue
           })
-          .eq(
-            "id",
-            selectedUser.id
-          )
+          .eq("id", selectedUser.id)
           .select()
           .single();
 
@@ -1263,7 +1186,7 @@
       if (error) {
 
         showStatus(
-          "Admin işlemi başarısız: " +
+          "Admin işlemi başarısız:\n" +
           error.message,
           false
         );
@@ -1273,8 +1196,7 @@
       }
 
 
-      selectedUser =
-        data;
+      selectedUser = data;
 
 
       users =
@@ -1306,7 +1228,7 @@
 
 
   // ==========================================
-  // HESAP SİLME
+  // HESAP SİL
   // ==========================================
 
   deleteButton.onclick =
@@ -1318,8 +1240,8 @@
 
 
       if (
-        selectedUser.id ===
-        currentAdmin.id
+        currentAdmin &&
+        selectedUser.id === currentAdmin.id
       ) {
 
         showStatus(
@@ -1338,21 +1260,29 @@
         "bu kullanıcı";
 
 
-      const confirmed =
-        confirm(
-          `⚠️ DİKKAT!\n\n` +
-          `"${name}" hesabını kalıcı olarak silmek istediğine emin misin?\n\n` +
-          `Bu işlem geri alınamaz.`
-        );
+      if (
+        !confirm(
+          `"${name}" hesabını kalıcı olarak silmek istediğine emin misin?`
+        )
+      ) {
 
-
-      if (!confirmed) {
         return;
+
       }
 
 
-      deleteButton.disabled =
-        true;
+      if (
+        !confirm(
+          "Son onay: Bu işlem geri alınamaz. Devam edilsin mi?"
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      deleteButton.disabled = true;
 
       deleteButton.textContent =
         "🗑️ Siliniyor...";
@@ -1376,16 +1306,11 @@
 
 
         if (error) {
-          throw new Error(
-            error.message
-          );
+          throw error;
         }
 
 
-        if (
-          !data ||
-          !data.success
-        ) {
+        if (!data || !data.success) {
 
           throw new Error(
             data?.error ||
@@ -1406,15 +1331,12 @@
           );
 
 
-        selectedUser =
-          null;
+        selectedUser = null;
 
 
-        editor.style.display =
-          "none";
+        editor.style.display = "none";
 
-        editorEmpty.style.display =
-          "block";
+        editorEmpty.style.display = "block";
 
 
         renderUsers(
@@ -1423,15 +1345,16 @@
 
 
         showStatus(
-          "✅ Kullanıcı hesabı kalıcı olarak silindi."
+          "✅ Kullanıcı hesabı silindi."
         );
+
 
       } catch (error) {
 
         console.error(error);
 
         showStatus(
-          "Hesap silinemedi: " +
+          "Hesap silinemedi:\n" +
           error.message,
           false
         );
@@ -1439,8 +1362,7 @@
       }
 
 
-      deleteButton.disabled =
-        false;
+      deleteButton.disabled = false;
 
       deleteButton.textContent =
         "🗑️ Hesabı Kalıcı Olarak Sil";
@@ -1454,12 +1376,34 @@
 
   async function start() {
 
+    console.log("JEUFREX Admin başlıyor...");
+
+
     const allowed =
       await checkAdmin();
 
 
+    /*
+      ÖNEMLİ:
+      Artık burada login.html'ye
+      otomatik yönlendirme YOK.
+
+      Eğer sorun varsa ekranda
+      gerçek sebebi göstereceğiz.
+    */
+
     if (!allowed) {
+
+      userList.innerHTML =
+        `
+        <div class="empty">
+          ⚠️ Admin doğrulaması başarısız.<br><br>
+          Yukarıdaki sarı kutudaki hataya bak.
+        </div>
+        `;
+
       return;
+
     }
 
 
