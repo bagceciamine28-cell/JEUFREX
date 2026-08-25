@@ -1,1 +1,626 @@
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>JEO AI | JEUFREX</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #171717;
+    }
+
+    header {
+      min-height: 70px;
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 12px 35px;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      text-decoration: none;
+      color: #111;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #555;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: #000;
+    }
+
+    main {
+      width: min(900px, calc(100% - 30px));
+      margin: 35px auto;
+    }
+
+    .ai-card {
+      background: white;
+      border-radius: 25px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,.06);
+    }
+
+    .ai-header {
+      padding: 25px 30px;
+      border-bottom: 1px solid #eee;
+
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .robot {
+      width: 55px;
+      height: 55px;
+      border-radius: 18px;
+      background: #111;
+      color: white;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 30px;
+    }
+
+    .ai-title h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .ai-title p {
+      margin: 5px 0 0;
+      color: #777;
+      font-size: 14px;
+    }
+
+    #chat {
+      height: 500px;
+      overflow-y: auto;
+      padding: 25px;
+      background: #fafafa;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 13px 16px;
+      margin-bottom: 15px;
+      border-radius: 16px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .jeo {
+      background: white;
+      border: 1px solid #eee;
+      margin-right: auto;
+    }
+
+    .user {
+      background: #111;
+      color: white;
+      margin-left: auto;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      padding: 18px;
+      border-top: 1px solid #eee;
+      background: white;
+    }
+
+    #messageInput {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    #messageInput:focus {
+      border-color: #111;
+    }
+
+    #sendButton {
+      border: none;
+      border-radius: 14px;
+      padding: 0 22px;
+      background: #111;
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    #sendButton:hover {
+      opacity: .9;
+    }
+
+    .quick-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 15px 20px;
+      background: white;
+      border-top: 1px solid #eee;
+    }
+
+    .quick-buttons button {
+      border: 1px solid #ddd;
+      background: #f5f5f5;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        padding: 12px 15px;
+      }
+
+      nav {
+        gap: 9px;
+      }
+
+      nav a {
+        font-size: 12px;
+      }
+
+      #chat {
+        height: 55vh;
+      }
+
+      .message {
+        max-width: 88%;
+      }
+
+      .input-area {
+        padding: 12px;
+      }
+
+      #sendButton {
+        padding: 0 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <a href="index.html" class="logo">
+    JEUFREX
+  </a>
+
+  <nav>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="games.html">🎮 Oyunlar</a>
+    <a href="music.html">🎵 Müzik</a>
+    <a href="videos.html">🎬 Videolar</a>
+    <a href="community.html">👥 Topluluk</a>
+    <a href="explore.html">✨ Keşfet</a>
+    <a href="jeo.html">🤖 JEO AI</a>
+  </nav>
+
+</header>
+
+
+<main>
+
+  <section class="ai-card">
+
+    <div class="ai-header">
+
+      <div class="robot">
+        🤖
+      </div>
+
+      <div class="ai-title">
+        <h1>JEO AI</h1>
+        <p>JEUFREX'in kendi yapay zekâ asistanı</p>
+      </div>
+
+    </div>
+
+
+    <div id="chat">
+
+      <div class="message jeo">
+        Merhaba! 👋 Ben JEO.
+
+        Şimdilik JEUFREX'in kendi küçük yapay zekâ motoruyum. 🤖
+
+        Bana bir şey sorabilirsin!
+      </div>
+
+    </div>
+
+
+    <div class="quick-buttons">
+
+      <button onclick="quickMessage('Merhaba JEO!')">
+        👋 Merhaba
+      </button>
+
+      <button onclick="quickMessage('JEUFREX nedir?')">
+        🌐 JEUFREX nedir?
+      </button>
+
+      <button onclick="quickMessage('Bana bir şaka yap')">
+        😂 Şaka yap
+      </button>
+
+      <button onclick="quickMessage('Matematik: 25 + 37')">
+        🧮 Matematik
+      </button>
+
+    </div>
+
+
+    <div class="input-area">
+
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="JEO'ya bir şey sor..."
+        autocomplete="off"
+      >
+
+      <button id="sendButton">
+        Gönder
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<script>
+
+  const chat =
+    document.getElementById("chat");
+
+  const input =
+    document.getElementById("messageInput");
+
+  const sendButton =
+    document.getElementById("sendButton");
+
+
+  // ==========================================
+  // MESAJ EKLE
+  // ==========================================
+
+  function addMessage(text, type) {
+
+    const message =
+      document.createElement("div");
+
+    message.className =
+      "message " + type;
+
+    message.textContent =
+      text;
+
+    chat.appendChild(message);
+
+    chat.scrollTop =
+      chat.scrollHeight;
+  }
+
+
+  // ==========================================
+  // BASİT MATEMATİK MOTORU
+  // ==========================================
+
+  function calculateMath(text) {
+
+    const cleaned =
+      text
+        .replace(/kaç eder/gi, "")
+        .replace(/kaçtır/gi, "")
+        .replace(/hesapla/gi, "")
+        .replace(/=/g, "")
+        .trim();
+
+    if (
+      /^[0-9+\-*/().%\s]+$/.test(cleaned)
+    ) {
+
+      try {
+
+        const result =
+          Function(
+            '"use strict"; return (' +
+            cleaned +
+            ')'
+          )();
+
+        if (
+          Number.isFinite(result)
+        ) {
+          return result;
+        }
+
+      } catch (error) {
+
+        return null;
+
+      }
+    }
+
+    return null;
+  }
+
+
+  // ==========================================
+  // JEO'NUN BEYNİ
+  // ==========================================
+
+  function getJEOResponse(text) {
+
+    const lower =
+      text
+        .toLowerCase()
+        .trim();
+
+
+    // Selamlaşma
+
+    if (
+      lower.includes("merhaba") ||
+      lower.includes("selam") ||
+      lower.includes("hey") ||
+      lower.includes("sa")
+    ) {
+
+      return "Merhaba! 👋 Ben JEO. Nasılsın? 🤖";
+
+    }
+
+
+    // JEO
+
+    if (
+      lower.includes("sen kimsin") ||
+      lower.includes("jeo kimsin") ||
+      lower.includes("jeo nedir")
+    ) {
+
+      return "Ben JEO! 🤖 JEUFREX için geliştirilen kendi yapay zekâ asistanıyım.";
+
+    }
+
+
+    // JEUFREX
+
+    if (
+      lower.includes("jeufrex nedir") ||
+      lower.includes("jeufrex ne")
+    ) {
+
+      return "JEUFREX; oyun, müzik, video, topluluk ve daha fazlasını bir araya getiren bir platform. 🚀";
+
+    }
+
+
+    // Şaka
+
+    if (
+      lower.includes("şaka") ||
+      lower.includes("espri")
+    ) {
+
+      return "Bilgisayar neden doktora gitmiş? 😄 Çünkü virüs kapmış! 🦠😂";
+
+    }
+
+
+    // Teşekkür
+
+    if (
+      lower.includes("teşekkür") ||
+      lower.includes("sağ ol")
+    ) {
+
+      return "Rica ederim! 😎🤖";
+
+    }
+
+
+    // Matematik
+
+    const mathResult =
+      calculateMath(lower);
+
+    if (
+      mathResult !== null
+    ) {
+
+      return "Sonuç: " + mathResult + " 🧮";
+
+    }
+
+
+    // Müzik
+
+    if (
+      lower.includes("müzik") ||
+      lower.includes("şarkı")
+    ) {
+
+      return "🎵 JEUFREX Müzik bölümüne bakabilirsin. Admin Originals burada seni bekliyor!";
+
+    }
+
+
+    // Oyun
+
+    if (
+      lower.includes("oyun")
+    ) {
+
+      return "🎮 JEUFREX'teki Oyunlar bölümüne göz atabilirsin!";
+
+    }
+
+
+    // Yardım
+
+    if (
+      lower.includes("yardım") ||
+      lower.includes("ne yapabiliyorsun")
+    ) {
+
+      return "Şimdilik sohbet edebilir, basit matematik işlemleri yapabilir, JEUFREX hakkında bilgi verebilir ve küçük şakalar yapabilirim. 🤖";
+
+    }
+
+
+    // Bilinmeyen
+
+    return "Hmm 🤔 Bunu henüz öğrenmedim. Ben JEO'nun ilk sürümüyüm! Bana daha fazla bilgi öğretebiliriz. 🧠";
+
+  }
+
+
+  // ==========================================
+  // MESAJ GÖNDER
+  // ==========================================
+
+  function sendMessage() {
+
+    const text =
+      input.value.trim();
+
+
+    if (!text) {
+      return;
+    }
+
+
+    addMessage(
+      text,
+      "user"
+    );
+
+
+    input.value = "";
+
+
+    // Küçük düşünme efekti
+
+    sendButton.disabled =
+      true;
+
+    sendButton.textContent =
+      "...";
+
+
+    setTimeout(
+      function() {
+
+        const response =
+          getJEOResponse(text);
+
+        addMessage(
+          response,
+          "jeo"
+        );
+
+        sendButton.disabled =
+          false;
+
+        sendButton.textContent =
+          "Gönder";
+
+        input.focus();
+
+      },
+      350
+    );
+
+  }
+
+
+  // ==========================================
+  // ENTER
+  // ==========================================
+
+  input.addEventListener(
+    "keydown",
+    function(event) {
+
+      if (
+        event.key === "Enter"
+      ) {
+
+        sendMessage();
+
+      }
+
+    }
+  );
+
+
+  sendButton.addEventListener(
+    "click",
+    sendMessage
+  );
+
+
+  // ==========================================
+  // HIZLI MESAJ
+  // ==========================================
+
+  function quickMessage(text) {
+
+    input.value =
+      text;
+
+    sendMessage();
+
+  }
+
+</script>
+
+</body>
+</html>
+```
 
