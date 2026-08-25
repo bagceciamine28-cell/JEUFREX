@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Profil | JEUFREX</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #171717;
+    }
+
+    header {
+      height: 70px;
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 35px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      text-decoration: none;
+      color: #111;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #555;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: #000;
+    }
+
+    main {
+      width: min(800px, calc(100% - 30px));
+      margin: 40px auto;
+    }
+
+    .profile-card {
+      background: white;
+      border-radius: 25px;
+      padding: 35px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.05);
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .avatar {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      background: #111;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .name {
+      font-size: 28px;
+      font-weight: 900;
+      margin: 0 0 6px;
+    }
+
+    .username {
+      color: #777;
+      font-size: 15px;
+    }
+
+    .bio {
+      margin-top: 25px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: flex;
+      gap: 35px;
+      margin-top: 28px;
+      border-top: 1px solid #eee;
+      padding-top: 25px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 22px;
+    }
+
+    .stat span {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .actions {
+      margin-top: 25px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 24px;
+      background: #111;
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #eee;
+      color: #111;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    #message {
+      display: none;
+      margin-top: 20px;
+      padding: 13px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      color: #777;
+    }
+
+    @media (max-width: 650px) {
+
+      header {
+        padding: 0 15px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .top {
+        align-items: flex-start;
+      }
+
+      .avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 30px;
+      }
+
+      .name {
+        font-size: 22px;
+      }
+
+      .stats {
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <a class="logo" href="index.html">
+    JEUFREX
+  </a>
+
+  <nav>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="#">🎮 Oyunlar</a>
+    <a href="#">🎵 Müzik</a>
+    <a href="#">🎬 Videolar</a>
+    <a href="#">👥 Topluluk</a>
+    <a href="#">✨ Keşfet</a>
+  </nav>
+
+</header>
+
+
+<main>
+
+  <div id="loading" class="loading">
+    Profil yükleniyor...
+  </div>
+
+
+  <section
+    id="profileCard"
+    class="profile-card"
+    style="display:none;"
+  >
+
+    <div class="top">
+
+      <div
+        id="avatar"
+        class="avatar"
+      >
+        ?
+      </div>
+
+      <div>
+
+        <h1
+          id="displayName"
+          class="name"
+        >
+          Kullanıcı
+        </h1>
+
+        <div
+          id="username"
+          class="username"
+        >
+          @kullanici
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="bio"
+      class="bio"
+    ></div>
+
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong id="followersCount">0</strong>
+        <span>Takipçi</span>
+      </div>
+
+      <div class="stat">
+        <strong id="followingCount">0</strong>
+        <span>Takip</span>
+      </div>
+
+    </div>
+
+
+    <div
+      id="actions"
+      class="actions"
+    ></div>
+
+
+    <div id="message"></div>
+
+  </section>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
+
+  // ==========================================
+  // SUPABASE
+  // ==========================================
+
+  const SUPABASE_URL =
+    "https://cqxxobmvycesunyxicjj.supabase.co";
+
+  const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  // ==========================================
+  // ELEMENTLER
+  // ==========================================
+
+  const loading =
+    document.getElementById("loading");
+
+  const profileCard =
+    document.getElementById("profileCard");
+
+  const displayName =
+    document.getElementById("displayName");
+
+  const usernameElement =
+    document.getElementById("username");
+
+  const avatar =
+    document.getElementById("avatar");
+
+  const bio =
+    document.getElementById("bio");
+
+  const followersCount =
+    document.getElementById("followersCount");
+
+  const followingCount =
+    document.getElementById("followingCount");
+
+  const actions =
+    document.getElementById("actions");
+
+  const message =
+    document.getElementById("message");
+
+
+  // ==========================================
+  // PROFİL KULLANICI ADINI AL
+  // ==========================================
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const requestedUsername =
+    params.get("user");
+
+
+  // ==========================================
+  // MESAJ
+  // ==========================================
+
+  function showMessage(text, success = false) {
+
+    message.style.display = "block";
+
+    message.textContent = text;
+
+    message.style.background =
+      success ? "#e9f8ee" : "#fff0f0";
+
+    message.style.color =
+      success ? "#176b35" : "#a30000";
+
+  }
+
+
+  // ==========================================
+  // TAKİPÇİ SAYILARI
+  // ==========================================
+
+  async function loadStats(userId) {
+
+    const { count: followers } =
+      await supabaseClient
+        .from("follows")
+        .select("*", {
+          count: "exact",
+          head: true
+        })
+        .eq("following_id", userId);
+
+
+    const { count: following } =
+      await supabaseClient
+        .from("follows")
+        .select("*", {
+          count: "exact",
+          head: true
+        })
+        .eq("follower_id", userId);
+
+
+    followersCount.textContent =
+      followers || 0;
+
+    followingCount.textContent =
+      following || 0;
+
+  }
+
+
+  // ==========================================
+  // TAKİP DURUMU
+  // ==========================================
+
+  async function checkFollowing(currentUserId, profileUserId) {
+
+    const { data, error } =
+      await supabaseClient
+        .from("follows")
+        .select("*")
+        .eq("follower_id", currentUserId)
+        .eq("following_id", profileUserId)
+        .maybeSingle();
+
+
+    if (error) {
+
+      console.error(error);
+
+      return false;
+
+    }
+
+
+    return !!data;
+
+  }
+
+
+  // ==========================================
+  // TAKİP ET
+  // ==========================================
+
+  async function followUser(
+    currentUserId,
+    profileUserId,
+    button
+  ) {
+
+    button.disabled = true;
+
+    button.textContent =
+      "İşleniyor...";
+
+
+    const { error } =
+      await supabaseClient
+        .from("follows")
+        .insert({
+
+          follower_id: currentUserId,
+
+          following_id: profileUserId
+
+        });
+
+
+    if (error) {
+
+      showMessage(
+        "Takip işlemi başarısız: " +
+        error.message
+      );
+
+      button.disabled = false;
+
+      button.textContent =
+        "Takip Et";
+
+      return;
+
+    }
+
+
+    button.disabled = false;
+
+    button.textContent =
+      "✓ Takiptesin";
+
+    button.className =
+      "secondary";
+
+
+    await loadStats(profileUserId);
+
+  }
+
+
+  // ==========================================
+  // TAKİPTEN ÇIK
+  // ==========================================
+
+  async function unfollowUser(
+    currentUserId,
+    profileUserId,
+    button
+  ) {
+
+    button.disabled = true;
+
+    button.textContent =
+      "İşleniyor...";
+
+
+    const { error } =
+      await supabaseClient
+        .from("follows")
+        .delete()
+        .eq("follower_id", currentUserId)
+        .eq("following_id", profileUserId);
+
+
+    if (error) {
+
+      showMessage(
+        "Takipten çıkılamadı: " +
+        error.message
+      );
+
+      button.disabled = false;
+
+      button.textContent =
+        "✓ Takiptesin";
+
+      return;
+
+    }
+
+
+    button.disabled = false;
+
+    button.textContent =
+      "Takip Et";
+
+    button.className = "";
+
+
+    await loadStats(profileUserId);
+
+  }
+
+
+  // ==========================================
+  // ANA
+  // ==========================================
+
+  async function loadProfile() {
+
+    const {
+      data: {
+        user: currentUser
+      }
+    } =
+      await supabaseClient.auth.getUser();
+
+
+    if (!currentUser) {
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    let profileUserId =
+      currentUser.id;
+
+
+    let profile = null;
+
+
+    // ------------------------------------------
+    // Başkasının profili
+    // ------------------------------------------
+
+    if (requestedUsername) {
+
+      const cleanUsername =
+        requestedUsername.startsWith("@")
+          ? requestedUsername
+          : "@" + requestedUsername;
+
+
+      const { data, error } =
+        await supabaseClient
+          .from("profiles")
+          .select("*")
+          .eq("username", cleanUsername)
+          .maybeSingle();
+
+
+      if (error) {
+
+        showMessage(
+          "Profil yüklenemedi: " +
+          error.message
+        );
+
+        loading.style.display =
+          "none";
+
+        return;
+
+      }
+
+
+      if (!data) {
+
+        showMessage(
+          "Bu kullanıcı bulunamadı."
+        );
+
+        loading.style.display =
+          "none";
+
+        return;
+
+      }
+
+
+      profile = data;
+
+      profileUserId =
+        data.id;
+
+    }
+
+
+    // ------------------------------------------
+    // Kendi profili
+    // ------------------------------------------
+
+    else {
+
+      const { data, error } =
+        await supabaseClient
+          .from("profiles")
+          .select("*")
+          .eq("id", currentUser.id)
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(error);
+
+      }
+
+
+      profile = data;
+
+
+      // Profil yoksa Auth metadata'dan oluştur
+      if (!profile) {
+
+        const username =
+          currentUser.user_metadata?.username ||
+          "@kullanici" +
+          Math.floor(Math.random() * 100000);
+
+
+        const name =
+          currentUser.user_metadata?.display_name ||
+          "Kullanıcı";
+
+
+        const { data: newProfile, error: createError } =
+          await supabaseClient
+            .from("profiles")
+            .insert({
+
+              id: currentUser.id,
+
+              username: username,
+
+              display_name: name
+
+            })
+            .select()
+            .single();
+
+
+        if (createError) {
+
+          showMessage(
+            "Profil oluşturulamadı: " +
+            createError.message
+          );
+
+          loading.style.display =
+            "none";
+
+          return;
+
+        }
+
+
+        profile =
+          newProfile;
+
+      }
+
+    }
+
+
+    // ------------------------------------------
+    // Profil bilgileri
+    // ------------------------------------------
+
+    const name =
+      profile.display_name ||
+      "Kullanıcı";
+
+
+    const username =
+      profile.username ||
+      "@kullanici";
+
+
+    displayName.textContent =
+      name;
+
+
+    usernameElement.textContent =
+      username;
+
+
+    bio.textContent =
+      profile.bio ||
+      "Henüz bir biyografi eklenmemiş.";
+
+
+    avatar.textContent =
+      name.charAt(0).toUpperCase();
+
+
+    // ------------------------------------------
+    // İstatistikler
+    // ------------------------------------------
+
+    await loadStats(profileUserId);
+
+
+    // ------------------------------------------
+    // Butonlar
+    // ------------------------------------------
+
+    if (profileUserId === currentUser.id) {
+
+      const editButton =
+        document.createElement("button");
+
+      editButton.textContent =
+        "✏️ Profili Düzenle";
+
+      editButton.onclick =
+        function() {
+
+          alert(
+            "Profil düzenleme bölümünü bir sonraki aşamada ekleyeceğiz."
+          );
+
+        };
+
+
+      actions.appendChild(editButton);
+
+    }
+
+
+    else {
+
+      const followButton =
+        document.createElement("button");
+
+
+      const isFollowing =
+        await checkFollowing(
+          currentUser.id,
+          profileUserId
+        );
+
+
+      if (isFollowing) {
+
+        followButton.textContent =
+          "✓ Takiptesin";
+
+        followButton.className =
+          "secondary";
+
+      } else {
+
+        followButton.textContent =
+          "Takip Et";
+
+      }
+
+
+      followButton.onclick =
+        async function() {
+
+          if (isFollowing) {
+
+            await unfollowUser(
+              currentUser.id,
+              profileUserId,
+              followButton
+            );
+
+          } else {
+
+            await followUser(
+              currentUser.id,
+              profileUserId,
+              followButton
+            );
+
+          }
+
+        };
+
+
+      actions.appendChild(
+        followButton
+      );
+
+    }
+
+
+    // ------------------------------------------
+    // Göster
+    // ------------------------------------------
+
+    loading.style.display =
+      "none";
+
+    profileCard.style.display =
+      "block";
+
+  }
+
+
+  loadProfile();
+
+</script>
+
+</body>
+</html>
