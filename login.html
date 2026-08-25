@@ -166,9 +166,7 @@
   </div>
 
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 
   <script>
 
@@ -180,8 +178,7 @@
       "https://cqxxobmvycesunyxicjj.supabase.co";
 
     const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
-
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12ZWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
 
     const supabaseClient =
       window.supabase.createClient(
@@ -208,7 +205,10 @@
     // MESAJ
     // ==========================================
 
-    function showMessage(text, success = false) {
+    function showMessage(
+      text,
+      success = false
+    ) {
 
       message.style.display = "block";
 
@@ -216,13 +216,19 @@
 
       if (success) {
 
-        message.style.background = "#e9f8ee";
-        message.style.color = "#176b35";
+        message.style.background =
+          "#e9f8ee";
+
+        message.style.color =
+          "#176b35";
 
       } else {
 
-        message.style.background = "#fff0f0";
-        message.style.color = "#a30000";
+        message.style.background =
+          "#fff0f0";
+
+        message.style.color =
+          "#a30000";
 
       }
 
@@ -233,79 +239,172 @@
     // GİRİŞ
     // ==========================================
 
-    form.addEventListener("submit", async function(event) {
+    form.addEventListener(
+      "submit",
+      async function(event) {
 
-      event.preventDefault();
-
-
-      const email =
-        document.getElementById("email").value.trim();
+        event.preventDefault();
 
 
-      const password =
-        document.getElementById("password").value;
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
 
 
-      button.disabled = true;
-
-      button.textContent =
-        "Giriş yapılıyor...";
-
-
-      try {
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.signInWithPassword({
-
-            email: email,
-
-            password: password
-
-          });
+        const password =
+          document
+            .getElementById("password")
+            .value;
 
 
-        if (error) {
+        button.disabled = true;
 
-          throw error;
+        button.textContent =
+          "Giriş yapılıyor...";
+
+
+        try {
+
+          // --------------------------------------
+          // SUPABASE AUTH GİRİŞİ
+          // --------------------------------------
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth.signInWithPassword({
+
+              email: email,
+
+              password: password
+
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          if (!data.user) {
+            throw new Error(
+              "Kullanıcı bilgisi alınamadı."
+            );
+          }
+
+
+          // --------------------------------------
+          // PROFİL / BAN KONTROLÜ
+          // --------------------------------------
+
+          const {
+            data: profile,
+            error: profileError
+          } =
+            await supabaseClient
+              .from("profiles")
+              .select(
+                "is_banned"
+              )
+              .eq(
+                "id",
+                data.user.id
+              )
+              .maybeSingle();
+
+
+          if (profileError) {
+
+            console.error(
+              profileError
+            );
+
+            // Güvenli tarafta kal:
+            // Profil kontrolü yapılamıyorsa
+            // girişe devam ettirme.
+
+            await supabaseClient.auth.signOut();
+
+            throw new Error(
+              "Hesap durumu kontrol edilemedi. Lütfen tekrar deneyin."
+            );
+
+          }
+
+
+          // --------------------------------------
+          // BANLI MI?
+          // --------------------------------------
+
+          if (
+            profile &&
+            profile.is_banned === true
+          ) {
+
+            await supabaseClient.auth.signOut();
+
+            showMessage(
+              "🚫 Bu hesap admin tarafından banlanmış. Giriş yapamazsın."
+            );
+
+            button.disabled = false;
+
+            button.textContent =
+              "Giriş Yap";
+
+            return;
+
+          }
+
+
+          // --------------------------------------
+          // BAŞARILI
+          // --------------------------------------
+
+          showMessage(
+            "🎉 Giriş başarılı! JEUFREX açılıyor...",
+            true
+          );
+
+
+          setTimeout(
+            function() {
+
+              window.location.href =
+                "index.html";
+
+            },
+            800
+          );
+
+
+        } catch (error) {
+
+          console.error(error);
+
+          showMessage(
+            "Giriş başarısız: " +
+            (
+              error.message ||
+              "Bilinmeyen hata."
+            )
+          );
+
+          button.disabled = false;
+
+          button.textContent =
+            "Giriş Yap";
 
         }
 
-
-        showMessage(
-          "🎉 Giriş başarılı! JEUFREX açılıyor...",
-          true
-        );
-
-
-        setTimeout(function() {
-
-          window.location.href = "index.html";
-
-        }, 800);
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        showMessage(
-          "Giriş başarısız: " +
-          (error.message || "Bilinmeyen hata.")
-        );
-
-        button.disabled = false;
-
-        button.textContent =
-          "Giriş Yap";
-
       }
-
-    });
+    );
 
   </script>
 
 </body>
 </html>
+```
