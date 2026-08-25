@@ -1,641 +1,119 @@
-```html
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>JEUFREX</title>
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f6f8;
-      color: #171717;
-    }
-
-    header {
-      height: 70px;
-      background: white;
-      border-bottom: 1px solid #e5e5e5;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 35px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: 1px;
-    }
-
-    nav {
-      display: flex;
-      gap: 22px;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #555;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    nav a:hover {
-      color: #000;
-    }
-
-    .profile {
-      text-decoration: none;
-      color: #111;
-      font-weight: 800;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: auto;
-      padding: 45px 20px;
-    }
-
-    .welcome {
-      background: white;
-      border-radius: 25px;
-      padding: 35px;
-      margin-bottom: 30px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.05);
-    }
-
-    .welcome h1 {
-      margin-top: 0;
-      font-size: 32px;
-    }
-
-    .welcome p {
-      color: #777;
-    }
-
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 22px;
-      padding: 30px;
-      min-height: 150px;
-      text-decoration: none;
-      color: #111;
-      box-shadow: 0 8px 30px rgba(0,0,0,.05);
-      transition: transform .2s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .icon {
-      font-size: 38px;
-    }
-
-    .card h2 {
-      margin-bottom: 8px;
-    }
-
-    .card p {
-      color: #777;
-      margin: 0;
-    }
-
-    .logout {
-      margin-top: 35px;
-      background: #111;
-      color: white;
-      border: none;
-      padding: 13px 25px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 800;
-    }
-
-    .logout:disabled {
-      opacity: 0.6;
-      cursor: wait;
-    }
-
-    @media (max-width: 750px) {
-
-      header {
-        padding: 0 15px;
-      }
-
-      nav {
-        display: none;
-      }
-
-      .categories {
-        grid-template-columns: 1fr;
-      }
-
-    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:#f5f6f8;color:#171717}
+    header{height:70px;background:white;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;justify-content:space-between;padding:0 35px;position:sticky;top:0;z-index:10}
+    .logo{font-size:25px;font-weight:900;letter-spacing:1px}
+    nav{display:flex;gap:22px}
+    nav a{text-decoration:none;color:#555;font-weight:700;font-size:14px}
+    nav a:hover{color:#000}
+    .profile{text-decoration:none;color:#111;font-weight:800}
+    main{max-width:1100px;margin:auto;padding:45px 20px}
+    .welcome{background:white;border-radius:25px;padding:35px;margin-bottom:30px;box-shadow:0 8px 30px rgba(0,0,0,.05)}
+    .welcome h1{margin-top:0;font-size:32px}
+    .welcome p{color:#777}
+    .categories{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .card{background:white;border-radius:22px;padding:30px;min-height:150px;text-decoration:none;color:#111;box-shadow:0 8px 30px rgba(0,0,0,.05);transition:transform .2s}
+    .card:hover{transform:translateY(-5px)}
+    .icon{font-size:38px}
+    .card h2{margin-bottom:8px}
+    .card p{color:#777;margin:0}
+    .logout{margin-top:35px;background:#111;color:white;border:none;padding:13px 25px;border-radius:12px;cursor:pointer;font-weight:800}
+    .logout:disabled{opacity:.6;cursor:wait}
+    @media(max-width:750px){header{padding:0 15px}nav{display:none}.categories{grid-template-columns:1fr}}
   </style>
 </head>
-
-
 <body>
-
-
 <header>
-
-  <div class="logo">
-    JEUFREX
-  </div>
-
-
+  <div class="logo">JEUFREX</div>
   <nav>
-
-    <a href="index.html">
-      Ana Sayfa
-    </a>
-
-    <a href="games.html">
-      🎮 Oyunlar
-    </a>
-
-    <a href="music.html">
-      🎵 Müzik
-    </a>
-
-    <a href="videos.html">
-      🎬 Videolar
-    </a>
-
-    <a href="community.html">
-      👥 Topluluk
-    </a>
-
-    <a href="explore.html">
-      ✨ Keşfet
-    </a>
-
+    <a href="index.html">Ana Sayfa</a><a href="games.html">🎮 Oyunlar</a><a href="music.html">🎵 Müzik</a><a href="videos.html">🎬 Videolar</a><a href="community.html">👥 Topluluk</a><a href="explore.html">✨ Keşfet</a>
   </nav>
-
-
-  <a
-    href="profile.html"
-    class="profile"
-    id="profileLink"
-  >
-    👤 Profil
-  </a>
-
+  <a href="profile.html" class="profile" id="profileLink">👤 Profil</a>
 </header>
-
-
 <main>
-
-
   <section class="welcome">
-
-    <h1 id="welcomeText">
-      Hoş geldin! 👋
-    </h1>
-
-    <p>
-      JEUFREX'te oyunları, müzikleri, videoları
-      ve topluluğu keşfet.
-    </p>
-
+    <h1 id="welcomeText">Hoş geldin! 👋</h1>
+    <p>JEUFREX'te oyunları, müzikleri, videoları ve topluluğu keşfet.</p>
   </section>
-
-
   <section class="categories">
-
-
-    <a href="games.html" class="card">
-
-      <div class="icon">
-        🎮
-      </div>
-
-      <h2>
-        Oyunlar
-      </h2>
-
-      <p>
-        Oyunları keşfet ve oyna.
-      </p>
-
-    </a>
-
-
-    <a href="music.html" class="card">
-
-      <div class="icon">
-        🎵
-      </div>
-
-      <h2>
-        Müzik
-      </h2>
-
-      <p>
-        Yeni müzikleri keşfet.
-      </p>
-
-    </a>
-
-
-    <a href="videos.html" class="card">
-
-      <div class="icon">
-        🎬
-      </div>
-
-      <h2>
-        Videolar
-      </h2>
-
-      <p>
-        Yeni videoları izle.
-      </p>
-
-    </a>
-
-
-    <a href="community.html" class="card">
-
-      <div class="icon">
-        👥
-      </div>
-
-      <h2>
-        Topluluk
-      </h2>
-
-      <p>
-        Topluluğa katıl ve paylaş.
-      </p>
-
-    </a>
-
-
-    <a href="explore.html" class="card">
-
-      <div class="icon">
-        ✨
-      </div>
-
-      <h2>
-        Keşfet
-      </h2>
-
-      <p>
-        Yeni içerikler ve kullanıcılar keşfet.
-      </p>
-
-    </a>
-
-
-    <a
-      href="profile.html"
-      class="card"
-      id="profileCard"
-    >
-
-      <div class="icon">
-        👤
-      </div>
-
-      <h2>
-        Profil
-      </h2>
-
-      <p>
-        Profilini görüntüle.
-      </p>
-
-    </a>
-
-
+    <a href="games.html" class="card"><div class="icon">🎮</div><h2>Oyunlar</h2><p>Oyunları keşfet ve oyna.</p></a>
+    <a href="music.html" class="card"><div class="icon">🎵</div><h2>Müzik</h2><p>Yeni müzikleri keşfet.</p></a>
+    <a href="videos.html" class="card"><div class="icon">🎬</div><h2>Videolar</h2><p>Yeni videoları izle.</p></a>
+    <a href="community.html" class="card"><div class="icon">👥</div><h2>Topluluk</h2><p>Topluluğa katıl ve paylaş.</p></a>
+    <a href="explore.html" class="card"><div class="icon">✨</div><h2>Keşfet</h2><p>Yeni içerikler ve kullanıcılar keşfet.</p></a>
+    <a href="profile.html" class="card" id="profileCard"><div class="icon">👤</div><h2>Profil</h2><p>Profilini görüntüle.</p></a>
   </section>
-
-
-  <button
-    class="logout"
-    id="logoutButton"
-  >
-    🚪 Çıkış Yap
-  </button>
-
-
+  <button class="logout" id="logoutButton">🚪 Çıkış Yap</button>
 </main>
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
 <script>
+const SUPABASE_URL="https://cqxxobmvycesunyxicjj.supabase.co";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12ZWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const welcomeText=document.getElementById("welcomeText");
+const profileLink=document.getElementById("profileLink");
+const profileCard=document.getElementById("profileCard");
+const logoutButton=document.getElementById("logoutButton");
 
-  // ==========================================
-  // SUPABASE
-  // ==========================================
-
-  const SUPABASE_URL =
-    "https://cqxxobmvycesunyxicjj.supabase.co";
-
-
-  const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12ZWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
-
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  // ==========================================
-  // ELEMENTLER
-  // ==========================================
-
-  const welcomeText =
-    document.getElementById("welcomeText");
-
-  const profileLink =
-    document.getElementById("profileLink");
-
-  const profileCard =
-    document.getElementById("profileCard");
-
-  const logoutButton =
-    document.getElementById("logoutButton");
-
-
-  // ==========================================
-  // KULLANICIYI KONTROL ET
-  // ==========================================
-
-  async function checkUser() {
-
-    try {
-
-      const {
-        data: {
-          user
-        },
-        error: authError
-      } =
-        await supabaseClient.auth.getUser();
-
-
-      if (authError) {
-
-        console.error(
-          "AUTH HATASI:",
-          authError
-        );
-
-        window.location.replace(
-          "login.html"
-        );
-
-        return;
-
-      }
-
-
-      if (!user) {
-
-        window.location.replace(
-          "login.html"
-        );
-
-        return;
-
-      }
-
-
-      // ======================================
-      // PROFİLİ SUPABASE'DEN AL
-      // ======================================
-
-      const {
-        data: profile,
-        error: profileError
-      } =
-        await supabaseClient
-          .from("profiles")
-          .select(
-            "username, display_name"
-          )
-          .eq(
-            "id",
-            user.id
-          )
-          .maybeSingle();
-
-
-      if (profileError) {
-
-        console.error(
-          "PROFİL HATASI:",
-          profileError
-        );
-
-        welcomeText.textContent =
-          "Hoş geldin! 👋";
-
-        return;
-
-      }
-
-
-      // ======================================
-      // KULLANICI ADI
-      // ======================================
-
-      const username =
-        profile?.username ||
-        user.user_metadata?.username ||
-        "@kullanici";
-
-
-      const displayUsername =
-        username.startsWith("@")
-          ? username
-          : "@" + username;
-
-
-      welcomeText.textContent =
-        `Hoş geldin, ${displayUsername}! 👋`;
-
-
-      // ======================================
-      // PROFİL LİNKİ
-      // ======================================
-
-      const cleanUsername =
-        displayUsername.replace(
-          /^@/,
-          ""
-        );
-
-
-      const profileUrl =
-        "profile.html?user=" +
-        encodeURIComponent(
-          cleanUsername
-        );
-
-
-      profileLink.href =
-        profileUrl;
-
-
-      profileCard.href =
-        profileUrl;
-
-
-      console.log(
-        "JEUFREX KULLANICI:",
-        user.id
-      );
-
-
-    } catch (error) {
-
-      console.error(
-        "BEKLENMEYEN HATA:",
-        error
-      );
-
-      window.location.replace(
-        "login.html"
-      );
-
+async function checkUser(){
+  try{
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error){
+      console.error("OTURUM HATASI:",error);
+      welcomeText.textContent="Oturum kontrol edilemedi. Sayfayı yenile.";
+      return;
+    }
+    const session=data.session;
+    if(!session || !session.user){
+      window.location.replace("login.html");
+      return;
     }
 
+    const user=session.user;
+    let username=user.user_metadata?.username || "@kullanici";
+
+    try{
+      const {data:profile,error:profileError}=await supabaseClient.from("profiles").select("username,display_name").eq("id",user.id).maybeSingle();
+      if(profileError){
+        console.error("PROFİL HATASI:",profileError);
+      }else if(profile?.username){
+        username=profile.username;
+      }
+    }catch(profileError){
+      console.error("PROFİL SORGUSU HATASI:",profileError);
+    }
+
+    const displayUsername=username.startsWith("@")?username:"@"+username;
+    welcomeText.textContent=`Hoş geldin, ${displayUsername}! 👋`;
+    const cleanUsername=displayUsername.replace(/^@/,"");
+    const profileUrl="profile.html?user="+encodeURIComponent(cleanUsername);
+    profileLink.href=profileUrl;
+    profileCard.href=profileUrl;
+  }catch(error){
+    console.error("BEKLENMEYEN HATA:",error);
+    welcomeText.textContent="Bir hata oluştu. Sayfayı yenile.";
   }
+}
 
+logoutButton.addEventListener("click",async()=>{
+  logoutButton.disabled=true;
+  logoutButton.textContent="Çıkış yapılıyor...";
+  try{
+    const {error}=await supabaseClient.auth.signOut({scope:"local"});
+    if(error) console.warn("Yerel çıkış uyarısı:",error);
+  }catch(error){
+    console.warn("Çıkış sırasında uyarı:",error);
+  }
+  window.location.replace("login.html");
+});
 
-  // ==========================================
-  // ÇIKIŞ YAP
-  // ==========================================
-
-  logoutButton.addEventListener(
-    "click",
-    async function() {
-
-      logoutButton.disabled =
-        true;
-
-      logoutButton.textContent =
-        "Çıkış yapılıyor...";
-
-
-      try {
-
-        const {
-          error
-        } =
-          await supabaseClient.auth.signOut({
-            scope: "global"
-          });
-
-
-        if (error) {
-
-          console.error(
-            "ÇIKIŞ HATASI:",
-            error
-          );
-
-          logoutButton.disabled =
-            false;
-
-          logoutButton.textContent =
-            "🚪 Çıkış Yap";
-
-          alert(
-            "Çıkış yapılamadı:\n" +
-            error.message
-          );
-
-          return;
-
-        }
-
-
-        // Oturumun gerçekten temizlendiğini kontrol et
-
-        const {
-          data
-        } =
-          await supabaseClient.auth.getSession();
-
-
-        if (data.session) {
-
-          console.warn(
-            "Oturum hâlâ mevcut görünüyor."
-          );
-
-        }
-
-
-        // Login sayfasına kesin yönlendir
-
-        window.location.replace(
-          "login.html"
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          "ÇIKIŞ SIRASINDA HATA:",
-          error
-        );
-
-        logoutButton.disabled =
-          false;
-
-        logoutButton.textContent =
-          "🚪 Çıkış Yap";
-
-        alert(
-          "Çıkış sırasında hata oluştu:\n" +
-          error.message
-        );
-
-      }
-
-    }
-  );
-
-
-  // ==========================================
-  // BAŞLAT
-  // ==========================================
-
-  checkUser();
-
+checkUser();
 </script>
-
-
 </body>
 </html>
-```
