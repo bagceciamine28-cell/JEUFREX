@@ -1,12 +1,20 @@
+```html id="q8v2lm"
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Admin Paneli | JEUFREX</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -22,63 +30,207 @@
       height: 70px;
       background: white;
       border-bottom: 1px solid #e5e5e5;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       padding: 0 35px;
     }
 
     .logo {
+      color: #111;
+      text-decoration: none;
+
       font-size: 25px;
       font-weight: 900;
+    }
+
+    .back {
+      color: #555;
       text-decoration: none;
-      color: #111;
+      font-weight: 700;
+    }
+
+    .back:hover {
+      color: #000;
     }
 
     main {
-      width: min(1000px, calc(100% - 30px));
+      width: min(1100px, calc(100% - 30px));
       margin: 40px auto;
     }
 
-    .card {
-      background: white;
-      border-radius: 22px;
-      padding: 30px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.05);
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      margin-top: 0;
-    }
-
-    .danger {
-      color: #b00020;
-      font-weight: 800;
-    }
-
     .loading {
+      background: white;
+      border-radius: 20px;
+
+      padding: 50px;
+
       text-align: center;
-      padding: 40px;
+
       color: #777;
+
+      box-shadow:
+        0 8px 30px rgba(0,0,0,.05);
     }
 
     #panel {
       display: none;
     }
+
+    .hero {
+      background: #111;
+      color: white;
+
+      border-radius: 25px;
+
+      padding: 35px;
+
+      margin-bottom: 25px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #ccc;
+    }
+
+    .grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+
+      border-radius: 20px;
+
+      padding: 25px;
+
+      box-shadow:
+        0 8px 30px rgba(0,0,0,.05);
+    }
+
+    .card h2 {
+      margin-top: 0;
+    }
+
+    .icon {
+      font-size: 35px;
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .status {
+      display: inline-block;
+
+      padding: 7px 12px;
+
+      border-radius: 20px;
+
+      background: #e9f8ee;
+      color: #176b35;
+
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .danger {
+      background: #fff0f0;
+      color: #a30000;
+    }
+
+    .user-info {
+      background: white;
+
+      border-radius: 20px;
+
+      padding: 25px;
+
+      margin-top: 20px;
+
+      box-shadow:
+        0 8px 30px rgba(0,0,0,.05);
+    }
+
+    .user-info strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .logout {
+      margin-top: 25px;
+
+      border: none;
+
+      border-radius: 12px;
+
+      padding: 12px 20px;
+
+      background: #eee;
+
+      color: #111;
+
+      font-weight: 800;
+
+      cursor: pointer;
+    }
+
+    .logout:hover {
+      background: #ddd;
+    }
+
+    @media (max-width: 800px) {
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding: 0 15px;
+      }
+
+      .hero h1 {
+        font-size: 26px;
+      }
+
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <header>
 
-  <a class="logo" href="index.html">
+  <a
+    class="logo"
+    href="index.html"
+  >
     JEUFREX
   </a>
 
-  <a href="profile.html">
-    👤 Profil
+  <a
+    class="back"
+    href="profile.html"
+  >
+    👤 Profile Dön
   </a>
 
 </header>
@@ -86,77 +238,195 @@
 
 <main>
 
-  <div id="loading" class="loading">
-    Admin yetkisi kontrol ediliyor...
+
+  <!-- =====================================
+       YÜKLENİYOR
+  ====================================== -->
+
+  <div
+    id="loading"
+    class="loading"
+  >
+
+    👑 Admin yetkisi kontrol ediliyor...
+
   </div>
 
 
+  <!-- =====================================
+       ADMIN PANELİ
+  ====================================== -->
+
   <div id="panel">
 
-    <div class="card">
 
-      <h1>👑 Admin Paneli</h1>
+    <section class="hero">
+
+      <h1>
+        👑 JEUFREX Admin Paneli
+      </h1>
 
       <p>
         JEUFREX yönetim merkezi
       </p>
 
-      <p class="danger">
-        ⚠️ Bu alan yalnızca yetkili yöneticiler içindir.
-      </p>
+    </section>
+
+
+    <div class="grid">
+
+
+      <!-- KULLANICILAR -->
+
+      <div class="card">
+
+        <div class="icon">
+          👥
+        </div>
+
+        <h2>
+          Kullanıcılar
+        </h2>
+
+        <p>
+          Kullanıcı profillerini ve
+          hesap durumlarını yönet.
+        </p>
+
+        <span class="status">
+          Hazır
+        </span>
+
+      </div>
+
+
+      <!-- İÇERİK -->
+
+      <div class="card">
+
+        <div class="icon">
+          🎬
+        </div>
+
+        <h2>
+          İçerikler
+        </h2>
+
+        <p>
+          Videolar, müzikler ve topluluk
+          içeriklerini yönet.
+        </p>
+
+        <span class="status">
+          Hazır
+        </span>
+
+      </div>
+
+
+      <!-- TOPLULUK -->
+
+      <div class="card">
+
+        <div class="icon">
+          👥
+        </div>
+
+        <h2>
+          Topluluk
+        </h2>
+
+        <p>
+          Topluluk içeriklerini ve
+          raporları yönet.
+        </p>
+
+        <span class="status">
+          Hazır
+        </span>
+
+      </div>
+
 
     </div>
 
 
-    <div class="card">
+    <!-- =====================================
+         ADMIN BİLGİSİ
+    ====================================== -->
 
-      <h2>👥 Kullanıcı Yönetimi</h2>
+    <div class="user-info">
 
-      <p>
-        Kullanıcı profilleri ve hesap durumları
-        burada yönetilecek.
-      </p>
+      <h2>
+        🔐 Admin Hesabı
+      </h2>
+
+      <strong>
+        Kullanıcı:
+      </strong>
+
+      <span id="adminEmail">
+        -
+      </span>
+
+      <br><br>
+
+      <strong>
+        Yetki:
+      </strong>
+
+      <span class="status">
+        ADMIN
+      </span>
+
+      <br><br>
+
+      <strong>
+        Güvenlik:
+      </strong>
+
+      <span class="status">
+        Şifreler gizli
+      </span>
+
+      <br>
+
+      <button
+        id="logoutButton"
+        class="logout"
+      >
+        🚪 Çıkış Yap
+      </button>
 
     </div>
 
-
-    <div class="card">
-
-      <h2>🎬 İçerik Yönetimi</h2>
-
-      <p>
-        Videolar, müzikler ve topluluk içerikleri
-        burada yönetilecek.
-      </p>
-
-    </div>
-
-
-    <div class="card">
-
-      <h2>📊 Site İstatistikleri</h2>
-
-      <p>
-        Kullanıcı ve içerik istatistikleri
-        burada gösterilecek.
-      </p>
-
-    </div>
 
   </div>
+
 
 </main>
 
 
+<!-- =====================================
+     SUPABASE
+====================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
 <script>
+
+
+  // =====================================
+  // SUPABASE AYARLARI
+  // =====================================
 
   const SUPABASE_URL =
     "https://cqxxobmvycesunyxicjj.supabase.co";
 
+
   const SUPABASE_KEY =
-    "MEVCUT_CALISAN_SUPABASE_KEY";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
 
 
   const supabaseClient =
@@ -166,17 +436,71 @@
     );
 
 
+  // =====================================
+  // ELEMENTLER
+  // =====================================
+
+  const loading =
+    document.getElementById(
+      "loading"
+    );
+
+
+  const panel =
+    document.getElementById(
+      "panel"
+    );
+
+
+  const adminEmail =
+    document.getElementById(
+      "adminEmail"
+    );
+
+
+  const logoutButton =
+    document.getElementById(
+      "logoutButton"
+    );
+
+
+  // =====================================
+  // ADMIN KONTROLÜ
+  // =====================================
+
   async function checkAdmin() {
+
+
+    // Giriş yapan kullanıcıyı al
 
     const {
       data: {
         user
-      }
+      },
+      error: authError
     } =
       await supabaseClient
         .auth
         .getUser();
 
+
+    // Auth hatası
+
+    if (authError) {
+
+      console.error(
+        authError
+      );
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    // Giriş yapılmamış
 
     if (!user) {
 
@@ -188,28 +512,161 @@
     }
 
 
-    /*
-      BURADA DAHA SONRA
-      GÜVENLİ ADMIN KONTROLÜ
-      YAPACAĞIZ.
-    */
+    // Profilde admin bilgisini al
+
+    const {
+      data: profile,
+      error: profileError
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select(
+          "is_admin"
+        )
+        .eq(
+          "id",
+          user.id
+        )
+        .maybeSingle();
 
 
-    document.getElementById(
-      "loading"
-    ).style.display = "none";
+    // Profil sorgusu başarısız
+
+    if (profileError) {
+
+      console.error(
+        profileError
+      );
+
+      alert(
+        "Admin yetkisi kontrol edilemedi."
+      );
+
+      window.location.href =
+        "index.html";
+
+      return;
+
+    }
 
 
-    document.getElementById(
-      "panel"
-    ).style.display = "block";
+    // Profil yok
+
+    if (!profile) {
+
+      alert(
+        "Profil bulunamadı."
+      );
+
+      window.location.href =
+        "index.html";
+
+      return;
+
+    }
+
+
+    // ADMIN DEĞİL
+
+    if (
+      profile.is_admin !== true
+    ) {
+
+      alert(
+        "⛔ Bu sayfaya erişim yetkiniz yok."
+      );
+
+      window.location.href =
+        "index.html";
+
+      return;
+
+    }
+
+
+    // =====================================
+    // ADMIN
+    // =====================================
+
+    adminEmail.textContent =
+      user.email || "Gizli";
+
+
+    loading.style.display =
+      "none";
+
+
+    panel.style.display =
+      "block";
+
 
   }
 
 
+  // =====================================
+  // ÇIKIŞ
+  // =====================================
+
+  logoutButton.onclick =
+    async function() {
+
+
+      logoutButton.disabled =
+        true;
+
+
+      logoutButton.textContent =
+        "Çıkış yapılıyor...";
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .auth
+          .signOut();
+
+
+      if (error) {
+
+        console.error(
+          error
+        );
+
+        logoutButton.disabled =
+          false;
+
+        logoutButton.textContent =
+          "🚪 Çıkış Yap";
+
+        alert(
+          "Çıkış yapılamadı."
+        );
+
+        return;
+
+      }
+
+
+      window.location.href =
+        "login.html";
+
+
+    };
+
+
+  // =====================================
+  // BAŞLAT
+  // =====================================
+
   checkAdmin();
+
 
 </script>
 
+
 </body>
+
 </html>
+```
+
