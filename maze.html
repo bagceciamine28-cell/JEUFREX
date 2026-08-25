@@ -1,0 +1,975 @@
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JEUFREX Maze</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101010;
+  color: white;
+  overflow: hidden;
+}
+
+header {
+  height: 65px;
+  background: #171717;
+  border-bottom: 1px solid #303030;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 25px;
+}
+
+.logo {
+  color: white;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.back {
+  color: #aaa;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.back:hover {
+  color: white;
+}
+
+.game-wrapper {
+  height: calc(100vh - 65px);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 15px;
+}
+
+.topbar {
+  width: min(700px, 94vw);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-weight: 800;
+}
+
+.stats {
+  display: flex;
+  gap: 15px;
+}
+
+.stat {
+  background: #202020;
+  padding: 9px 13px;
+  border-radius: 10px;
+}
+
+#maze {
+  position: relative;
+
+  width: min(700px, 94vw);
+  aspect-ratio: 1 / 1;
+
+  background: #181818;
+
+  border: 5px solid #333;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 20px 70px rgba(0,0,0,.5);
+}
+
+.cell {
+  position: absolute;
+}
+
+.wall {
+  background: #303030;
+}
+
+.player {
+  position: absolute;
+
+  width: 7%;
+  height: 7%;
+
+  background: white;
+
+  border-radius: 50%;
+
+  z-index: 5;
+
+  box-shadow:
+    0 0 20px rgba(255,255,255,.7);
+
+  transition:
+    left .08s,
+    top .08s;
+}
+
+.key {
+  position: absolute;
+
+  width: 7%;
+  height: 7%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 25px;
+
+  z-index: 4;
+}
+
+.exit {
+  position: absolute;
+
+  width: 7%;
+  height: 7%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 25px;
+
+  z-index: 3;
+
+  opacity: .4;
+}
+
+.exit.unlocked {
+  opacity: 1;
+
+  filter:
+    drop-shadow(0 0 10px white);
+}
+
+.overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background: rgba(0,0,0,.72);
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  z-index: 20;
+
+  padding: 25px;
+}
+
+.overlay h1 {
+  font-size: 38px;
+
+  margin: 0 0 10px;
+}
+
+.overlay p {
+  color: #ccc;
+
+  line-height: 1.5;
+}
+
+button {
+  border: none;
+
+  background: white;
+
+  color: #111;
+
+  padding: 13px 25px;
+
+  border-radius: 12px;
+
+  font-weight: 900;
+
+  cursor: pointer;
+
+  font-size: 15px;
+}
+
+button:hover {
+  transform: scale(1.04);
+}
+
+.controls {
+  color: #999;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media(max-width:550px) {
+
+  .topbar {
+    font-size: 13px;
+  }
+
+  .stats {
+    gap: 5px;
+  }
+
+  .stat {
+    padding: 7px;
+  }
+
+  .key,
+  .exit {
+    font-size: 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<a href="games.html" class="logo">
+JEUFREX 🎮
+</a>
+
+<a href="games.html" class="back">
+← Oyunlara Dön
+</a>
+
+</header>
+
+<div class="game-wrapper">
+
+<div class="topbar">
+
+<div>
+🧩 JEUFREX Maze
+</div>
+
+<div class="stats">
+
+<div class="stat">
+📊 Bölüm:
+<span id="level">1</span>
+</div>
+
+<div class="stat">
+⏱️ <span id="time">0</span>
+</div>
+
+</div>
+
+</div>
+
+<div id="maze">
+
+<div id="player" class="player"></div>
+
+<div id="key" class="key">
+🔑
+</div>
+
+<div id="exit" class="exit">
+🚪
+</div>
+
+<div id="overlay" class="overlay">
+
+<h1>🧩 JEUFREX Maze</h1>
+
+<p>
+Anahtarı bul 🔑<br>
+Sonra çıkış kapısına ulaş 🚪
+</p>
+
+<button id="startButton">
+▶ Oyunu Başlat
+</button>
+
+</div>
+
+</div>
+
+<div class="controls">
+⌨️ WASD / Ok Tuşları &nbsp; • &nbsp; 📱 Ekrana dokun
+</div>
+
+</div>
+
+<script>
+
+/* =====================================
+   AYARLAR
+===================================== */
+
+const SIZE = 10;
+
+const maze = document.getElementById("maze");
+const player = document.getElementById("player");
+const keyElement = document.getElementById("key");
+const exitElement = document.getElementById("exit");
+
+const levelElement =
+document.getElementById("level");
+
+const timeElement =
+document.getElementById("time");
+
+const overlay =
+document.getElementById("overlay");
+
+const startButton =
+document.getElementById("startButton");
+
+
+let map = [];
+
+let playerX = 0;
+let playerY = 0;
+
+let keyX = 0;
+let keyY = 0;
+
+let exitX = SIZE - 1;
+let exitY = SIZE - 1;
+
+let hasKey = false;
+
+let level = 1;
+
+let running = false;
+
+let startTime = 0;
+
+let timer;
+
+
+/* =====================================
+   MAZE OLUŞTUR
+===================================== */
+
+function createMaze() {
+
+  map = [];
+
+  for (
+    let y = 0;
+    y < SIZE;
+    y++
+  ) {
+
+    map[y] = [];
+
+    for (
+      let x = 0;
+      x < SIZE;
+      x++
+    ) {
+
+      map[y][x] = 1;
+
+    }
+
+  }
+
+
+  /*
+    Basit ama oynanabilir
+    rastgele labirent üretimi
+  */
+
+  let x = 0;
+  let y = 0;
+
+  map[y][x] = 0;
+
+
+  while (
+    x < SIZE - 1 ||
+    y < SIZE - 1
+  ) {
+
+    if (
+      x === SIZE - 1
+    ) {
+
+      y++;
+
+    }
+
+    else if (
+      y === SIZE - 1
+    ) {
+
+      x++;
+
+    }
+
+    else if (
+      Math.random() < .5
+    ) {
+
+      x++;
+
+    }
+
+    else {
+
+      y++;
+
+    }
+
+    map[y][x] = 0;
+
+  }
+
+
+  /*
+    Ek yollar
+  */
+
+  const extra =
+    15 + level * 2;
+
+
+  for (
+    let i = 0;
+    i < extra;
+    i++
+  ) {
+
+    const rx =
+      Math.floor(
+        Math.random() * SIZE
+      );
+
+    const ry =
+      Math.floor(
+        Math.random() * SIZE
+      );
+
+    map[ry][rx] = 0;
+
+    if (rx + 1 < SIZE)
+      map[ry][rx + 1] = 0;
+
+    if (ry + 1 < SIZE)
+      map[ry + 1][rx] = 0;
+
+  }
+
+
+  playerX = 0;
+  playerY = 0;
+
+  /*
+    Anahtar yaklaşık ortaya
+  */
+
+  keyX =
+    Math.floor(
+      SIZE / 2
+    );
+
+  keyY =
+    Math.floor(
+      SIZE / 2
+    );
+
+
+  /*
+    Anahtar duvarın içindeyse
+    boş hücre bul
+  */
+
+  while (
+    map[keyY][keyX] === 1
+  ) {
+
+    keyX =
+      Math.floor(
+        Math.random() * SIZE
+      );
+
+    keyY =
+      Math.floor(
+        Math.random() * SIZE
+      );
+
+  }
+
+
+  exitX =
+    SIZE - 1;
+
+  exitY =
+    SIZE - 1;
+
+  map[exitY][exitX] = 0;
+
+  drawMaze();
+
+}
+
+
+/* =====================================
+   ÇİZ
+===================================== */
+
+function drawMaze() {
+
+  document
+    .querySelectorAll(".cell")
+    .forEach(
+      el => el.remove()
+    );
+
+
+  const percent =
+    100 / SIZE;
+
+
+  for (
+    let y = 0;
+    y < SIZE;
+    y++
+  ) {
+
+    for (
+      let x = 0;
+      x < SIZE;
+      x++
+    ) {
+
+      if (
+        map[y][x] === 1
+      ) {
+
+        const wall =
+          document.createElement("div");
+
+        wall.className =
+          "cell wall";
+
+        wall.style.left =
+          (x * percent) + "%";
+
+        wall.style.top =
+          (y * percent) + "%";
+
+        wall.style.width =
+          percent + "%";
+
+        wall.style.height =
+          percent + "%";
+
+        maze.appendChild(
+          wall
+        );
+
+      }
+
+    }
+
+  }
+
+
+  player.style.left =
+    (playerX * percent) + "%";
+
+  player.style.top =
+    (playerY * percent) + "%";
+
+
+  keyElement.style.left =
+    (keyX * percent) + "%";
+
+  keyElement.style.top =
+    (keyY * percent) + "%";
+
+
+  exitElement.style.left =
+    (exitX * percent) + "%";
+
+  exitElement.style.top =
+    (exitY * percent) + "%";
+
+
+  if (hasKey) {
+
+    keyElement.style.display =
+      "none";
+
+    exitElement.classList.add(
+      "unlocked"
+    );
+
+  }
+
+  else {
+
+    keyElement.style.display =
+      "flex";
+
+    exitElement.classList.remove(
+      "unlocked"
+    );
+
+  }
+
+}
+
+
+/* =====================================
+   HAREKET
+===================================== */
+
+function move(
+  dx,
+  dy
+) {
+
+  if (!running)
+    return;
+
+
+  const nx =
+    playerX + dx;
+
+  const ny =
+    playerY + dy;
+
+
+  if (
+    nx < 0 ||
+    ny < 0 ||
+    nx >= SIZE ||
+    ny >= SIZE
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    map[ny][nx] === 1
+  ) {
+
+    return;
+
+  }
+
+
+  playerX = nx;
+  playerY = ny;
+
+
+  if (
+    playerX === keyX &&
+    playerY === keyY &&
+    !hasKey
+  ) {
+
+    hasKey = true;
+
+    keyElement.style.display =
+      "none";
+
+    exitElement.classList.add(
+      "unlocked"
+    );
+
+  }
+
+
+  if (
+    playerX === exitX &&
+    playerY === exitY &&
+    hasKey
+  ) {
+
+    nextLevel();
+
+    return;
+
+  }
+
+
+  drawPlayer();
+
+}
+
+
+/* =====================================
+   OYUNCU
+===================================== */
+
+function drawPlayer() {
+
+  const percent =
+    100 / SIZE;
+
+  player.style.left =
+    (playerX * percent) + "%";
+
+  player.style.top =
+    (playerY * percent) + "%";
+
+}
+
+
+/* =====================================
+   SONRAKİ BÖLÜM
+===================================== */
+
+function nextLevel() {
+
+  level++;
+
+  levelElement.textContent =
+    level;
+
+  hasKey = false;
+
+  createMaze();
+
+}
+
+
+/* =====================================
+   BAŞLAT
+===================================== */
+
+function startGame() {
+
+  level = 1;
+
+  levelElement.textContent =
+    level;
+
+  hasKey = false;
+
+  running = true;
+
+  overlay.style.display =
+    "none";
+
+  startTime =
+    Date.now();
+
+
+  clearInterval(timer);
+
+  timer =
+    setInterval(
+      updateTime,
+      1000
+    );
+
+
+  createMaze();
+
+}
+
+
+/* =====================================
+   ZAMAN
+===================================== */
+
+function updateTime() {
+
+  if (!running)
+    return;
+
+  const seconds =
+    Math.floor(
+      (Date.now() - startTime) /
+      1000
+    );
+
+  timeElement.textContent =
+    seconds;
+
+}
+
+
+/* =====================================
+   KLAVYE
+===================================== */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    switch (
+      event.key.toLowerCase()
+    ) {
+
+      case "arrowup":
+      case "w":
+
+        event.preventDefault();
+
+        move(0,-1);
+
+        break;
+
+
+      case "arrowdown":
+      case "s":
+
+        event.preventDefault();
+
+        move(0,1);
+
+        break;
+
+
+      case "arrowleft":
+      case "a":
+
+        event.preventDefault();
+
+        move(-1,0);
+
+        break;
+
+
+      case "arrowright":
+      case "d":
+
+        event.preventDefault();
+
+        move(1,0);
+
+        break;
+
+    }
+
+  }
+);
+
+
+/* =====================================
+   MOBİL KONTROLLER
+===================================== */
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+
+maze.addEventListener(
+  "touchstart",
+  event => {
+
+    const touch =
+      event.touches[0];
+
+    touchStartX =
+      touch.clientX;
+
+    touchStartY =
+      touch.clientY;
+
+  },
+  {passive:true}
+);
+
+
+maze.addEventListener(
+  "touchend",
+  event => {
+
+    const touch =
+      event.changedTouches[0];
+
+    const dx =
+      touch.clientX -
+      touchStartX;
+
+    const dy =
+      touch.clientY -
+      touchStartY;
+
+
+    if (
+      Math.abs(dx) <
+      20 &&
+      Math.abs(dy) <
+      20
+    ) {
+
+      return;
+
+    }
+
+
+    if (
+      Math.abs(dx) >
+      Math.abs(dy)
+    ) {
+
+      if (dx > 0)
+        move(1,0);
+      else
+        move(-1,0);
+
+    }
+
+    else {
+
+      if (dy > 0)
+        move(0,1);
+      else
+        move(0,-1);
+
+    }
+
+  },
+  {passive:true}
+);
+
+
+/* =====================================
+   BUTON
+===================================== */
+
+startButton.addEventListener(
+  "click",
+  startGame
+);
+
+</script>
+
+</body>
+</html>
+```
