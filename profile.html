@@ -1,9 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Profil | JEUFREX</title>
 
   <style>
@@ -141,6 +141,10 @@
       color: #111;
     }
 
+    button:hover {
+      opacity: .85;
+    }
+
     button:disabled {
       opacity: .6;
       cursor: wait;
@@ -161,7 +165,6 @@
     }
 
     @media (max-width: 650px) {
-
       header {
         padding: 0 15px;
       }
@@ -226,26 +229,17 @@
 
     <div class="top">
 
-      <div
-        id="avatar"
-        class="avatar"
-      >
+      <div id="avatar" class="avatar">
         ?
       </div>
 
       <div>
 
-        <h1
-          id="displayName"
-          class="name"
-        >
+        <h1 id="displayName" class="name">
           Kullanıcı
         </h1>
 
-        <div
-          id="username"
-          class="username"
-        >
+        <div id="username" class="username">
           @kullanici
         </div>
 
@@ -254,10 +248,7 @@
     </div>
 
 
-    <div
-      id="bio"
-      class="bio"
-    ></div>
+    <div id="bio" class="bio"></div>
 
 
     <div class="stats">
@@ -275,11 +266,7 @@
     </div>
 
 
-    <div
-      id="actions"
-      class="actions"
-    ></div>
-
+    <div id="actions" class="actions"></div>
 
     <div id="message"></div>
 
@@ -290,7 +277,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <script>
 
   // ==========================================
@@ -300,9 +286,10 @@
   const SUPABASE_URL =
     "https://cqxxobmvycesunyxicjj.supabase.co";
 
+  // Buraya mevcut çalışan SUPABASE_KEY değerini
+  // kendi kodundaki gibi bırak.
   const SUPABASE_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
-
 
   const supabaseClient =
     window.supabase.createClient(
@@ -347,11 +334,13 @@
 
 
   // ==========================================
-  // PROFİL KULLANICI ADINI AL
+  // URL
   // ==========================================
 
   const params =
-    new URLSearchParams(window.location.search);
+    new URLSearchParams(
+      window.location.search
+    );
 
   const requestedUsername =
     params.get("user");
@@ -361,7 +350,10 @@
   // MESAJ
   // ==========================================
 
-  function showMessage(text, success = false) {
+  function showMessage(
+    text,
+    success = false
+  ) {
 
     message.style.display = "block";
 
@@ -382,7 +374,9 @@
 
   async function loadStats(userId) {
 
-    const { count: followers } =
+    const {
+      count: followers
+    } =
       await supabaseClient
         .from("follows")
         .select("*", {
@@ -392,7 +386,9 @@
         .eq("following_id", userId);
 
 
-    const { count: following } =
+    const {
+      count: following
+    } =
       await supabaseClient
         .from("follows")
         .select("*", {
@@ -415,14 +411,26 @@
   // TAKİP DURUMU
   // ==========================================
 
-  async function checkFollowing(currentUserId, profileUserId) {
+  async function checkFollowing(
+    currentUserId,
+    profileUserId
+  ) {
 
-    const { data, error } =
+    const {
+      data,
+      error
+    } =
       await supabaseClient
         .from("follows")
         .select("*")
-        .eq("follower_id", currentUserId)
-        .eq("following_id", profileUserId)
+        .eq(
+          "follower_id",
+          currentUserId
+        )
+        .eq(
+          "following_id",
+          profileUserId
+        )
         .maybeSingle();
 
 
@@ -456,14 +464,18 @@
       "İşleniyor...";
 
 
-    const { error } =
+    const {
+      error
+    } =
       await supabaseClient
         .from("follows")
         .insert({
 
-          follower_id: currentUserId,
+          follower_id:
+            currentUserId,
 
-          following_id: profileUserId
+          following_id:
+            profileUserId
 
         });
 
@@ -494,7 +506,21 @@
       "secondary";
 
 
-    await loadStats(profileUserId);
+    button.onclick =
+      async function() {
+
+        await unfollowUser(
+          currentUserId,
+          profileUserId,
+          button
+        );
+
+      };
+
+
+    await loadStats(
+      profileUserId
+    );
 
   }
 
@@ -515,12 +541,20 @@
       "İşleniyor...";
 
 
-    const { error } =
+    const {
+      error
+    } =
       await supabaseClient
         .from("follows")
         .delete()
-        .eq("follower_id", currentUserId)
-        .eq("following_id", profileUserId);
+        .eq(
+          "follower_id",
+          currentUserId
+        )
+        .eq(
+          "following_id",
+          profileUserId
+        );
 
 
     if (error) {
@@ -548,7 +582,21 @@
     button.className = "";
 
 
-    await loadStats(profileUserId);
+    button.onclick =
+      async function() {
+
+        await followUser(
+          currentUserId,
+          profileUserId,
+          button
+        );
+
+      };
+
+
+    await loadStats(
+      profileUserId
+    );
 
   }
 
@@ -564,7 +612,9 @@
         user: currentUser
       }
     } =
-      await supabaseClient.auth.getUser();
+      await supabaseClient
+        .auth
+        .getUser();
 
 
     if (!currentUser) {
@@ -580,13 +630,12 @@
     let profileUserId =
       currentUser.id;
 
-
     let profile = null;
 
 
-    // ------------------------------------------
-    // Başkasının profili
-    // ------------------------------------------
+    // ==========================================
+    // BAŞKASININ PROFİLİ
+    // ==========================================
 
     if (requestedUsername) {
 
@@ -596,11 +645,17 @@
           : "@" + requestedUsername;
 
 
-      const { data, error } =
+      const {
+        data,
+        error
+      } =
         await supabaseClient
           .from("profiles")
           .select("*")
-          .eq("username", cleanUsername)
+          .eq(
+            "username",
+            cleanUsername
+          )
           .maybeSingle();
 
 
@@ -641,17 +696,23 @@
     }
 
 
-    // ------------------------------------------
-    // Kendi profili
-    // ------------------------------------------
+    // ==========================================
+    // KENDİ PROFİLİ
+    // ==========================================
 
     else {
 
-      const { data, error } =
+      const {
+        data,
+        error
+      } =
         await supabaseClient
           .from("profiles")
           .select("*")
-          .eq("id", currentUser.id)
+          .eq(
+            "id",
+            currentUser.id
+          )
           .maybeSingle();
 
 
@@ -665,30 +726,42 @@
       profile = data;
 
 
-      // Profil yoksa Auth metadata'dan oluştur
+      // Profil yoksa oluştur
       if (!profile) {
 
         const username =
-          currentUser.user_metadata?.username ||
+          currentUser
+            .user_metadata
+            ?.username ||
           "@kullanici" +
-          Math.floor(Math.random() * 100000);
+          Math.floor(
+            Math.random() * 100000
+          );
 
 
         const name =
-          currentUser.user_metadata?.display_name ||
+          currentUser
+            .user_metadata
+            ?.display_name ||
           "Kullanıcı";
 
 
-        const { data: newProfile, error: createError } =
+        const {
+          data: newProfile,
+          error: createError
+        } =
           await supabaseClient
             .from("profiles")
             .insert({
 
-              id: currentUser.id,
+              id:
+                currentUser.id,
 
-              username: username,
+              username:
+                username,
 
-              display_name: name
+              display_name:
+                name
 
             })
             .select()
@@ -718,14 +791,13 @@
     }
 
 
-    // ------------------------------------------
-    // Profil bilgileri
-    // ------------------------------------------
+    // ==========================================
+    // PROFİL BİLGİLERİ
+    // ==========================================
 
     const name =
       profile.display_name ||
       "Kullanıcı";
-
 
     const username =
       profile.username ||
@@ -735,61 +807,78 @@
     displayName.textContent =
       name;
 
-
     usernameElement.textContent =
       username;
-
 
     bio.textContent =
       profile.bio ||
       "Henüz bir biyografi eklenmemiş.";
 
-
     avatar.textContent =
-      name.charAt(0).toUpperCase();
+      name
+        .charAt(0)
+        .toUpperCase();
 
 
-    // ------------------------------------------
-    // İstatistikler
-    // ------------------------------------------
+    // ==========================================
+    // İSTATİSTİKLER
+    // ==========================================
 
-    await loadStats(profileUserId);
+    await loadStats(
+      profileUserId
+    );
 
 
-    // ------------------------------------------
-    // Butonlar
-    // ------------------------------------------
+    // ==========================================
+    // BUTONLAR
+    // ==========================================
 
-    if (profileUserId === currentUser.id) {
+    if (
+      profileUserId ===
+      currentUser.id
+    ) {
 
       const editButton =
-        document.createElement("button");
+        document.createElement(
+          "button"
+        );
 
       editButton.textContent =
         "✏️ Profili Düzenle";
 
+
+      // BURASI DEĞİŞTİ:
+      // Profil düzenleme sayfasına gider.
+
       editButton.onclick =
         function() {
 
-          alert(
-            "Profil düzenleme bölümünü bir sonraki aşamada ekleyeceğiz."
-          );
+          window.location.href =
+            "edit-profile.html";
 
         };
 
 
-      actions.appendChild(editButton);
+      actions.appendChild(
+        editButton
+      );
 
     }
 
 
+    // ==========================================
+    // BAŞKA KULLANICI
+    // ==========================================
+
     else {
 
       const followButton =
-        document.createElement("button");
+        document.createElement(
+          "button"
+        );
 
 
-      const isFollowing =
+      let isFollowing =
         await checkFollowing(
           currentUser.id,
           profileUserId
@@ -804,7 +893,9 @@
         followButton.className =
           "secondary";
 
-      } else {
+      }
+
+      else {
 
         followButton.textContent =
           "Takip Et";
@@ -823,13 +914,19 @@
               followButton
             );
 
-          } else {
+            isFollowing = false;
+
+          }
+
+          else {
 
             await followUser(
               currentUser.id,
               profileUserId,
               followButton
             );
+
+            isFollowing = true;
 
           }
 
@@ -843,9 +940,9 @@
     }
 
 
-    // ------------------------------------------
-    // Göster
-    // ------------------------------------------
+    // ==========================================
+    // GÖSTER
+    // ==========================================
 
     loading.style.display =
       "none";
@@ -856,9 +953,14 @@
   }
 
 
+  // ==========================================
+  // BAŞLAT
+  // ==========================================
+
   loadProfile();
 
 </script>
 
 </body>
 </html>
+```
