@@ -20,9 +20,7 @@
     .categories{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
     .card{background:white;border-radius:22px;padding:30px;min-height:150px;text-decoration:none;color:#111;box-shadow:0 8px 30px rgba(0,0,0,.05);transition:transform .2s}
     .card:hover{transform:translateY(-5px)}
-    .icon{font-size:38px}
-    .card h2{margin-bottom:8px}
-    .card p{color:#777;margin:0}
+    .icon{font-size:38px}.card h2{margin-bottom:8px}.card p{color:#777;margin:0}
     .logout{margin-top:35px;background:#111;color:white;border:none;padding:13px 25px;border-radius:12px;cursor:pointer;font-weight:800}
     .logout:disabled{opacity:.6;cursor:wait}
     @media(max-width:750px){header{padding:0 15px}nav{display:none}.categories{grid-template-columns:1fr}}
@@ -54,7 +52,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL="https://cqxxobmvycesunyxicjj.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12ZWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+const SUPABASE_KEY="sb_publishable_C0BYpv-9sknEu1EXbeKLwQ_lMddpL5V";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const welcomeText=document.getElementById("welcomeText");
 const profileLink=document.getElementById("profileLink");
@@ -64,55 +62,27 @@ const logoutButton=document.getElementById("logoutButton");
 async function checkUser(){
   try{
     const {data,error}=await supabaseClient.auth.getSession();
-    if(error){
-      console.error("OTURUM HATASI:",error);
-      welcomeText.textContent="Oturum kontrol edilemedi. Sayfayı yenile.";
-      return;
-    }
-    const session=data.session;
-    if(!session || !session.user){
-      window.location.replace("login.html");
-      return;
-    }
-
-    const user=session.user;
-    let username=user.user_metadata?.username || "@kullanici";
-
-    try{
-      const {data:profile,error:profileError}=await supabaseClient.from("profiles").select("username,display_name").eq("id",user.id).maybeSingle();
-      if(profileError){
-        console.error("PROFİL HATASI:",profileError);
-      }else if(profile?.username){
-        username=profile.username;
-      }
-    }catch(profileError){
-      console.error("PROFİL SORGUSU HATASI:",profileError);
-    }
-
+    if(error){console.error("OTURUM HATASI:",error);return;}
+    if(!data.session?.user){window.location.replace("login.html");return;}
+    const user=data.session.user;
+    let username=user.user_metadata?.username||"@kullanici";
+    const {data:profile}=await supabaseClient.from("profiles").select("username").eq("id",user.id).maybeSingle();
+    if(profile?.username) username=profile.username;
     const displayUsername=username.startsWith("@")?username:"@"+username;
     welcomeText.textContent=`Hoş geldin, ${displayUsername}! 👋`;
     const cleanUsername=displayUsername.replace(/^@/,"");
     const profileUrl="profile.html?user="+encodeURIComponent(cleanUsername);
     profileLink.href=profileUrl;
     profileCard.href=profileUrl;
-  }catch(error){
-    console.error("BEKLENMEYEN HATA:",error);
-    welcomeText.textContent="Bir hata oluştu. Sayfayı yenile.";
-  }
+  }catch(error){console.error("BEKLENMEYEN HATA:",error);}
 }
 
 logoutButton.addEventListener("click",async()=>{
   logoutButton.disabled=true;
   logoutButton.textContent="Çıkış yapılıyor...";
-  try{
-    const {error}=await supabaseClient.auth.signOut({scope:"local"});
-    if(error) console.warn("Yerel çıkış uyarısı:",error);
-  }catch(error){
-    console.warn("Çıkış sırasında uyarı:",error);
-  }
+  await supabaseClient.auth.signOut({scope:"local"});
   window.location.replace("login.html");
 });
-
 checkUser();
 </script>
 </body>
