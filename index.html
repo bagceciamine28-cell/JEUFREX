@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -128,7 +129,6 @@
     }
 
     @media (max-width: 750px) {
-
       header {
         padding: 0 15px;
       }
@@ -140,7 +140,6 @@
       .categories {
         grid-template-columns: 1fr;
       }
-
     }
   </style>
 </head>
@@ -154,17 +153,18 @@
   </div>
 
   <nav>
-  <a href="index.html">Ana Sayfa</a>
-  <a href="games.html">🎮 Oyunlar</a>
-  <a href="music.html">🎵 Müzik</a>
-  <a href="videos.html">🎬 Videolar</a>
-  <a href="community.html">👥 Topluluk</a>
-  <a href="explore.html">✨ Keşfet</a>
-</nav>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="games.html">🎮 Oyunlar</a>
+    <a href="music.html">🎵 Müzik</a>
+    <a href="videos.html">🎬 Videolar</a>
+    <a href="community.html">👥 Topluluk</a>
+    <a href="explore.html">✨ Keşfet</a>
+  </nav>
 
+  <!-- Artık sabit profile.html değil -->
   <a href="profile.html" class="profile" id="profileLink">
-  👤 Profil
-</a>
+    👤 Profil
+  </a>
 
 </header>
 
@@ -205,11 +205,11 @@
       <p>Yeni videoları izle.</p>
     </a>
 
-   <a href="community.html" class="card">
-  <div class="icon">👥</div>
-  <h2>Topluluk</h2>
-  <p>Topluluğa katıl ve paylaş.</p>
-</a>
+    <a href="community.html" class="card">
+      <div class="icon">👥</div>
+      <h2>Topluluk</h2>
+      <p>Topluluğa katıl ve paylaş.</p>
+    </a>
 
     <a href="explore.html" class="card">
       <div class="icon">✨</div>
@@ -217,11 +217,12 @@
       <p>Yeni içerikler ve kullanıcılar keşfet.</p>
     </a>
 
-    <a href="profile.html" class="card">
-  <div class="icon">👤</div>
-  <h2>Profil</h2>
-  <p>Profilini görüntüle.</p>
-</a>
+    <!-- Profil kartı -->
+    <a href="profile.html" class="card" id="profileCard">
+      <div class="icon">👤</div>
+      <h2>Profil</h2>
+      <p>Profilini görüntüle.</p>
+    </a>
 
   </section>
 
@@ -241,7 +242,7 @@
     "https://cqxxobmvycesunyxicjj.supabase.co";
 
   const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzYyI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
 
 
   const supabaseClient =
@@ -251,14 +252,22 @@
     );
 
 
+  // ==========================================
+  // KULLANICIYI VE GÜNCEL PROFİLİ YÜKLE
+  // ==========================================
+
   async function checkUser() {
 
     const {
-      data: { user }
-    } = await supabaseClient.auth.getUser();
+      data: { user },
+      error: authError
+    } =
+      await supabaseClient.auth.getUser();
 
 
-    if (!user) {
+    // Giriş yapılmamışsa login'e gönder
+
+    if (authError || !user) {
 
       window.location.href = "login.html";
 
@@ -267,31 +276,110 @@
     }
 
 
-    const username =
-      user.user_metadata?.username;
+    // ==========================================
+    // PROFILES TABLOSUNDAN GÜNCEL BİLGİLERİ AL
+    // ==========================================
+
+    const {
+      data: profile,
+      error: profileError
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select("username, display_name")
+        .eq("id", user.id)
+        .maybeSingle();
 
 
-    if (username) {
+    if (profileError) {
 
-      document.getElementById("welcomeText")
-        .textContent =
-        "Hoş geldin, " + username + "! 👋";
+      console.error(
+        "Profil alınamadı:",
+        profileError
+      );
+
+      return;
 
     }
+
+
+    const username =
+      profile?.username || "@kullanici";
+
+
+    const displayName =
+      profile?.display_name || "Kullanıcı";
+
+
+    // ==========================================
+    // HOŞ GELDİN MESAJI
+    // ==========================================
+
+    document
+      .getElementById("welcomeText")
+      .textContent =
+        "Hoş geldin, " +
+        username +
+        "! 👋";
+
+
+    // ==========================================
+    // PROFİL LİNKİ
+    // ==========================================
+
+    const cleanUsername =
+      username
+        .replace(/^@/, "");
+
+
+    const profileUrl =
+      "profile.html?user=" +
+      encodeURIComponent(cleanUsername);
+
+
+    document
+      .getElementById("profileLink")
+      .href =
+        profileUrl;
+
+
+    document
+      .getElementById("profileCard")
+      .href =
+        profileUrl;
+
+
+    console.log(
+      "Giriş yapan kullanıcı:",
+      displayName,
+      username
+    );
 
   }
 
 
+  // ==========================================
+  // ÇIKIŞ
+  // ==========================================
+
   document
     .getElementById("logoutButton")
-    .addEventListener("click", async function() {
+    .addEventListener(
+      "click",
+      async function() {
 
-      await supabaseClient.auth.signOut();
+        await supabaseClient.auth.signOut();
 
-      window.location.href = "login.html";
+        window.location.href =
+          "login.html";
 
-    });
+      }
+    );
 
+
+  // ==========================================
+  // BAŞLAT
+  // ==========================================
 
   checkUser();
 
@@ -299,3 +387,4 @@
 
 </body>
 </html>
+```
