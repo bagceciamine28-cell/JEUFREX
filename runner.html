@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>JEUFREX Runner</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+
+  background: #111;
+
+  color: white;
+
+  overflow: hidden;
+}
+
+/* HEADER */
+
+header {
+
+  height: 65px;
+
+  background: #171717;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 25px;
+
+  border-bottom: 1px solid #333;
+}
+
+.logo {
+
+  color: white;
+
+  text-decoration: none;
+
+  font-size: 22px;
+
+  font-weight: 900;
+}
+
+.back {
+
+  color: #bbb;
+
+  text-decoration: none;
+
+  font-weight: 700;
+}
+
+.back:hover {
+
+  color: white;
+}
+
+/* GAME */
+
+.game-wrapper {
+
+  height: calc(100vh - 65px);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+.game {
+
+  position: relative;
+
+  width: min(900px, 94vw);
+
+  height: min(500px, 65vh);
+
+  background: linear-gradient(
+    #8ed8ff,
+    #e8f8ff
+  );
+
+  border-radius: 25px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.5);
+}
+
+/* SUN */
+
+.sun {
+
+  position: absolute;
+
+  width: 80px;
+  height: 80px;
+
+  border-radius: 50%;
+
+  background: #ffd84d;
+
+  top: 50px;
+  right: 80px;
+
+  box-shadow:
+    0 0 40px rgba(255,216,77,.8);
+}
+
+/* CLOUD */
+
+.cloud {
+
+  position: absolute;
+
+  width: 120px;
+  height: 35px;
+
+  background: white;
+
+  border-radius: 30px;
+
+  opacity: .8;
+}
+
+.cloud::before {
+
+  content: "";
+
+  position: absolute;
+
+  width: 55px;
+  height: 55px;
+
+  background: white;
+
+  border-radius: 50%;
+
+  left: 20px;
+  top: -25px;
+}
+
+.cloud::after {
+
+  content: "";
+
+  position: absolute;
+
+  width: 45px;
+  height: 45px;
+
+  background: white;
+
+  border-radius: 50%;
+
+  right: 15px;
+  top: -20px;
+}
+
+.cloud.one {
+
+  top: 80px;
+  left: 100px;
+}
+
+.cloud.two {
+
+  top: 150px;
+  left: 450px;
+
+  transform: scale(.7);
+}
+
+/* GROUND */
+
+.ground {
+
+  position: absolute;
+
+  bottom: 0;
+
+  left: 0;
+
+  width: 100%;
+
+  height: 90px;
+
+  background: #62b84a;
+
+  border-top: 8px solid #3f8d32;
+}
+
+/* PLAYER */
+
+.player {
+
+  position: absolute;
+
+  width: 55px;
+  height: 65px;
+
+  bottom: 90px;
+  left: 100px;
+
+  background: #111;
+
+  border-radius: 15px;
+
+  z-index: 3;
+}
+
+.player::before {
+
+  content: "👤";
+
+  position: absolute;
+
+  font-size: 35px;
+
+  top: 8px;
+  left: 9px;
+}
+
+/* OBSTACLE */
+
+.obstacle {
+
+  position: absolute;
+
+  width: 35px;
+  height: 60px;
+
+  bottom: 90px;
+
+  background: #555;
+
+  border-radius: 8px;
+
+  z-index: 2;
+}
+
+/* COIN */
+
+.coin {
+
+  position: absolute;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+
+  background: #ffd700;
+
+  border: 4px solid #e5a900;
+
+  z-index: 2;
+
+  box-shadow:
+    0 0 15px rgba(255,215,0,.8);
+}
+
+/* HUD */
+
+.hud {
+
+  position: absolute;
+
+  top: 20px;
+  left: 20px;
+
+  color: #111;
+
+  font-weight: 900;
+
+  font-size: 18px;
+
+  z-index: 10;
+}
+
+/* START */
+
+.start {
+
+  position: absolute;
+
+  inset: 0;
+
+  background: rgba(0,0,0,.45);
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  z-index: 20;
+}
+
+.start h1 {
+
+  font-size: 42px;
+
+  margin: 0 0 10px;
+}
+
+.start p {
+
+  margin-bottom: 25px;
+}
+
+.start button {
+
+  border: none;
+
+  background: white;
+
+  color: #111;
+
+  padding: 14px 30px;
+
+  border-radius: 14px;
+
+  font-weight: 900;
+
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+.start button:hover {
+
+  transform: scale(1.05);
+}
+
+/* CONTROLS */
+
+.controls {
+
+  color: #aaa;
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+/* MOBILE */
+
+@media(max-width:600px) {
+
+  .game {
+
+    height: 60vh;
+
+    border-radius: 15px;
+  }
+
+  .player {
+
+    left: 60px;
+  }
+
+  .sun {
+
+    right: 30px;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<a href="games.html" class="logo">
+JEUFREX 🎮
+</a>
+
+<a href="games.html" class="back">
+← Oyunlara Dön
+</a>
+
+</header>
+
+
+<div class="game-wrapper">
+
+<div class="game" id="game">
+
+<div class="sun"></div>
+
+<div class="cloud one"></div>
+<div class="cloud two"></div>
+
+<div class="hud">
+
+⭐ <span id="score">0</span>
+
+&nbsp;&nbsp;
+
+🪙 <span id="coins">0</span>
+
+&nbsp;&nbsp;
+
+🏆 <span id="highScore">0</span>
+
+</div>
+
+<div class="ground"></div>
+
+<div
+  class="player"
+  id="player"
+></div>
+
+
+<div
+  class="start"
+  id="startScreen"
+>
+
+<h1>
+🏃 JEUFREX Runner
+</h1>
+
+<p>
+Engellerden kaç ve coinleri topla!
+</p>
+
+<button id="startButton">
+▶ Oyunu Başlat
+</button>
+
+</div>
+
+</div>
+
+<div class="controls">
+
+SPACE / ↑ = Zıpla &nbsp; • &nbsp;
+Mobilde ekrana dokun
+
+</div>
+
+</div>
+
+
+<script>
+
+const game =
+document.getElementById("game");
+
+const player =
+document.getElementById("player");
+
+const scoreElement =
+document.getElementById("score");
+
+const coinsElement =
+document.getElementById("coins");
+
+const highScoreElement =
+document.getElementById("highScore");
+
+const startScreen =
+document.getElementById("startScreen");
+
+const startButton =
+document.getElementById("startButton");
+
+
+let running = false;
+
+let jumping = false;
+
+let velocityY = 0;
+
+let gravity = 0.8;
+
+let score = 0;
+
+let coins = 0;
+
+let speed = 6;
+
+let obstacleTimer = 0;
+
+let coinTimer = 0;
+
+let animation;
+
+
+/* REKOR */
+
+let highScore =
+Number(
+  localStorage.getItem(
+    "jeufrex_runner_highscore"
+  )
+) || 0;
+
+highScoreElement.textContent =
+highScore;
+
+
+/* BAŞLAT */
+
+function startGame() {
+
+  running = true;
+
+  score = 0;
+
+  coins = 0;
+
+  speed = 6;
+
+  obstacleTimer = 0;
+
+  coinTimer = 0;
+
+  player.style.bottom = "90px";
+
+  document
+    .querySelectorAll(".obstacle,.coin")
+    .forEach(
+      el => el.remove()
+    );
+
+  scoreElement.textContent = "0";
+
+  coinsElement.textContent = "0";
+
+  startScreen.style.display =
+    "none";
+
+  gameLoop();
+}
+
+
+/* ZIPLAMA */
+
+function jump() {
+
+  if (
+    !running ||
+    jumping
+  ) return;
+
+  jumping = true;
+
+  velocityY = 15;
+}
+
+
+/* ENGEL */
+
+function createObstacle() {
+
+  const obstacle =
+    document.createElement("div");
+
+  obstacle.className =
+    "obstacle";
+
+  obstacle.style.right =
+    "-40px";
+
+  game.appendChild(
+    obstacle
+  );
+}
+
+
+/* COIN */
+
+function createCoin() {
+
+  const coin =
+    document.createElement("div");
+
+  coin.className =
+    "coin";
+
+  coin.style.right =
+    "-30px";
+
+  const height =
+    130 +
+    Math.random() * 120;
+
+  coin.style.bottom =
+    height + "px";
+
+  game.appendChild(
+    coin
+  );
+}
+
+
+/* ÇARPIŞMA */
+
+function collision(
+  a,
+  b
+) {
+
+  const r1 =
+    a.getBoundingClientRect();
+
+  const r2 =
+    b.getBoundingClientRect();
+
+  return !(
+    r1.right < r2.left ||
+    r1.left > r2.right ||
+    r1.bottom < r2.top ||
+    r1.top > r2.bottom
+  );
+}
+
+
+/* OYUN DÖNGÜSÜ */
+
+function gameLoop() {
+
+  if (!running)
+    return;
+
+
+  /* Zıplama */
+
+  if (jumping) {
+
+    let bottom =
+      parseFloat(
+        player.style.bottom
+      );
+
+    bottom +=
+      velocityY;
+
+    velocityY -=
+      gravity;
+
+    if (bottom <= 90) {
+
+      bottom = 90;
+
+      jumping = false;
+
+      velocityY = 0;
+
+    }
+
+    player.style.bottom =
+      bottom + "px";
+  }
+
+
+  /* SKOR */
+
+  score += 0.05;
+
+  scoreElement.textContent =
+    Math.floor(score);
+
+
+  /* ZORLAŞMA */
+
+  speed =
+    6 +
+    Math.floor(score / 100);
+
+
+  /* ENGELLER */
+
+  obstacleTimer--;
+
+  if (obstacleTimer <= 0) {
+
+    createObstacle();
+
+    obstacleTimer =
+      80 +
+      Math.random() * 70;
+  }
+
+
+  /* COINLER */
+
+  coinTimer--;
+
+  if (coinTimer <= 0) {
+
+    createCoin();
+
+    coinTimer =
+      100 +
+      Math.random() * 100;
+  }
+
+
+  /* HAREKET */
+
+  document
+    .querySelectorAll(".obstacle")
+    .forEach(
+      obstacle => {
+
+        let right =
+          parseFloat(
+            obstacle.style.right
+          );
+
+        right += speed;
+
+        obstacle.style.right =
+          right + "px";
+
+
+        if (
+          collision(
+            player,
+            obstacle
+          )
+        ) {
+
+          gameOver();
+
+        }
+
+
+        if (
+          right > game.offsetWidth
+        ) {
+
+          obstacle.remove();
+
+        }
+
+      }
+    );
+
+
+  /* COIN HAREKET */
+
+  document
+    .querySelectorAll(".coin")
+    .forEach(
+      coin => {
+
+        let right =
+          parseFloat(
+            coin.style.right
+          );
+
+        right += speed;
+
+        coin.style.right =
+          right + "px";
+
+
+        if (
+          collision(
+            player,
+            coin
+          )
+        ) {
+
+          coins++;
+
+          score += 10;
+
+          coinsElement.textContent =
+            coins;
+
+          coin.remove();
+
+        }
+
+
+        if (
+          right > game.offsetWidth
+        ) {
+
+          coin.remove();
+
+        }
+
+      }
+    );
+
+
+  animation =
+    requestAnimationFrame(
+      gameLoop
+    );
+}
+
+
+/* GAME OVER */
+
+function gameOver() {
+
+  running = false;
+
+  cancelAnimationFrame(
+    animation
+  );
+
+
+  const finalScore =
+    Math.floor(score);
+
+
+  if (
+    finalScore > highScore
+  ) {
+
+    highScore =
+      finalScore;
+
+    localStorage.setItem(
+      "jeufrex_runner_highscore",
+      highScore
+    );
+
+    highScoreElement.textContent =
+      highScore;
+
+  }
+
+
+  startScreen.style.display =
+    "flex";
+
+
+  startScreen.innerHTML = `
+
+    <h1>💥 Oyun Bitti!</h1>
+
+    <p>
+      Skor: <strong>${finalScore}</strong>
+      <br>
+      🪙 Coin: <strong>${coins}</strong>
+      <br>
+      🏆 Rekor: <strong>${highScore}</strong>
+    </p>
+
+    <button onclick="startGame()">
+      🔄 Tekrar Oyna
+    </button>
+
+  `;
+
+}
+
+
+/* KLAVYE */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.code === "Space" ||
+      event.code === "ArrowUp"
+    ) {
+
+      event.preventDefault();
+
+      if (!running) {
+
+        startGame();
+
+      } else {
+
+        jump();
+
+      }
+
+    }
+
+  }
+);
+
+
+/* MOBİL */
+
+game.addEventListener(
+  "touchstart",
+  event => {
+
+    event.preventDefault();
+
+    if (!running) {
+
+      startGame();
+
+    } else {
+
+      jump();
+
+    }
+
+  }
+);
+
+
+/* TIKLAMA */
+
+game.addEventListener(
+  "mousedown",
+  event => {
+
+    if (
+      event.target.tagName ===
+      "BUTTON"
+    ) return;
+
+    if (!running) {
+
+      startGame();
+
+    } else {
+
+      jump();
+
+    }
+
+  }
+);
+
+
+/* BAŞLAT */
+
+startButton.addEventListener(
+  "click",
+  startGame
+);
+
+</script>
+
+</body>
+</html>
