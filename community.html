@@ -1,1 +1,1098 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topluluk | JEUFREX</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #171717;
+    }
+
+    header {
+      height: 70px;
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 35px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      color: #111;
+      text-decoration: none;
+      font-size: 25px;
+      font-weight: 900;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      color: #555;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: #000;
+    }
+
+    main {
+      width: min(700px, calc(100% - 30px));
+      margin: 35px auto;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+    }
+
+    .composer,
+    .post {
+      background: white;
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 25px rgba(0,0,0,.05);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 15px;
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #999;
+    }
+
+    .composer-bottom {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 11px;
+      padding: 11px 18px;
+      background: #111;
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: wait;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .user-info {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #111;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .username {
+      color: #111;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .username:hover {
+      text-decoration: underline;
+    }
+
+    .date {
+      color: #888;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .post-content {
+      white-space: pre-wrap;
+      line-height: 1.55;
+      margin: 20px 0;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+
+    .action-btn {
+      background: #f1f1f1;
+      color: #222;
+    }
+
+    .action-btn.liked {
+      background: #111;
+      color: white;
+    }
+
+    .delete-btn {
+      background: transparent;
+      color: #b00000;
+      padding: 5px 8px;
+    }
+
+    .comments {
+      margin-top: 15px;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+
+    .comment {
+      background: #f7f7f7;
+      padding: 10px 13px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .comment strong {
+      margin-right: 5px;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .comment-input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      outline: none;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 35px;
+    }
+
+    .error {
+      background: #fff0f0;
+      color: #a00000;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        padding: 0 15px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .comment-form {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <a href="index.html" class="logo">JEUFREX</a>
+
+  <nav>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="#">🎮 Oyunlar</a>
+    <a href="#">🎵 Müzik</a>
+    <a href="#">🎬 Videolar</a>
+    <a href="community.html">👥 Topluluk</a>
+    <a href="#">✨ Keşfet</a>
+    <a href="profile.html">👤 Profil</a>
+  </nav>
+
+</header>
+
+
+<main>
+
+  <h1>👥 Topluluk</h1>
+
+  <div id="error" class="error"></div>
+
+  <section class="composer">
+
+    <textarea
+      id="postContent"
+      maxlength="1000"
+      placeholder="Ne düşünüyorsun? Bir şeyler paylaş..."></textarea>
+
+    <div class="composer-bottom">
+
+      <button id="shareButton">
+        📝 Paylaş
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <section id="posts">
+
+    <div class="empty">
+      Gönderiler yükleniyor...
+    </div>
+
+  </section>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+  // ==========================================
+  // SUPABASE
+  // ==========================================
+
+  const SUPABASE_URL =
+    "https://cqxxobmvycesunyxicjj.supabase.co";
+
+  const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  let currentUser = null;
+
+
+  const postsContainer =
+    document.getElementById("posts");
+
+  const postContent =
+    document.getElementById("postContent");
+
+  const shareButton =
+    document.getElementById("shareButton");
+
+  const errorBox =
+    document.getElementById("error");
+
+
+  // ==========================================
+  // HATA
+  // ==========================================
+
+  function showError(text) {
+
+    errorBox.textContent = text;
+
+    errorBox.style.display = "block";
+
+    setTimeout(() => {
+      errorBox.style.display = "none";
+    }, 5000);
+
+  }
+
+
+  // ==========================================
+  // TARİH
+  // ==========================================
+
+  function formatDate(date) {
+
+    return new Date(date).toLocaleString(
+      "tr-TR",
+      {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }
+    );
+
+  }
+
+
+  // ==========================================
+  // GÖNDERİ PAYLAŞ
+  // ==========================================
+
+  shareButton.addEventListener(
+    "click",
+    async function() {
+
+      const content =
+        postContent.value.trim();
+
+
+      if (!content) {
+
+        showError(
+          "Gönderi boş olamaz."
+        );
+
+        return;
+
+      }
+
+
+      shareButton.disabled = true;
+
+      shareButton.textContent =
+        "Paylaşılıyor...";
+
+
+      const { error } =
+        await supabaseClient
+          .from("posts")
+          .insert({
+
+            user_id: currentUser.id,
+
+            content: content
+
+          });
+
+
+      if (error) {
+
+        showError(
+          "Gönderi paylaşılamadı: " +
+          error.message
+        );
+
+      } else {
+
+        postContent.value = "";
+
+        await loadPosts();
+
+      }
+
+
+      shareButton.disabled = false;
+
+      shareButton.textContent =
+        "📝 Paylaş";
+
+    }
+  );
+
+
+  // ==========================================
+  // BEĞENİ DURUMU
+  // ==========================================
+
+  async function isLiked(postId) {
+
+    const { data } =
+      await supabaseClient
+        .from("post_likes")
+        .select("post_id")
+        .eq("post_id", postId)
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+
+
+    return !!data;
+
+  }
+
+
+  // ==========================================
+  // BEĞENİ SAYISI
+  // ==========================================
+
+  async function getLikeCount(postId) {
+
+    const { count } =
+      await supabaseClient
+        .from("post_likes")
+        .select("*", {
+          count: "exact",
+          head: true
+        })
+        .eq("post_id", postId);
+
+
+    return count || 0;
+
+  }
+
+
+  // ==========================================
+  // BEĞEN / BEĞENİYİ KALDIR
+  // ==========================================
+
+  async function toggleLike(
+    postId,
+    button
+  ) {
+
+    button.disabled = true;
+
+
+    const liked =
+      await isLiked(postId);
+
+
+    if (liked) {
+
+      const { error } =
+        await supabaseClient
+          .from("post_likes")
+          .delete()
+          .eq("post_id", postId)
+          .eq("user_id", currentUser.id);
+
+
+      if (error) {
+
+        showError(
+          "Beğeni kaldırılamadı."
+        );
+
+      }
+
+    } else {
+
+      const { error } =
+        await supabaseClient
+          .from("post_likes")
+          .insert({
+
+            post_id: postId,
+
+            user_id: currentUser.id
+
+          });
+
+
+      if (error) {
+
+        showError(
+          "Beğeni eklenemedi: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    await loadPosts();
+
+  }
+
+
+  // ==========================================
+  // YORUMLARI GETİR
+  // ==========================================
+
+  async function getComments(postId) {
+
+    const { data, error } =
+      await supabaseClient
+        .from("comments")
+        .select("*")
+        .eq("post_id", postId)
+        .order("created_at", {
+          ascending: true
+        });
+
+
+    if (error) {
+
+      console.error(error);
+
+      return [];
+
+    }
+
+
+    return data || [];
+
+  }
+
+
+  // ==========================================
+  // YORUM EKLE
+  // ==========================================
+
+  async function addComment(
+    postId,
+    input,
+    button
+  ) {
+
+    const content =
+      input.value.trim();
+
+
+    if (!content) {
+
+      return;
+
+    }
+
+
+    button.disabled = true;
+
+
+    const { error } =
+      await supabaseClient
+        .from("comments")
+        .insert({
+
+          post_id: postId,
+
+          user_id: currentUser.id,
+
+          content: content
+
+        });
+
+
+    if (error) {
+
+      showError(
+        "Yorum gönderilemedi: " +
+        error.message
+      );
+
+    } else {
+
+      input.value = "";
+
+      await loadPosts();
+
+    }
+
+
+    button.disabled = false;
+
+  }
+
+
+  // ==========================================
+  // GÖNDERİ SİL
+  // ==========================================
+
+  async function deletePost(postId) {
+
+    const confirmed =
+      confirm(
+        "Bu gönderiyi silmek istediğine emin misin?"
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    const { error } =
+      await supabaseClient
+        .from("posts")
+        .delete()
+        .eq("id", postId)
+        .eq("user_id", currentUser.id);
+
+
+    if (error) {
+
+      showError(
+        "Gönderi silinemedi: " +
+        error.message
+      );
+
+      return;
+
+    }
+
+
+    await loadPosts();
+
+  }
+
+
+  // ==========================================
+  // GÖNDERİLERİ YÜKLE
+  // ==========================================
+
+  async function loadPosts() {
+
+    postsContainer.innerHTML =
+      '<div class="empty">Gönderiler yükleniyor...</div>';
+
+
+    const { data, error } =
+      await supabaseClient
+        .from("posts")
+        .select("*")
+        .order("created_at", {
+          ascending: false
+        });
+
+
+    if (error) {
+
+      showError(
+        "Gönderiler yüklenemedi: " +
+        error.message
+      );
+
+      return;
+
+    }
+
+
+    if (!data || data.length === 0) {
+
+      postsContainer.innerHTML =
+        '<div class="empty">Henüz gönderi yok. İlk gönderiyi sen paylaş! 🚀</div>';
+
+      return;
+
+    }
+
+
+    postsContainer.innerHTML = "";
+
+
+    for (const post of data) {
+
+      await createPostElement(post);
+
+    }
+
+  }
+
+
+  // ==========================================
+  // GÖNDERİ ELEMENTİ
+  // ==========================================
+
+  async function createPostElement(post) {
+
+    const { data: profile } =
+      await supabaseClient
+        .from("profiles")
+        .select("username, display_name")
+        .eq("id", post.user_id)
+        .maybeSingle();
+
+
+    const username =
+      profile?.username ||
+      "@kullanici";
+
+
+    const displayName =
+      profile?.display_name ||
+      username;
+
+
+    const liked =
+      await isLiked(post.id);
+
+
+    const likeCount =
+      await getLikeCount(post.id);
+
+
+    const comments =
+      await getComments(post.id);
+
+
+    const article =
+      document.createElement("article");
+
+    article.className =
+      "post";
+
+
+    // ------------------------------------------
+    // HEADER
+    // ------------------------------------------
+
+    const header =
+      document.createElement("div");
+
+    header.className =
+      "post-header";
+
+
+    const userInfo =
+      document.createElement("div");
+
+    userInfo.className =
+      "user-info";
+
+
+    const avatar =
+      document.createElement("div");
+
+    avatar.className =
+      "avatar";
+
+    avatar.textContent =
+      displayName
+        .charAt(0)
+        .toUpperCase();
+
+
+    const userText =
+      document.createElement("div");
+
+
+    const userLink =
+      document.createElement("a");
+
+    userLink.className =
+      "username";
+
+    userLink.href =
+      "profile.html?user=" +
+      encodeURIComponent(username);
+
+    userLink.textContent =
+      username;
+
+
+    const date =
+      document.createElement("div");
+
+    date.className =
+      "date";
+
+    date.textContent =
+      formatDate(post.created_at);
+
+
+    userText.appendChild(userLink);
+
+    userText.appendChild(date);
+
+    userInfo.appendChild(avatar);
+
+    userInfo.appendChild(userText);
+
+    header.appendChild(userInfo);
+
+
+    // ------------------------------------------
+    // SİL
+    // ------------------------------------------
+
+    if (post.user_id === currentUser.id) {
+
+      const deleteButton =
+        document.createElement("button");
+
+      deleteButton.className =
+        "delete-btn";
+
+      deleteButton.textContent =
+        "🗑️";
+
+      deleteButton.title =
+        "Gönderiyi sil";
+
+      deleteButton.onclick =
+        () => deletePost(post.id);
+
+      header.appendChild(
+        deleteButton
+      );
+
+    }
+
+
+    // ------------------------------------------
+    // İÇERİK
+    // ------------------------------------------
+
+    const content =
+      document.createElement("div");
+
+    content.className =
+      "post-content";
+
+    content.textContent =
+      post.content;
+
+
+    // ------------------------------------------
+    // AKSİYONLAR
+    // ------------------------------------------
+
+    const actions =
+      document.createElement("div");
+
+    actions.className =
+      "post-actions";
+
+
+    const likeButton =
+      document.createElement("button");
+
+    likeButton.className =
+      "action-btn";
+
+
+    if (liked) {
+
+      likeButton.classList.add(
+        "liked"
+      );
+
+    }
+
+
+    likeButton.textContent =
+      "❤️ " + likeCount;
+
+
+    likeButton.onclick =
+      () => toggleLike(
+        post.id,
+        likeButton
+      );
+
+
+    actions.appendChild(
+      likeButton
+    );
+
+
+    // ------------------------------------------
+    // YORUMLAR
+    // ------------------------------------------
+
+    const commentsBox =
+      document.createElement("div");
+
+    commentsBox.className =
+      "comments";
+
+
+    for (const comment of comments) {
+
+      const commentDiv =
+        document.createElement("div");
+
+      commentDiv.className =
+        "comment";
+
+
+      const commentProfile =
+        await supabaseClient
+          .from("profiles")
+          .select("username")
+          .eq("id", comment.user_id)
+          .maybeSingle();
+
+
+      const commentUsername =
+        commentProfile.data?.username ||
+        "@kullanici";
+
+
+      const strong =
+        document.createElement("strong");
+
+      strong.textContent =
+        commentUsername;
+
+
+      commentDiv.appendChild(
+        strong
+      );
+
+
+      commentDiv.appendChild(
+        document.createTextNode(
+          " " + comment.content
+        )
+      );
+
+
+      commentsBox.appendChild(
+        commentDiv
+      );
+
+    }
+
+
+    const commentForm =
+      document.createElement("div");
+
+    commentForm.className =
+      "comment-form";
+
+
+    const commentInput =
+      document.createElement("input");
+
+    commentInput.className =
+      "comment-input";
+
+    commentInput.placeholder =
+      "Yorum yaz...";
+
+    commentInput.maxLength =
+      500;
+
+
+    const commentButton =
+      document.createElement("button");
+
+    commentButton.textContent =
+      "Gönder";
+
+
+    commentButton.onclick =
+      () => addComment(
+        post.id,
+        commentInput,
+        commentButton
+      );
+
+
+    commentForm.appendChild(
+      commentInput
+    );
+
+    commentForm.appendChild(
+      commentButton
+    );
+
+
+    commentsBox.appendChild(
+      commentForm
+    );
+
+
+    // ------------------------------------------
+    // BİRLEŞTİR
+    // ------------------------------------------
+
+    article.appendChild(
+      header
+    );
+
+    article.appendChild(
+      content
+    );
+
+    article.appendChild(
+      actions
+    );
+
+    article.appendChild(
+      commentsBox
+    );
+
+
+    postsContainer.appendChild(
+      article
+    );
+
+  }
+
+
+  // ==========================================
+  // BAŞLAT
+  // ==========================================
+
+  async function start() {
+
+    const {
+      data: {
+        user
+      }
+    } =
+      await supabaseClient
+        .auth
+        .getUser();
+
+
+    if (!user) {
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    currentUser =
+      user;
+
+
+    await loadPosts();
+
+  }
+
+
+  start();
+
+</script>
+
+</body>
+</html>
