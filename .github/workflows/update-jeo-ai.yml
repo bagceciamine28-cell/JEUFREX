@@ -1,0 +1,70 @@
+name: Add JEO AI integration
+
+on:
+  push:
+    paths:
+      - '.github/workflows/update-jeo-ai.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-jeo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add secure JEO AI bridge
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('jeo.html')
+          text = path.read_text(encoding='utf-8')
+
+          helper = '''async function askJEOAI(message){
+          try{
+            if(typeof db === 'undefined' || !db?.functions) throw new Error('Supabase Functions unavailable');
+            const {data,error}=await db.functions.invoke('jeo-ai',{
+              body:{
+                message,
+                history:context.slice(-12).map(m=>({role:m.role,content:m.content}))
+              }
+            });
+            if(error) throw error;
+            if(!data?.answer) throw new Error('JEO AI returned no answer');
+            $("memoryStatus").textContent='AI aktif';
+            return String(data.answer).trim();
+          }catch(e){
+            console.warn('JEO AI bridge unavailable; local engine used:',e);
+            $("memoryStatus").textContent='yerel motor';
+            return answer(message);
+          }
+          }
+          '''
+
+          if 'async function askJEOAI(message)' not in text:
+              marker = 'async function sendMessage(){'
+              if marker not in text:
+                  raise SystemExit('sendMessage marker not found')
+              text = text.replace(marker, helper + marker, 1)
+
+          old = 'const out=answer(text);'
+          new = 'const out=await askJEOAI(text);'
+          if old in text:
+              text = text.replace(old, new, 1)
+
+          path.write_text(text, encoding='utf-8')
+
+      - name: Commit JEO update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add jeo.html
+          if git diff --cached --quiet; then
+            echo 'No changes needed.'
+            exit 0
+          fi
+          git commit -m 'feat: connect JEO to AI bridge'
+          git push
