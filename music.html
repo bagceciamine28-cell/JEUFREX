@@ -7,6 +7,9 @@
 
 <title>Müzik | JEUFREX</title>
 
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 * {
   box-sizing: border-box;
@@ -98,6 +101,21 @@ h1 {
   color: #bbb;
   font-size: 16px;
   line-height: 1.6;
+}
+
+.user-status {
+  margin-top: 18px;
+  display: inline-block;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: #aaa;
+  font-size: 13px;
+}
+
+.user-status.logged {
+  color: #9dffbd;
+  background: rgba(50,255,120,.08);
 }
 
 .toolbar {
@@ -434,6 +452,10 @@ Yeni MP3 dosyaları <b>music</b> klasörüne
 eklendiğinde otomatik olarak burada görünür.
 </p>
 
+<div id="userStatus" class="user-status">
+👤 Kullanıcı kontrol ediliyor...
+</div>
+
 </section>
 
 <div class="toolbar">
@@ -471,17 +493,11 @@ eklendiğinde otomatik olarak burada görünür.
 
 <div class="now-playing">
 
-<div
-  id="nowTitle"
-  class="now-title"
->
+<div id="nowTitle" class="now-title">
 Bir şarkı seç
 </div>
 
-<div
-  id="nowArtist"
-  class="now-artist"
->
+<div id="nowArtist" class="now-artist">
 JEUFREX • Admin Originals
 </div>
 
@@ -491,43 +507,23 @@ JEUFREX • Admin Originals
 
 <div class="controls">
 
-<button
-  id="shuffle"
-  class="control"
-  title="Karıştır"
->
+<button id="shuffle" class="control" title="Karıştır">
 🔀
 </button>
 
-<button
-  id="previous"
-  class="control"
-  title="Önceki"
->
+<button id="previous" class="control" title="Önceki">
 ⏮
 </button>
 
-<button
-  id="play"
-  class="control main"
-  title="Oynat"
->
+<button id="play" class="control main" title="Oynat">
 ▶
 </button>
 
-<button
-  id="next"
-  class="control"
-  title="Sonraki"
->
+<button id="next" class="control" title="Sonraki">
 ⏭
 </button>
 
-<button
-  id="repeat"
-  class="control"
-  title="Tekrar"
->
+<button id="repeat" class="control" title="Tekrar">
 🔁
 </button>
 
@@ -558,10 +554,7 @@ JEUFREX • Admin Originals
 
 <div class="volume">
 
-<button
-  id="mute"
-  class="control"
->
+<button id="mute" class="control">
 🔊
 </button>
 
@@ -587,20 +580,42 @@ Hazırlanıyor...
 
 <audio id="audio"></audio>
 
+
 <script>
 
 /* ==================================================
-   GITHUB
+   SUPABASE
 ================================================== */
 
-const GITHUB_OWNER =
-"bagceciamine28-cell";
+const SUPABASE_URL =
+"https://cqxxobmvycesunyxicjj.supabase.co";
 
-const GITHUB_REPO =
-"JEUFREX";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoiY3F4eHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
 
-const MUSIC_FOLDER =
-"music";
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+
+/* ==================================================
+   KULLANICILAR
+================================================== */
+
+let KULLANICILAR = [];
+
+let AKTIF_KULLANICI = null;
+
+let KULLANICI_PROFILI = null;
+
+
+/* ==================================================
+   FAVORİLER
+================================================== */
+
+let SUPABASE_FAVORILER = [];
 
 
 /* ==================================================
@@ -658,6 +673,9 @@ document.getElementById("nowArtist");
 const status =
 document.getElementById("status");
 
+const userStatus =
+document.getElementById("userStatus");
+
 
 /* ==================================================
    DEĞİŞKENLER
@@ -689,20 +707,41 @@ function cleanTitle(filename) {
 
 
 /* ==================================================
-   FAVORİLER
+   SUPABASE KULLANICILAR TABLOSU
 ================================================== */
 
-function getFavorites() {
+async function kullanicilariGetir() {
 
   try {
 
-    return JSON.parse(
-      localStorage.getItem(
-        "jeufrex_favorites"
-      ) || "[]"
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("KULLANICILAR")
+      .select("*");
+
+    if (error)
+      throw error;
+
+    KULLANICILAR =
+      data || [];
+
+    console.log(
+      "👥 KULLANICILAR:",
+      KULLANICILAR
     );
 
-  } catch {
+    return KULLANICILAR;
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "KULLANICILAR okunamadı:",
+      error
+    );
 
     return [];
 
@@ -711,47 +750,252 @@ function getFavorites() {
 }
 
 
-function saveFavorites(list) {
+/* ==================================================
+   AKTİF AUTH KULLANICISI
+================================================== */
 
-  localStorage.setItem(
-    "jeufrex_favorites",
-    JSON.stringify(list)
-  );
+async function aktifKullaniciyiGetir() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.getUser();
+
+    if (error)
+      throw error;
+
+    AKTIF_KULLANICI =
+      data?.user || null;
+
+    if (AKTIF_KULLANICI) {
+
+      userStatus.textContent =
+        "🟢 Giriş yapıldı";
+
+      userStatus.classList.add(
+        "logged"
+      );
+
+      console.log(
+        "👤 Aktif kullanıcı:",
+        AKTIF_KULLANICI
+      );
+
+    }
+
+    else {
+
+      userStatus.textContent =
+        "👤 Giriş yapılmadı";
+
+    }
+
+    return AKTIF_KULLANICI;
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Auth kullanıcı hatası:",
+      error
+    );
+
+    AKTIF_KULLANICI =
+      null;
+
+    userStatus.textContent =
+      "👤 Giriş yapılmadı";
+
+    return null;
+
+  }
 
 }
 
 
+/* ==================================================
+   KULLANICI PROFİLİNİ BUL
+================================================== */
+
+async function kullaniciProfiliniGetir() {
+
+  if (!AKTIF_KULLANICI)
+    return null;
+
+  const profil =
+    KULLANICILAR.find(
+      user =>
+        user.id ===
+        AKTIF_KULLANICI.id
+    );
+
+  KULLANICI_PROFILI =
+    profil || null;
+
+  console.log(
+    "👤 KULLANICI PROFİLİ:",
+    KULLANICI_PROFILI
+  );
+
+  return KULLANICI_PROFILI;
+
+}
+
+
+/* ==================================================
+   FAVORİLERİ SUPABASE'DEN GETİR
+================================================== */
+
+async function favorileriGetir() {
+
+  if (!AKTIF_KULLANICI) {
+
+    SUPABASE_FAVORILER = [];
+
+    return;
+
+  }
+
+  try {
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("favoriler")
+      .select("song_name")
+      .eq(
+        "user_id",
+        AKTIF_KULLANICI.id
+      );
+
+    if (error)
+      throw error;
+
+    SUPABASE_FAVORILER =
+      (data || []).map(
+        item => item.song_name
+      );
+
+    console.log(
+      "❤️ SUPABASE FAVORİLER:",
+      SUPABASE_FAVORILER
+    );
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Favoriler alınamadı:",
+      error
+    );
+
+    SUPABASE_FAVORILER = [];
+
+  }
+
+}
+
+
+/* ==================================================
+   FAVORİ Mİ?
+================================================== */
+
 function isFavorite(name) {
 
-  return getFavorites()
+  return SUPABASE_FAVORILER
     .includes(name);
 
 }
 
 
-function toggleFavorite(name) {
+/* ==================================================
+   FAVORİ DEĞİŞTİR
+================================================== */
 
-  let favorites =
-    getFavorites();
+async function toggleFavorite(name) {
 
-  if (
-    favorites.includes(name)
-  ) {
+  if (!AKTIF_KULLANICI) {
 
-    favorites =
-      favorites.filter(
-        x => x !== name
-      );
+    alert(
+      "❤️ Favorilere eklemek için önce giriş yapmalısın."
+    );
 
-  } else {
-
-    favorites.push(name);
+    return;
 
   }
 
-  saveFavorites(favorites);
+  try {
 
-  renderSongs();
+    if (isFavorite(name)) {
+
+      const {
+        error
+      } = await supabaseClient
+        .from("favoriler")
+        .delete()
+        .eq(
+          "user_id",
+          AKTIF_KULLANICI.id
+        )
+        .eq(
+          "song_name",
+          name
+        );
+
+      if (error)
+        throw error;
+
+      SUPABASE_FAVORILER =
+        SUPABASE_FAVORILER.filter(
+          song => song !== name
+        );
+
+    }
+
+    else {
+
+      const {
+        error
+      } = await supabaseClient
+        .from("favoriler")
+        .insert({
+          user_id:
+            AKTIF_KULLANICI.id,
+          song_name:
+            name
+        });
+
+      if (error)
+        throw error;
+
+      SUPABASE_FAVORILER.push(
+        name
+      );
+
+    }
+
+    renderSongs();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Favori işlemi başarısız:",
+      error
+    );
+
+    alert(
+      "Favori işlemi başarısız oldu."
+    );
+
+  }
 
 }
 
@@ -841,9 +1085,10 @@ function createMusicCard(song, index) {
 
 
   favorite.onclick =
-    () => toggleFavorite(
-      song.name
-    );
+    () =>
+      toggleFavorite(
+        song.name
+      );
 
 
   const play =
@@ -860,7 +1105,8 @@ function createMusicCard(song, index) {
 
 
   play.onclick =
-    () => playSong(index);
+    () =>
+      playSong(index);
 
 
   actions.appendChild(
@@ -1060,9 +1306,8 @@ async function loadMusic() {
 
 function playSong(index) {
 
-  if (
-    !songs[index]
-  ) return;
+  if (!songs[index])
+    return;
 
 
   currentIndex =
@@ -1113,36 +1358,31 @@ function playSong(index) {
 ================================================== */
 
 playButton.onclick =
-  function() {
+function() {
 
-    if (
-      currentIndex === -1
-    ) {
+  if (currentIndex === -1) {
 
-      if (songs.length) {
+    if (songs.length)
+      playSong(0);
 
-        playSong(0);
+    return;
 
-      }
-
-      return;
-
-    }
+  }
 
 
-    if (
-      audio.paused
-    ) {
+  if (audio.paused) {
 
-      audio.play();
+    audio.play();
 
-    } else {
+  }
 
-      audio.pause();
+  else {
 
-    }
+    audio.pause();
 
-  };
+  }
+
+};
 
 
 /* ==================================================
@@ -1150,29 +1390,23 @@ playButton.onclick =
 ================================================== */
 
 previousButton.onclick =
-  function() {
+function() {
 
-    if (!songs.length)
-      return;
-
-
-    let index =
-      currentIndex - 1;
+  if (!songs.length)
+    return;
 
 
-    if (
-      index < 0
-    ) {
-
-      index =
-        songs.length - 1;
-
-    }
+  let index =
+    currentIndex - 1;
 
 
-    playSong(index);
+  if (index < 0)
+    index = songs.length - 1;
 
-  };
+
+  playSong(index);
+
+};
 
 
 /* ==================================================
@@ -1180,11 +1414,11 @@ previousButton.onclick =
 ================================================== */
 
 nextButton.onclick =
-  function() {
+function() {
 
-    playNext();
+  playNext();
 
-  };
+};
 
 
 function playNext() {
@@ -1204,19 +1438,15 @@ function playNext() {
         songs.length
       );
 
-  } else {
+  }
+
+  else {
 
     index =
       currentIndex + 1;
 
-
-    if (
-      index >= songs.length
-    ) {
-
+    if (index >= songs.length)
       index = 0;
-
-    }
 
   }
 
@@ -1231,22 +1461,22 @@ function playNext() {
 ================================================== */
 
 shuffleButton.onclick =
-  function() {
+function() {
 
-    shuffleMode =
-      !shuffleMode;
+  shuffleMode =
+    !shuffleMode;
 
-    shuffleButton.style.opacity =
-      shuffleMode
-        ? "1"
-        : ".5";
+  shuffleButton.style.opacity =
+    shuffleMode
+      ? "1"
+      : ".5";
 
-    status.textContent =
-      shuffleMode
-        ? "🔀 Karıştırma açık"
-        : "🔀 Karıştırma kapalı";
+  status.textContent =
+    shuffleMode
+      ? "🔀 Karıştırma açık"
+      : "🔀 Karıştırma kapalı";
 
-  };
+};
 
 
 /* ==================================================
@@ -1254,22 +1484,22 @@ shuffleButton.onclick =
 ================================================== */
 
 repeatButton.onclick =
-  function() {
+function() {
 
-    repeatMode =
-      !repeatMode;
+  repeatMode =
+    !repeatMode;
 
-    repeatButton.style.opacity =
-      repeatMode
-        ? "1"
-        : ".5";
+  repeatButton.style.opacity =
+    repeatMode
+      ? "1"
+      : ".5";
 
-    status.textContent =
-      repeatMode
-        ? "🔁 Tekrar açık"
-        : "🔁 Tekrar kapalı";
+  status.textContent =
+    repeatMode
+      ? "🔁 Tekrar açık"
+      : "🔁 Tekrar kapalı";
 
-  };
+};
 
 
 /* ==================================================
@@ -1282,8 +1512,7 @@ audio.addEventListener(
 
     if (repeatMode) {
 
-      audio.currentTime =
-        0;
+      audio.currentTime = 0;
 
       audio.play();
 
@@ -1333,13 +1562,8 @@ audio.addEventListener(
 
 function formatTime(seconds) {
 
-  if (
-    !Number.isFinite(seconds)
-  ) {
-
+  if (!Number.isFinite(seconds))
     return "0:00";
-
-  }
 
 
   const minutes =
@@ -1351,8 +1575,8 @@ function formatTime(seconds) {
     Math.floor(
       seconds % 60
     )
-      .toString()
-      .padStart(2,"0");
+    .toString()
+    .padStart(2,"0");
 
 
   return `${minutes}:${secs}`;
@@ -1381,9 +1605,8 @@ audio.addEventListener(
   "timeupdate",
   function() {
 
-    if (
-      !audio.duration
-    ) return;
+    if (!audio.duration)
+      return;
 
 
     progress.value =
@@ -1406,9 +1629,8 @@ progress.addEventListener(
   "input",
   function() {
 
-    if (
-      !audio.duration
-    ) return;
+    if (!audio.duration)
+      return;
 
 
     audio.currentTime =
@@ -1435,10 +1657,8 @@ volumeSlider.addEventListener(
         volumeSlider.value
       );
 
-
     audio.muted =
       audio.volume === 0;
-
 
     updateMuteIcon();
 
@@ -1447,14 +1667,14 @@ volumeSlider.addEventListener(
 
 
 muteButton.onclick =
-  function() {
+function() {
 
-    audio.muted =
-      !audio.muted;
+  audio.muted =
+    !audio.muted;
 
-    updateMuteIcon();
+  updateMuteIcon();
 
-  };
+};
 
 
 function updateMuteIcon() {
@@ -1467,14 +1687,18 @@ function updateMuteIcon() {
     muteButton.textContent =
       "🔇";
 
-  } else if (
+  }
+
+  else if (
     audio.volume < .5
   ) {
 
     muteButton.textContent =
       "🔉";
 
-  } else {
+  }
+
+  else {
 
     muteButton.textContent =
       "🔊";
@@ -1499,26 +1723,60 @@ search.addEventListener(
 ================================================== */
 
 favoritesBtn.onclick =
-  function() {
+function() {
 
-    showFavorites =
-      !showFavorites;
+  if (!AKTIF_KULLANICI) {
 
-    favoritesBtn.classList.toggle(
-      "active",
-      showFavorites
+    alert(
+      "❤️ Favorileri kullanmak için giriş yapmalısın."
     );
 
-    renderSongs();
+    return;
 
-  };
+  }
+
+
+  showFavorites =
+    !showFavorites;
+
+
+  favoritesBtn.classList.toggle(
+    "active",
+    showFavorites
+  );
+
+
+  renderSongs();
+
+};
 
 
 /* ==================================================
    BAŞLAT
 ================================================== */
 
-loadMusic();
+async function baslat() {
+
+  status.textContent =
+    "Supabase bağlanıyor...";
+
+  await kullanicilariGetir();
+
+  await aktifKullaniciyiGetir();
+
+  await kullaniciProfiliniGetir();
+
+  await favorileriGetir();
+
+  await loadMusic();
+
+  status.textContent =
+    `${songs.length} şarkı hazır 🎵`;
+
+}
+
+
+baslat();
 
 </script>
 
