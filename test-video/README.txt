@@ -1,1 +1,1 @@
-JEUFREX test video: test-video/jeufrex-test.webm
+JEUFREX test video
