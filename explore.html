@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Keşfet | JEUFREX</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:Inter,Arial,sans-serif;color:#fff;background:#060611;overflow-x:hidden}body:before{content:"";position:fixed;inset:-30%;z-index:-2;background:radial-gradient(circle at 20% 20%,#7658ff55,transparent 25%),radial-gradient(circle at 80% 25%,#ff4d9150,transparent 24%),radial-gradient(circle at 50% 90%,#4de7ff25,transparent 25%);animation:bg 16s ease-in-out infinite alternate;filter:blur(10px)}@keyframes bg{to{transform:translate(7%,5%) scale(1.12) rotate(4deg)}}header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:16px 35px;background:#070711c9;border-bottom:1px solid #ffffff12;backdrop-filter:blur(24px)}.logo{color:#fff;text-decoration:none;font-size:25px;font-weight:950;letter-spacing:1px}nav{display:flex;gap:22px}nav a{color:#aaa;text-decoration:none;font-size:14px;font-weight:800;transition:.25s}nav a:hover,nav a.active{color:#fff;transform:translateY(-2px)}main{width:min(1050px,calc(100% - 30px));margin:auto;padding:55px 0}.hero{padding:50px;border-radius:34px;background:linear-gradient(135deg,#ffffff13,#ffffff06);border:1px solid #ffffff15;backdrop-filter:blur(25px);box-shadow:0 25px 90px #0006;animation:in .7s ease}.badge{display:inline-block;padding:8px 14px;border-radius:999px;background:#ffffff0e;border:1px solid #ffffff16;font-size:12px;font-weight:900}.hero h1{font-size:clamp(45px,7vw,76px);margin:18px 0 10px;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg,#fff,#cfc5ff,#ff9fc3);-webkit-background-clip:text;color:transparent}.hero p{color:#aaa;line-height:1.7;max-width:650px}.search-wrap{display:flex;gap:10px;margin-top:28px}.search{flex:1;padding:17px 20px;border-radius:17px;border:1px solid #ffffff16;outline:none;color:#fff;background:#ffffff09;backdrop-filter:blur(15px);font-size:15px}.search:focus{border-color:#7c5cff88;box-shadow:0 0 30px #7c5cff22}.search-btn{border:0;border-radius:15px;padding:0 23px;color:#fff;background:linear-gradient(135deg,#7c5cff,#ff4d91);font-weight:900;cursor:pointer;transition:.25s}.search-btn:hover{transform:translateY(-3px);box-shadow:0 12px 35px #7c5cff44}.section{margin-top:28px}.section h2{margin:0 0 15px}.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:15px}.card{display:flex;align-items:center;gap:15px;padding:18px;border-radius:23px;background:linear-gradient(135deg,#ffffff10,#ffffff05);border:1px solid #ffffff13;backdrop-filter:blur(20px);cursor:pointer;transition:.3s;animation:card .4s ease both}.card:hover{transform:translateY(-5px);border-color:#ffffff30;box-shadow:0 20px 50px #0007}.avatar{width:62px;height:62px;flex:0 0 62px;border-radius:50%;object-fit:cover;background:linear-gradient(135deg,#7c5cff,#ff4d91);display:grid;place-items:center;font-size:25px;font-weight:950;border:2px solid #ffffff20}.info{min-width:0}.username{font-size:17px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.email{color:#777;font-size:12px;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.arrow{margin-left:auto;color:#777;font-size:20px}.empty,.loading,.error{text-align:center;padding:45px;color:#888;border-radius:22px;background:#ffffff06;border:1px solid #ffffff0d}.error{color:#ffb5b5;background:#ff464612}@keyframes in{from{opacity:0;transform:translateY(25px) scale(.98)}to{opacity:1;transform:none}}@keyframes card{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@media(max-width:700px){header{padding:13px 16px}nav{display:none}main{padding-top:25px}.hero{padding:30px 22px;border-radius:25px}.search-wrap{flex-direction:column}.search-btn{padding:14px}.results{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><a class="logo" href="index.html">JEUFREX</a><nav><a href="index.html">Ana Sayfa</a><a href="games.html">🎮 Oyunlar</a><a href="music.html">🎵 Müzik</a><a href="videos.html">🎬 Videolar</a><a href="community.html">👥 Topluluk</a><a class="active" href="explore.html">✨ Keşfet</a></nav></header>
+<main>
+<section class="hero"><span class="badge">✨ JEUFREX EXPLORE</span><h1>Keşfet 🔎</h1><p>JEUFREX kullanıcılarını bul, profillerini keşfet ve topluluğa göz at.</p><div class="search-wrap"><input id="search" class="search" autocomplete="off" placeholder="🔎 Kullanıcı adı ara..." maxlength="50"><button id="searchBtn" class="search-btn">Ara</button></div></section>
+<section class="section"><h2 id="resultTitle">👥 Kullanıcılar</h2><div id="results" class="results"><div class="loading">🔄 Kullanıcılar yükleniyor...</div></div></section>
+</main>
+<script>
+const SUPABASE_URL="https://cqxxobmvycesunyxicjj.supabase.co";
+const SUPABASE_KEY="sb_publishable_C0BYpv-9sknEu1EXbeKLwQ_lMddpL5V";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id),results=$("results"),search=$("search");
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
+function avatar(u){return u.avatar_url||u.profile_photo||u.photo_url||u.profile_picture||""}
+function username(u){return u.username||u.user_name||u.handle||u.name||"Kullanıcı"}
+function openProfile(u){const name=username(u);location.href="profile.html?username="+encodeURIComponent(name)}
+function render(data){if(!data?.length){results.innerHTML='<div class="empty">👤 Kullanıcı bulunamadı.<br><small>Başka bir kullanıcı adı deneyebilirsin.</small></div>';return}results.innerHTML="";data.forEach((u,i)=>{const d=document.createElement("article");d.className="card";d.style.animationDelay=i*45+"ms";const name=username(u),photo=avatar(u);d.innerHTML=`${photo?`<img class="avatar" src="${esc(photo)}" alt="">`:`<div class="avatar">👤</div>`}<div class="info"><div class="username">@${esc(name)}</div><div class="email">JEUFREX kullanıcısı</div></div><div class="arrow">›</div>`;d.onclick=()=>openProfile(u);results.appendChild(d)})}
+async function loadUsers(){const q=search.value.trim();results.innerHTML='<div class="loading">🔍 Aranıyor...</div>';$('resultTitle').textContent=q?`👥 “${q}” sonuçları`:'👥 Kullanıcılar';
+// Common profile table names are tried in order. The first existing table is used.
+let data=null,error=null;
+for(const table of ["profiles","profiles_public","users"]){const r=await db.from(table).select("*").ilike("username",`%${q}%`).limit(30);if(!r.error){data=r.data;break}error=r.error}
+if(error&&!data){console.error(error);results.innerHTML='<div class="error">❌ Kullanıcılar yüklenemedi.<br><small>Supabase profil tablosu veya RLS ayarını kontrol et.</small></div>';return}render(data||[])}
+$("searchBtn").onclick=loadUsers;search.onkeydown=e=>{if(e.key==="Enter")loadUsers()};search.oninput=()=>{if(!search.value.trim())loadUsers()};
+loadUsers();
+</script>
+</body></html>
