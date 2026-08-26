@@ -1,17 +1,13 @@
 ```html
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Müzik | JEUFREX</title>
 
 <style>
-
 * {
   box-sizing: border-box;
 }
@@ -20,46 +16,31 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   color: white;
-  min-height: 100vh;
-
   background:
-    radial-gradient(
-      circle at 10% 10%,
-      #5138a8 0%,
-      transparent 35%
-    ),
-    radial-gradient(
-      circle at 90% 90%,
-      #e03a75 0%,
-      transparent 30%
-    ),
+    radial-gradient(circle at 10% 10%, #5138a8 0%, transparent 35%),
+    radial-gradient(circle at 90% 90%, #e03a75 0%, transparent 30%),
     #09090f;
+  min-height: 100vh;
+  padding-bottom: 110px;
 }
 
 header {
   min-height: 70px;
   padding: 12px 35px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   background: rgba(10,10,18,.78);
-
-  border-bottom:
-    1px solid rgba(255,255,255,.1);
-
+  border-bottom: 1px solid rgba(255,255,255,.1);
   position: sticky;
   top: 0;
-  z-index: 10;
-
+  z-index: 20;
   backdrop-filter: blur(15px);
 }
 
 .logo {
   color: white;
   text-decoration: none;
-
   font-size: 25px;
   font-weight: 900;
   letter-spacing: 1px;
@@ -74,7 +55,6 @@ nav {
 nav a {
   color: #cfcfd8;
   text-decoration: none;
-
   font-size: 14px;
   font-weight: 700;
 }
@@ -86,276 +66,286 @@ nav a:hover {
 main {
   width: min(1100px, calc(100% - 30px));
   margin: auto;
-  padding: 50px 0;
+  padding: 45px 0;
 }
 
 .hero {
   padding: 45px;
-
   border-radius: 30px;
-
-  background:
-    rgba(255,255,255,.08);
-
-  border:
-    1px solid rgba(255,255,255,.12);
-
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
   backdrop-filter: blur(20px);
-
-  box-shadow:
-    0 25px 80px rgba(0,0,0,.3);
-
+  box-shadow: 0 25px 80px rgba(0,0,0,.3);
   margin-bottom: 25px;
 }
 
 .badge {
   display: inline-block;
-
   padding: 8px 13px;
-
   border-radius: 999px;
-
-  background:
-    rgba(255,255,255,.12);
-
+  background: rgba(255,255,255,.12);
   color: #ddd;
-
   font-size: 12px;
   font-weight: 800;
 }
 
 h1 {
   margin: 18px 0 10px;
-
-  font-size:
-    clamp(38px,6vw,60px);
-
-  line-height: 1;
+  font-size: clamp(38px,6vw,60px);
 }
 
 .hero p {
   color: #bbb;
-
   font-size: 16px;
-
-  max-width: 700px;
-
   line-height: 1.6;
 }
 
 .toolbar {
   display: flex;
   gap: 12px;
-
-  margin-bottom: 25px;
-
-  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .search {
   flex: 1;
-
-  min-width: 220px;
-
-  border: 1px solid rgba(255,255,255,.12);
-
-  background: rgba(255,255,255,.08);
-
-  color: white;
-
   padding: 15px 18px;
-
-  border-radius: 15px;
-
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px;
+  background: rgba(255,255,255,.08);
+  color: white;
   outline: none;
-
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .search::placeholder {
-  color: #888;
+  color: #999;
 }
 
-.search:focus {
-  border-color: rgba(255,255,255,.35);
-}
-
-.music-count {
-  display: flex;
-  align-items: center;
-
-  padding: 0 17px;
-
-  border-radius: 15px;
-
+.filter-btn {
+  border: 1px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.08);
-
-  color: #bbb;
-
-  font-size: 13px;
+  color: white;
+  border-radius: 16px;
+  padding: 0 18px;
+  cursor: pointer;
   font-weight: 800;
+}
+
+.filter-btn.active {
+  background: white;
+  color: #111;
 }
 
 #musicList {
   display: grid;
-  gap: 20px;
+  gap: 15px;
 }
 
 .music-card {
   display: grid;
-
-  grid-template-columns:
-    150px 1fr;
-
-  gap: 25px;
-
-  padding: 25px;
-
-  border-radius: 28px;
-
-  background:
-    rgba(255,255,255,.08);
-
-  border:
-    1px solid rgba(255,255,255,.1);
-
-  backdrop-filter:
-    blur(20px);
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,.25);
-
-  transition:
-    transform .2s,
-    border-color .2s;
+  grid-template-columns: 95px 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 18px;
+  border-radius: 24px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: blur(20px);
+  transition: .2s;
 }
 
 .music-card:hover {
-  transform: translateY(-3px);
-
-  border-color:
-    rgba(255,255,255,.2);
+  transform: translateY(-2px);
+  background: rgba(255,255,255,.11);
 }
 
 .cover {
-  width: 150px;
-  height: 150px;
-
-  border-radius: 22px;
-
+  width: 95px;
+  height: 95px;
+  border-radius: 20px;
   display: flex;
-
   align-items: center;
   justify-content: center;
-
-  font-size: 55px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ff4d8d,
-      #7148ff
-    );
-
-  box-shadow:
-    0 15px 40px rgba(0,0,0,.35);
+  font-size: 38px;
+  background: linear-gradient(135deg, #ff4d8d, #7148ff);
+  box-shadow: 0 15px 40px rgba(0,0,0,.35);
 }
 
 .music-info {
-  display: flex;
-
-  flex-direction: column;
-
-  justify-content: center;
+  min-width: 0;
 }
 
-.music-info h2 {
-  margin: 0 0 8px;
-
-  font-size: 27px;
+.music-title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .artist {
   color: #aaa;
-  margin-bottom: 20px;
+  font-size: 13px;
+  margin-bottom: 10px;
 }
 
-audio {
-  width: 100%;
-  height: 45px;
+.card-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
-.original {
-  display: inline-block;
-
-  width: fit-content;
-
-  margin-top: 15px;
-
-  padding: 7px 11px;
-
-  border-radius: 999px;
-
-  background:
-    rgba(255,255,255,.1);
-
-  color: #ddd;
-
-  font-size: 11px;
-
-  font-weight: 800;
+.play-card {
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: white;
+  color: #111;
+  cursor: pointer;
+  font-size: 18px;
 }
 
-.loading {
-  text-align: center;
-
-  padding: 50px;
-
+.favorite {
+  border: none;
+  background: transparent;
   color: #aaa;
-
-  font-size: 16px;
+  cursor: pointer;
+  font-size: 22px;
 }
 
-.empty {
-  padding: 50px;
+.favorite.active {
+  color: #ff4d8d;
+}
 
-  border-radius: 22px;
-
-  background:
-    rgba(255,255,255,.06);
-
+.loading,
+.empty,
+.error {
   text-align: center;
-
+  padding: 50px;
   color: #aaa;
 }
 
 .error {
-  padding: 25px;
-
+  background: rgba(255,70,70,.12);
+  border: 1px solid rgba(255,70,70,.2);
   border-radius: 20px;
-
-  background:
-    rgba(255,70,70,.12);
-
-  border:
-    1px solid rgba(255,70,70,.2);
-
   color: #ffb5b5;
-
-  text-align: center;
 }
 
-footer {
-  text-align: center;
+/* PLAYER */
 
+.player {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: rgba(12,12,20,.92);
+  border-top: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(20px);
+  padding: 12px 20px;
+}
+
+.player-inner {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.now-playing {
+  min-width: 0;
+}
+
+.now-title {
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.now-artist {
+  color: #999;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.player-center {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 13px;
+}
+
+.control {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.control:hover {
+  background: rgba(255,255,255,.1);
+}
+
+.control.main {
+  width: 43px;
+  height: 43px;
+  background: white;
+  color: #111;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time {
+  font-size: 10px;
+  color: #999;
+  width: 35px;
+}
+
+.progress {
+  flex: 1;
+  accent-color: white;
+  cursor: pointer;
+}
+
+.volume {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.volume-slider {
+  width: 100px;
+  accent-color: white;
+}
+
+.status {
+  text-align: center;
   color: #777;
-
-  padding: 40px 20px;
-
-  font-size: 13px;
+  font-size: 12px;
+  margin-top: 5px;
 }
 
-@media (max-width:700px) {
+@media (max-width: 750px) {
 
   header {
     padding: 12px 15px;
@@ -365,27 +355,46 @@ footer {
     display: none;
   }
 
+  main {
+    padding-top: 25px;
+  }
+
   .hero {
     padding: 30px 22px;
   }
 
   .music-card {
-    grid-template-columns: 1fr;
+    grid-template-columns: 70px 1fr auto;
   }
 
   .cover {
-    width: 100%;
-    height: 220px;
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
   }
 
-  .music-count {
-    padding: 13px 17px;
+  .music-title {
+    font-size: 16px;
   }
 
+  .player-inner {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .volume {
+    display: none;
+  }
+
+  .player {
+    padding: 10px;
+  }
+
+  body {
+    padding-bottom: 150px;
+  }
 }
-
 </style>
-
 </head>
 
 <body>
@@ -397,19 +406,12 @@ JEUFREX
 </a>
 
 <nav>
-
 <a href="index.html">Ana Sayfa</a>
-
 <a href="games.html">🎮 Oyunlar</a>
-
 <a href="music.html">🎵 Müzik</a>
-
 <a href="videos.html">🎬 Videolar</a>
-
 <a href="community.html">👥 Topluluk</a>
-
 <a href="explore.html">✨ Keşfet</a>
-
 </nav>
 
 </header>
@@ -427,9 +429,9 @@ Müzik 🎵
 </h1>
 
 <p>
-JEUFREX'in özgün müzikleri.
-Yeni MP3 dosyaları eklendikçe
-bu sayfa otomatik olarak güncellenir.
+JEUFREX'in özgün müziklerini keşfet.
+Yeni MP3 dosyaları <b>music</b> klasörüne
+eklendiğinde otomatik olarak burada görünür.
 </p>
 
 </section>
@@ -439,13 +441,15 @@ bu sayfa otomatik olarak güncellenir.
 <input
   id="search"
   class="search"
-  type="search"
-  placeholder="🔍 Şarkı ara..."
+  placeholder="🔎 Şarkı ara..."
 >
 
-<div class="music-count">
-🎵 <span id="count">0</span>&nbsp; şarkı
-</div>
+<button
+  id="favoritesBtn"
+  class="filter-btn"
+>
+❤️ Favoriler
+</button>
 
 </div>
 
@@ -459,57 +463,311 @@ bu sayfa otomatik olarak güncellenir.
 
 </main>
 
-<footer>
+<!-- PLAYER -->
 
-© 2026 JEUFREX • Admin Originals 🎵
+<div class="player">
 
-</footer>
+<div class="player-inner">
+
+<div class="now-playing">
+
+<div
+  id="nowTitle"
+  class="now-title"
+>
+Bir şarkı seç
+</div>
+
+<div
+  id="nowArtist"
+  class="now-artist"
+>
+JEUFREX • Admin Originals
+</div>
+
+</div>
+
+<div class="player-center">
+
+<div class="controls">
+
+<button
+  id="shuffle"
+  class="control"
+  title="Karıştır"
+>
+🔀
+</button>
+
+<button
+  id="previous"
+  class="control"
+  title="Önceki"
+>
+⏮
+</button>
+
+<button
+  id="play"
+  class="control main"
+  title="Oynat"
+>
+▶
+</button>
+
+<button
+  id="next"
+  class="control"
+  title="Sonraki"
+>
+⏭
+</button>
+
+<button
+  id="repeat"
+  class="control"
+  title="Tekrar"
+>
+🔁
+</button>
+
+</div>
+
+<div class="progress-row">
+
+<span id="currentTime" class="time">
+0:00
+</span>
+
+<input
+  id="progress"
+  class="progress"
+  type="range"
+  min="0"
+  max="100"
+  value="0"
+>
+
+<span id="duration" class="time">
+0:00
+</span>
+
+</div>
+
+</div>
+
+<div class="volume">
+
+<button
+  id="mute"
+  class="control"
+>
+🔊
+</button>
+
+<input
+  id="volume"
+  class="volume-slider"
+  type="range"
+  min="0"
+  max="1"
+  step="0.01"
+  value="1"
+>
+
+</div>
+
+</div>
+
+<div id="status" class="status">
+Hazırlanıyor...
+</div>
+
+</div>
+
+<audio id="audio"></audio>
 
 <script>
 
-const MUSIC_JSON =
-  "music-list.json";
+/* ==================================================
+   GITHUB
+================================================== */
+
+const GITHUB_OWNER =
+"bagceciamine28-cell";
+
+const GITHUB_REPO =
+"JEUFREX";
+
+const MUSIC_FOLDER =
+"music";
+
+
+/* ==================================================
+   ELEMENTLER
+================================================== */
 
 const musicList =
-  document.getElementById("musicList");
+document.getElementById("musicList");
 
 const search =
-  document.getElementById("search");
+document.getElementById("search");
 
-const count =
-  document.getElementById("count");
+const favoritesBtn =
+document.getElementById("favoritesBtn");
 
-let allMusic = [];
+const audio =
+document.getElementById("audio");
 
-let players = [];
+const playButton =
+document.getElementById("play");
+
+const previousButton =
+document.getElementById("previous");
+
+const nextButton =
+document.getElementById("next");
+
+const shuffleButton =
+document.getElementById("shuffle");
+
+const repeatButton =
+document.getElementById("repeat");
+
+const muteButton =
+document.getElementById("mute");
+
+const volumeSlider =
+document.getElementById("volume");
+
+const progress =
+document.getElementById("progress");
+
+const currentTime =
+document.getElementById("currentTime");
+
+const duration =
+document.getElementById("duration");
+
+const nowTitle =
+document.getElementById("nowTitle");
+
+const nowArtist =
+document.getElementById("nowArtist");
+
+const status =
+document.getElementById("status");
 
 
-/* ==========================================
-   BAŞLIK TEMİZLE
-========================================== */
+/* ==================================================
+   DEĞİŞKENLER
+================================================== */
+
+let songs = [];
+
+let currentIndex = -1;
+
+let shuffleMode = false;
+
+let repeatMode = false;
+
+let showFavorites = false;
+
+
+/* ==================================================
+   BAŞLIK
+================================================== */
 
 function cleanTitle(filename) {
 
   return filename
     .replace(/\.mp3$/i, "")
     .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
     .trim();
 
 }
 
 
-/* ==========================================
-   KART
-========================================== */
+/* ==================================================
+   FAVORİLER
+================================================== */
 
-function createMusicCard(file) {
+function getFavorites() {
+
+  try {
+
+    return JSON.parse(
+      localStorage.getItem(
+        "jeufrex_favorites"
+      ) || "[]"
+    );
+
+  } catch {
+
+    return [];
+
+  }
+
+}
+
+
+function saveFavorites(list) {
+
+  localStorage.setItem(
+    "jeufrex_favorites",
+    JSON.stringify(list)
+  );
+
+}
+
+
+function isFavorite(name) {
+
+  return getFavorites()
+    .includes(name);
+
+}
+
+
+function toggleFavorite(name) {
+
+  let favorites =
+    getFavorites();
+
+  if (
+    favorites.includes(name)
+  ) {
+
+    favorites =
+      favorites.filter(
+        x => x !== name
+      );
+
+  } else {
+
+    favorites.push(name);
+
+  }
+
+  saveFavorites(favorites);
+
+  renderSongs();
+
+}
+
+
+/* ==================================================
+   ŞARKI KARTI
+================================================== */
+
+function createMusicCard(song, index) {
 
   const card =
     document.createElement("article");
 
   card.className =
     "music-card";
+
 
   const cover =
     document.createElement("div");
@@ -531,8 +789,11 @@ function createMusicCard(file) {
   const title =
     document.createElement("h2");
 
+  title.className =
+    "music-title";
+
   title.textContent =
-    cleanTitle(file.name);
+    cleanTitle(song.name);
 
 
   const artist =
@@ -545,65 +806,140 @@ function createMusicCard(file) {
     "JEUFREX • Admin Originals";
 
 
-  const audio =
-    document.createElement("audio");
-
-  audio.controls =
-    true;
-
-  audio.preload =
-    "metadata";
-
-  audio.src =
-    file.path;
-
-
-  const original =
-    document.createElement("span");
-
-  original.className =
-    "original";
-
-  original.textContent =
-    "🎧 ADMIN ORIGINAL";
-
-
   info.appendChild(title);
 
   info.appendChild(artist);
 
-  info.appendChild(audio);
 
-  info.appendChild(original);
+  const actions =
+    document.createElement("div");
 
-  card.appendChild(cover);
+  actions.className =
+    "card-actions";
 
-  card.appendChild(info);
+
+  const favorite =
+    document.createElement("button");
+
+  favorite.className =
+    "favorite";
+
+  favorite.textContent =
+    isFavorite(song.name)
+      ? "♥"
+      : "♡";
+
+  if (
+    isFavorite(song.name)
+  ) {
+
+    favorite.classList.add(
+      "active"
+    );
+
+  }
+
+
+  favorite.onclick =
+    () => toggleFavorite(
+      song.name
+    );
+
+
+  const play =
+    document.createElement("button");
+
+  play.className =
+    "play-card";
+
+  play.textContent =
+    currentIndex === index &&
+    !audio.paused
+      ? "⏸"
+      : "▶";
+
+
+  play.onclick =
+    () => playSong(index);
+
+
+  actions.appendChild(
+    favorite
+  );
+
+  actions.appendChild(
+    play
+  );
+
+
+  card.appendChild(
+    cover
+  );
+
+  card.appendChild(
+    info
+  );
+
+  card.appendChild(
+    actions
+  );
+
 
   return card;
 
 }
 
 
-/* ==========================================
-   LİSTELE
-========================================== */
+/* ==================================================
+   MÜZİKLERİ GÖSTER
+================================================== */
 
-function renderMusic(list) {
+function renderSongs() {
+
+  const query =
+    search.value
+      .toLowerCase()
+      .trim();
+
+
+  let filtered =
+    songs.filter(song =>
+      cleanTitle(song.name)
+        .toLowerCase()
+        .includes(query)
+    );
+
+
+  if (showFavorites) {
+
+    filtered =
+      filtered.filter(song =>
+        isFavorite(song.name)
+      );
+
+  }
+
 
   musicList.innerHTML =
     "";
 
-  count.textContent =
-    list.length;
 
-
-  if (!list.length) {
+  if (!filtered.length) {
 
     musicList.innerHTML = `
 
       <div class="empty">
-        🔍 Bu isimde müzik bulunamadı.
+
+        🎵
+
+        <br><br>
+
+        ${
+          showFavorites
+            ? "Henüz favori şarkın yok."
+            : "Müzik bulunamadı."
+        }
+
       </div>
 
     `;
@@ -613,38 +949,16 @@ function renderMusic(list) {
   }
 
 
-  list.forEach(file => {
+  filtered.forEach(song => {
+
+    const originalIndex =
+      songs.indexOf(song);
 
     musicList.appendChild(
-      createMusicCard(file)
-    );
-
-  });
-
-
-  players =
-    document.querySelectorAll("audio");
-
-
-  players.forEach(player => {
-
-    player.addEventListener(
-      "play",
-      () => {
-
-        players.forEach(other => {
-
-          if (
-            other !== player
-          ) {
-
-            other.pause();
-
-          }
-
-        });
-
-      }
+      createMusicCard(
+        song,
+        originalIndex
+      )
     );
 
   });
@@ -652,41 +966,50 @@ function renderMusic(list) {
 }
 
 
-/* ==========================================
-   MÜZİKLERİ AL
-========================================== */
+/* ==================================================
+   GITHUB'TAN MUSIC KLASÖRÜ
+================================================== */
 
 async function loadMusic() {
 
   try {
 
+    status.textContent =
+      "Müzikler yükleniyor...";
+
+
+    const apiUrl =
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${MUSIC_FOLDER}`;
+
+
     const response =
-      await fetch(
-        MUSIC_JSON + "?v=" + Date.now()
-      );
+      await fetch(apiUrl);
 
 
     if (!response.ok) {
 
       throw new Error(
-        "music-list.json bulunamadı."
+        "GitHub music klasörü okunamadı. HTTP " +
+        response.status
       );
 
     }
 
 
-    const data =
+    const files =
       await response.json();
 
 
-    allMusic =
-      data.filter(
-        file =>
-          /\.mp3$/i.test(file.name)
+    songs =
+      files.filter(file =>
+        file.type === "file" &&
+        /\.mp3$/i.test(
+          file.name
+        )
       );
 
 
-    allMusic.sort(
+    songs.sort(
       (a,b) =>
         a.name.localeCompare(
           b.name,
@@ -695,9 +1018,11 @@ async function loadMusic() {
     );
 
 
-    renderMusic(
-      allMusic
-    );
+    renderSongs();
+
+
+    status.textContent =
+      `${songs.length} şarkı hazır 🎵`;
 
   }
 
@@ -721,51 +1046,482 @@ async function loadMusic() {
 
     `;
 
+    status.textContent =
+      "Müzik sistemi hata verdi.";
+
   }
 
 }
 
 
-/* ==========================================
-   ARAMA
-========================================== */
+/* ==================================================
+   ŞARKI OYNAT
+================================================== */
 
-search.addEventListener(
-  "input",
-  () => {
+function playSong(index) {
 
-    const query =
-      search.value
-        .toLowerCase()
-        .trim();
+  if (
+    !songs[index]
+  ) return;
 
 
-    const filtered =
-      allMusic.filter(
-        file =>
-          cleanTitle(file.name)
-            .toLowerCase()
-            .includes(query)
+  currentIndex =
+    index;
+
+
+  const song =
+    songs[index];
+
+
+  audio.src =
+    song.download_url;
+
+
+  nowTitle.textContent =
+    cleanTitle(song.name);
+
+  nowArtist.textContent =
+    "JEUFREX • Admin Originals";
+
+
+  audio.play()
+    .then(() => {
+
+      playButton.textContent =
+        "⏸";
+
+      status.textContent =
+        "🎵 Çalıyor";
+
+      renderSongs();
+
+    })
+    .catch(error => {
+
+      console.error(error);
+
+      status.textContent =
+        "Şarkı oynatılamadı.";
+
+    });
+
+}
+
+
+/* ==================================================
+   OYNAT / DURDUR
+================================================== */
+
+playButton.onclick =
+  function() {
+
+    if (
+      currentIndex === -1
+    ) {
+
+      if (songs.length) {
+
+        playSong(0);
+
+      }
+
+      return;
+
+    }
+
+
+    if (
+      audio.paused
+    ) {
+
+      audio.play();
+
+    } else {
+
+      audio.pause();
+
+    }
+
+  };
+
+
+/* ==================================================
+   ÖNCEKİ
+================================================== */
+
+previousButton.onclick =
+  function() {
+
+    if (!songs.length)
+      return;
+
+
+    let index =
+      currentIndex - 1;
+
+
+    if (
+      index < 0
+    ) {
+
+      index =
+        songs.length - 1;
+
+    }
+
+
+    playSong(index);
+
+  };
+
+
+/* ==================================================
+   SONRAKİ
+================================================== */
+
+nextButton.onclick =
+  function() {
+
+    playNext();
+
+  };
+
+
+function playNext() {
+
+  if (!songs.length)
+    return;
+
+
+  let index;
+
+
+  if (shuffleMode) {
+
+    index =
+      Math.floor(
+        Math.random() *
+        songs.length
       );
 
+  } else {
 
-    renderMusic(
-      filtered
-    );
+    index =
+      currentIndex + 1;
+
+
+    if (
+      index >= songs.length
+    ) {
+
+      index = 0;
+
+    }
+
+  }
+
+
+  playSong(index);
+
+}
+
+
+/* ==================================================
+   KARIŞTIR
+================================================== */
+
+shuffleButton.onclick =
+  function() {
+
+    shuffleMode =
+      !shuffleMode;
+
+    shuffleButton.style.opacity =
+      shuffleMode
+        ? "1"
+        : ".5";
+
+    status.textContent =
+      shuffleMode
+        ? "🔀 Karıştırma açık"
+        : "🔀 Karıştırma kapalı";
+
+  };
+
+
+/* ==================================================
+   TEKRAR
+================================================== */
+
+repeatButton.onclick =
+  function() {
+
+    repeatMode =
+      !repeatMode;
+
+    repeatButton.style.opacity =
+      repeatMode
+        ? "1"
+        : ".5";
+
+    status.textContent =
+      repeatMode
+        ? "🔁 Tekrar açık"
+        : "🔁 Tekrar kapalı";
+
+  };
+
+
+/* ==================================================
+   ŞARKI BİTİNCE
+================================================== */
+
+audio.addEventListener(
+  "ended",
+  function() {
+
+    if (repeatMode) {
+
+      audio.currentTime =
+        0;
+
+      audio.play();
+
+      return;
+
+    }
+
+    playNext();
 
   }
 );
 
 
-/* ==========================================
+/* ==================================================
+   PLAY / PAUSE
+================================================== */
+
+audio.addEventListener(
+  "play",
+  function() {
+
+    playButton.textContent =
+      "⏸";
+
+    renderSongs();
+
+  }
+);
+
+
+audio.addEventListener(
+  "pause",
+  function() {
+
+    playButton.textContent =
+      "▶";
+
+    renderSongs();
+
+  }
+);
+
+
+/* ==================================================
+   SÜRE
+================================================== */
+
+function formatTime(seconds) {
+
+  if (
+    !Number.isFinite(seconds)
+  ) {
+
+    return "0:00";
+
+  }
+
+
+  const minutes =
+    Math.floor(
+      seconds / 60
+    );
+
+  const secs =
+    Math.floor(
+      seconds % 60
+    )
+      .toString()
+      .padStart(2,"0");
+
+
+  return `${minutes}:${secs}`;
+
+}
+
+
+audio.addEventListener(
+  "loadedmetadata",
+  function() {
+
+    duration.textContent =
+      formatTime(
+        audio.duration
+      );
+
+  }
+);
+
+
+/* ==================================================
+   İLERLEME
+================================================== */
+
+audio.addEventListener(
+  "timeupdate",
+  function() {
+
+    if (
+      !audio.duration
+    ) return;
+
+
+    progress.value =
+      (
+        audio.currentTime /
+        audio.duration
+      ) * 100;
+
+
+    currentTime.textContent =
+      formatTime(
+        audio.currentTime
+      );
+
+  }
+);
+
+
+progress.addEventListener(
+  "input",
+  function() {
+
+    if (
+      !audio.duration
+    ) return;
+
+
+    audio.currentTime =
+      (
+        progress.value /
+        100
+      ) *
+      audio.duration;
+
+  }
+);
+
+
+/* ==================================================
+   SES
+================================================== */
+
+volumeSlider.addEventListener(
+  "input",
+  function() {
+
+    audio.volume =
+      Number(
+        volumeSlider.value
+      );
+
+
+    audio.muted =
+      audio.volume === 0;
+
+
+    updateMuteIcon();
+
+  }
+);
+
+
+muteButton.onclick =
+  function() {
+
+    audio.muted =
+      !audio.muted;
+
+    updateMuteIcon();
+
+  };
+
+
+function updateMuteIcon() {
+
+  if (
+    audio.muted ||
+    audio.volume === 0
+  ) {
+
+    muteButton.textContent =
+      "🔇";
+
+  } else if (
+    audio.volume < .5
+  ) {
+
+    muteButton.textContent =
+      "🔉";
+
+  } else {
+
+    muteButton.textContent =
+      "🔊";
+
+  }
+
+}
+
+
+/* ==================================================
+   ARAMA
+================================================== */
+
+search.addEventListener(
+  "input",
+  renderSongs
+);
+
+
+/* ==================================================
+   FAVORİLER
+================================================== */
+
+favoritesBtn.onclick =
+  function() {
+
+    showFavorites =
+      !showFavorites;
+
+    favoritesBtn.classList.toggle(
+      "active",
+      showFavorites
+    );
+
+    renderSongs();
+
+  };
+
+
+/* ==================================================
    BAŞLAT
-========================================== */
+================================================== */
 
 loadMusic();
 
 </script>
 
 </body>
-
 </html>
 ```
