@@ -21,7 +21,7 @@
 <div id="playlistModal" class="modal"><div class="modal-box"><h3>🎧 Yeni Playlist</h3><input id="playlistName" class="modal-input" maxlength="50" placeholder="Örn. Gece müzikleri"><div class="modal-actions"><button id="cancelPlaylist" class="cancel">İptal</button><button id="confirmPlaylist" class="confirm">Oluştur</button></div></div></div>
 <div id="addModal" class="modal"><div class="modal-box"><h3>➕ Playlist'e ekle</h3><div id="playlistChoices" class="choices"></div><div class="modal-actions"><button id="cancelAdd" class="cancel">Kapat</button></div></div></div>
 <script>
-const SUPABASE_URL="https://cqxxobmvycesunyxicjj.supabase.co",SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxeHhvYm12eWNlc3VueXhpY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);const OWNER="bagceciamine28-cell",REPO="JEUFREX";
+const SUPABASE_URL="https://cqxxobmvycesunyxicjj.supabase.co",SUPABASE_ANON_KEY="sb_publishable_C0BYpv-9sknEu1EXbeKLwQ_lMddpL5V";const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);const OWNER="bagceciamine28-cell",REPO="JEUFREX";
 let user=null,songs=[],favorites=[],playlists=[],current=-1,shuffle=false,repeat=false,favOnly=false,selected=null;
 const $=id=>document.getElementById(id),audio=$("audio"),list=$("musicList"),playlistBox=$("playlists"),status=$("status");
 const title=n=>n.replace(/\.mp3$/i,"").replace(/[_-]+/g," ").trim(),esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
