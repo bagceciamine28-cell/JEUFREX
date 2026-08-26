@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,408 +11,1583 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* {
-  box-sizing: border-box;
+
+*{
+    box-sizing:border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  color: white;
-  background:
-    radial-gradient(circle at 10% 10%, #5138a8 0%, transparent 35%),
-    radial-gradient(circle at 90% 90%, #e03a75 0%, transparent 30%),
-    #09090f;
-  min-height: 100vh;
-  padding-bottom: 120px;
+:root{
+    --bg:#070711;
+    --card:rgba(255,255,255,.075);
+    --card-hover:rgba(255,255,255,.12);
+    --border:rgba(255,255,255,.12);
+    --text:#fff;
+    --muted:#999;
+    --pink:#ff4d91;
+    --purple:#7c5cff;
+    --cyan:#4de7ff;
 }
 
-header {
-  min-height: 70px;
-  padding: 12px 35px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(10,10,18,.78);
-  border-bottom: 1px solid rgba(255,255,255,.1);
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  backdrop-filter: blur(15px);
+html{
+    scroll-behavior:smooth;
 }
 
-.logo {
-  color: white;
-  text-decoration: none;
-  font-size: 25px;
-  font-weight: 900;
-  letter-spacing: 1px;
+body{
+    margin:0;
+    min-height:100vh;
+    padding-bottom:130px;
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(124,92,255,.30),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(255,77,145,.22),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(77,231,255,.12),
+            transparent 35%
+        ),
+        var(--bg);
+    overflow-x:hidden;
 }
 
-nav {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+/* =====================================================
+   ANIMATED BACKGROUND
+===================================================== */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:-50%;
+    z-index:-3;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(124,92,255,.12) 0%,
+            transparent 45%
+        );
+
+    animation:
+        backgroundMove 18s ease-in-out infinite alternate;
+    pointer-events:none;
 }
 
-nav a {
-  color: #cfcfd8;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 700;
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent,
+            rgba(255,255,255,.025),
+            transparent
+        );
+
+    animation:
+        shine 9s linear infinite;
+
+    pointer-events:none;
 }
 
-nav a:hover {
-  color: white;
+@keyframes backgroundMove{
+
+    0%{
+        transform:translate(-5%,-4%) scale(1);
+    }
+
+    50%{
+        transform:translate(5%,4%) scale(1.08);
+    }
+
+    100%{
+        transform:translate(-2%,7%) scale(1.02);
+    }
+
 }
 
-main {
-  width: min(1100px, calc(100% - 30px));
-  margin: auto;
-  padding: 45px 0;
+@keyframes shine{
+
+    from{
+        transform:translateX(-100%);
+    }
+
+    to{
+        transform:translateX(100%);
+    }
+
 }
 
-.hero {
-  padding: 45px;
-  border-radius: 30px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 25px 80px rgba(0,0,0,.3);
-  margin-bottom: 25px;
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    min-height:72px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:12px 35px;
+
+    background:rgba(7,7,17,.72);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(22px);
+
 }
 
-.badge {
-  display: inline-block;
-  padding: 8px 13px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.12);
-  color: #ddd;
-  font-size: 12px;
-  font-weight: 800;
+.logo{
+
+    color:white;
+    text-decoration:none;
+
+    font-size:25px;
+    font-weight:950;
+    letter-spacing:1px;
+
+    transition:.25s;
+
 }
 
-h1 {
-  margin: 18px 0 10px;
-  font-size: clamp(38px,6vw,60px);
+.logo:hover{
+
+    transform:scale(1.04);
+
+    text-shadow:
+        0 0 20px rgba(255,255,255,.45);
+
 }
 
-.hero p {
-  color: #bbb;
-  font-size: 16px;
-  line-height: 1.6;
+nav{
+
+    display:flex;
+    align-items:center;
+    gap:22px;
+    flex-wrap:wrap;
+
 }
 
-.user-status {
-  margin-top: 18px;
-  display: inline-block;
-  padding: 9px 14px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  color: #aaa;
-  font-size: 13px;
+nav a{
+
+    position:relative;
+
+    color:#bdbdc8;
+
+    text-decoration:none;
+
+    font-size:14px;
+    font-weight:800;
+
+    transition:.25s;
+
 }
 
-.user-status.logged {
-  color: #9dffbd;
-  background: rgba(50,255,120,.08);
+nav a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    bottom:-7px;
+
+    width:0;
+    height:2px;
+
+    border-radius:10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--pink),
+            var(--purple)
+        );
+
+    transition:.25s;
+
 }
 
-.toolbar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+nav a:hover{
+
+    color:white;
+
 }
 
-.search {
-  flex: 1;
-  padding: 15px 18px;
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 16px;
-  background: rgba(255,255,255,.08);
-  color: white;
-  outline: none;
-  font-size: 15px;
+nav a:hover::after{
+
+    width:100%;
+
 }
 
-.search::placeholder {
-  color: #999;
+/* =====================================================
+   MAIN
+===================================================== */
+
+main{
+
+    width:min(1180px,calc(100% - 30px));
+
+    margin:auto;
+
+    padding:45px 0;
+
 }
 
-.filter-btn {
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.08);
-  color: white;
-  border-radius: 16px;
-  padding: 0 18px;
-  cursor: pointer;
-  font-weight: 800;
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero{
+
+    position:relative;
+
+    padding:55px;
+
+    margin-bottom:25px;
+
+    overflow:hidden;
+
+    border-radius:34px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.11),
+            rgba(255,255,255,.045)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.13);
+
+    backdrop-filter:blur(25px);
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.35);
+
+    animation:
+        heroIn .7s ease;
+
 }
 
-.filter-btn.active {
-  background: white;
-  color: #111;
+@keyframes heroIn{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
 }
 
-#musicList {
-  display: grid;
-  gap: 15px;
+.hero::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    right:-100px;
+    top:-120px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,77,145,.25),
+            transparent 70%
+        );
+
+    pointer-events:none;
+
 }
 
-.music-card {
-  display: grid;
-  grid-template-columns: 95px 1fr auto;
-  align-items: center;
-  gap: 20px;
-  padding: 18px;
-  border-radius: 24px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.1);
-  backdrop-filter: blur(20px);
-  transition: .2s;
+.badge{
+
+    display:inline-flex;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.09);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    color:#ddd;
+
+    font-size:12px;
+    font-weight:900;
+
+    box-shadow:
+        0 0 25px rgba(124,92,255,.15);
+
 }
 
-.music-card:hover {
-  transform: translateY(-2px);
-  background: rgba(255,255,255,.11);
+h1{
+
+    margin:18px 0 10px;
+
+    font-size:
+        clamp(42px,7vw,72px);
+
+    line-height:1;
+
+    letter-spacing:-3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #cfc5ff,
+            #ff9fc3
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    color:transparent;
+
 }
 
-.cover {
-  width: 95px;
-  height: 95px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 38px;
-  background: linear-gradient(135deg, #ff4d8d, #7148ff);
-  box-shadow: 0 15px 40px rgba(0,0,0,.35);
+.hero p{
+
+    max-width:700px;
+
+    color:#aaa;
+
+    font-size:16px;
+
+    line-height:1.7;
+
 }
 
-.music-info {
-  min-width: 0;
+.user-status{
+
+    display:inline-flex;
+
+    margin-top:20px;
+
+    padding:10px 15px;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.07);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    color:#aaa;
+
+    font-size:13px;
+    font-weight:800;
+
+    transition:.3s;
+
 }
 
-.music-title {
-  margin: 0 0 6px;
-  font-size: 20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.user-status.logged{
+
+    color:#9dffbd;
+
+    background:
+        rgba(50,255,120,.08);
+
+    border-color:
+        rgba(50,255,120,.18);
+
+    box-shadow:
+        0 0 25px rgba(50,255,120,.08);
+
 }
 
-.artist {
-  color: #aaa;
-  font-size: 13px;
-  margin-bottom: 10px;
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.toolbar{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-bottom:20px;
+
 }
 
-.card-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+.search{
+
+    flex:1;
+
+    min-width:0;
+
+    padding:16px 20px;
+
+    border-radius:17px;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    outline:none;
+
+    color:white;
+
+    background:
+        rgba(255,255,255,.065);
+
+    backdrop-filter:blur(15px);
+
+    font-size:15px;
+
+    transition:.25s;
+
 }
 
-.play-card {
-  border: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: white;
-  color: #111;
-  cursor: pointer;
-  font-size: 18px;
+.search:focus{
+
+    border-color:
+        rgba(124,92,255,.55);
+
+    box-shadow:
+        0 0 25px rgba(124,92,255,.12);
+
 }
 
-.favorite {
-  border: none;
-  background: transparent;
-  color: #aaa;
-  cursor: pointer;
-  font-size: 22px;
+.search::placeholder{
+
+    color:#777;
+
 }
 
-.favorite.active {
-  color: #ff4d8d;
+.filter-btn{
+
+    padding:0 20px;
+
+    border-radius:17px;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    background:
+        rgba(255,255,255,.065);
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:900;
+
+    transition:.25s;
+
 }
+
+.filter-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:
+        rgba(255,255,255,.11);
+
+}
+
+.filter-btn.active{
+
+    color:#111;
+
+    background:white;
+
+    box-shadow:
+        0 8px 30px rgba(255,255,255,.13);
+
+}
+
+/* =====================================================
+   PLAYLIST AREA
+===================================================== */
+
+.playlist-section{
+
+    margin-bottom:28px;
+
+}
+
+.section-title{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:15px;
+
+}
+
+.section-title h2{
+
+    margin:0;
+
+    font-size:22px;
+
+}
+
+.create-playlist{
+
+    border:none;
+
+    padding:11px 16px;
+
+    border-radius:14px;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--pink)
+        );
+
+    box-shadow:
+        0 8px 30px rgba(124,92,255,.20);
+
+    transition:.25s;
+
+}
+
+.create-playlist:hover{
+
+    transform:
+        translateY(-2px)
+        scale(1.02);
+
+}
+
+.playlists{
+
+    display:flex;
+
+    gap:12px;
+
+    overflow-x:auto;
+
+    padding-bottom:5px;
+
+}
+
+.playlists::-webkit-scrollbar{
+
+    height:5px;
+
+}
+
+.playlists::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.15);
+
+    border-radius:10px;
+
+}
+
+.playlist-card{
+
+    flex:0 0 210px;
+
+    padding:18px;
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124,92,255,.15),
+            rgba(255,77,145,.08)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.playlist-card:hover{
+
+    transform:translateY(-4px);
+
+    border-color:
+        rgba(255,255,255,.20);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.25);
+
+}
+
+.playlist-icon{
+
+    width:48px;
+    height:48px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-bottom:12px;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--pink),
+            var(--purple)
+        );
+
+    font-size:22px;
+
+}
+
+.playlist-name{
+
+    font-weight:900;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+.playlist-count{
+
+    margin-top:5px;
+
+    color:#888;
+
+    font-size:12px;
+
+}
+
+.playlist-delete{
+
+    margin-top:12px;
+
+    border:none;
+
+    background:
+        rgba(255,70,70,.10);
+
+    color:#ff9d9d;
+
+    padding:7px 10px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:11px;
+
+    font-weight:800;
+
+}
+
+/* =====================================================
+   MUSIC LIST
+===================================================== */
+
+#musicList{
+
+    display:grid;
+
+    gap:14px;
+
+}
+
+.music-card{
+
+    position:relative;
+
+    display:grid;
+
+    grid-template-columns:95px 1fr auto;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:18px;
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.075),
+            rgba(255,255,255,.035)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.09);
+
+    backdrop-filter:blur(20px);
+
+    transition:
+        transform .25s,
+        background .25s,
+        border .25s;
+
+    animation:
+        cardIn .45s ease both;
+
+}
+
+.music-card:hover{
+
+    transform:translateY(-3px);
+
+    background:
+        rgba(255,255,255,.105);
+
+    border-color:
+        rgba(255,255,255,.16);
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.22);
+
+}
+
+@keyframes cardIn{
+
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* =====================================================
+   COVER
+===================================================== */
+
+.cover{
+
+    position:relative;
+
+    width:95px;
+    height:95px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:21px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff4d91,
+            #7148ff
+        );
+
+    font-size:38px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.35);
+
+    overflow:hidden;
+
+}
+
+.cover::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-50%;
+
+    background:
+        linear-gradient(
+            45deg,
+            transparent,
+            rgba(255,255,255,.25),
+            transparent
+        );
+
+    transform:rotate(25deg);
+
+    animation:
+        coverShine 4s linear infinite;
+
+}
+
+@keyframes coverShine{
+
+    from{
+        transform:
+            translateX(-60%)
+            rotate(25deg);
+    }
+
+    to{
+        transform:
+            translateX(60%)
+            rotate(25deg);
+    }
+
+}
+
+/* =====================================================
+   MUSIC INFO
+===================================================== */
+
+.music-info{
+
+    min-width:0;
+
+}
+
+.music-title{
+
+    margin:0 0 7px;
+
+    font-size:19px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+.artist{
+
+    color:#999;
+
+    font-size:13px;
+
+}
+
+.card-actions{
+
+    display:flex;
+
+    gap:8px;
+
+    align-items:center;
+
+}
+
+.play-card{
+
+    width:48px;
+    height:48px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:white;
+
+    color:#111;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+    transition:.25s;
+
+}
+
+.play-card:hover{
+
+    transform:
+        scale(1.08);
+
+    box-shadow:
+        0 8px 25px rgba(255,255,255,.20);
+
+}
+
+.favorite{
+
+    width:40px;
+    height:40px;
+
+    border:none;
+
+    background:transparent;
+
+    color:#777;
+
+    cursor:pointer;
+
+    font-size:24px;
+
+    transition:.2s;
+
+}
+
+.favorite:hover{
+
+    transform:scale(1.15);
+
+    color:#ff8bb5;
+
+}
+
+.favorite.active{
+
+    color:var(--pink);
+
+    text-shadow:
+        0 0 15px rgba(255,77,145,.5);
+
+}
+
+/* =====================================================
+   ADD PLAYLIST BUTTON
+===================================================== */
+
+.add-playlist-btn{
+
+    border:none;
+
+    background:
+        rgba(255,255,255,.07);
+
+    color:#aaa;
+
+    padding:8px 12px;
+
+    border-radius:11px;
+
+    cursor:pointer;
+
+    font-size:11px;
+
+    font-weight:800;
+
+    margin-top:10px;
+
+    transition:.2s;
+
+}
+
+.add-playlist-btn:hover{
+
+    color:white;
+
+    background:
+        rgba(255,255,255,.13);
+
+}
+
+/* =====================================================
+   EMPTY / ERROR
+===================================================== */
 
 .loading,
 .empty,
-.error {
-  text-align: center;
-  padding: 50px;
-  color: #aaa;
+.error{
+
+    text-align:center;
+
+    padding:55px;
+
+    color:#888;
+
 }
 
-.error {
-  background: rgba(255,70,70,.12);
-  border: 1px solid rgba(255,70,70,.2);
-  border-radius: 20px;
-  color: #ffb5b5;
+.loading{
+
+    animation:pulse 1.5s ease-in-out infinite;
+
 }
 
-/* PLAYER */
+@keyframes pulse{
 
-.player {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 50;
-  background: rgba(12,12,20,.92);
-  border-top: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(20px);
-  padding: 12px 20px;
+    0%,100%{
+        opacity:.45;
+    }
+
+    50%{
+        opacity:1;
+    }
+
 }
 
-.player-inner {
-  max-width: 1200px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 20px;
-  align-items: center;
+.error{
+
+    border-radius:22px;
+
+    background:
+        rgba(255,70,70,.10);
+
+    border:
+        1px solid rgba(255,70,70,.18);
+
+    color:#ffb5b5;
+
 }
 
-.now-playing {
-  min-width: 0;
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:500;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    background:
+        rgba(0,0,0,.65);
+
+    backdrop-filter:blur(12px);
+
 }
 
-.now-title {
-  font-weight: 900;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.modal.show{
+
+    display:flex;
+
+    animation:
+        modalFade .2s ease;
+
 }
 
-.now-artist {
-  color: #999;
-  font-size: 12px;
-  margin-top: 4px;
+@keyframes modalFade{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+
 }
 
-.player-center {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+.modal-box{
+
+    width:min(430px,100%);
+
+    padding:28px;
+
+    border-radius:27px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(28,28,43,.98),
+            rgba(15,15,25,.98)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 35px 100px rgba(0,0,0,.55);
+
+    animation:
+        modalUp .25s ease;
+
 }
 
-.controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 13px;
+@keyframes modalUp{
+
+    from{
+        transform:translateY(15px) scale(.97);
+    }
+
+    to{
+        transform:translateY(0) scale(1);
+    }
+
 }
 
-.control {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: white;
-  cursor: pointer;
-  font-size: 17px;
+.modal-box h3{
+
+    margin-top:0;
+
+    font-size:23px;
+
 }
 
-.control:hover {
-  background: rgba(255,255,255,.1);
+.modal-input{
+
+    width:100%;
+
+    padding:14px 16px;
+
+    border-radius:14px;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    outline:none;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color:white;
+
+    font-size:15px;
+
 }
 
-.control.main {
-  width: 43px;
-  height: 43px;
-  background: white;
-  color: #111;
+.modal-actions{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:18px;
+
 }
 
-.progress-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.modal-actions button{
+
+    flex:1;
+
+    padding:13px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-weight:900;
+
 }
 
-.time {
-  font-size: 10px;
-  color: #999;
-  width: 35px;
+.cancel-btn{
+
+    background:
+        rgba(255,255,255,.08);
+
+    color:white;
+
 }
 
-.progress {
-  flex: 1;
-  accent-color: white;
-  cursor: pointer;
+.confirm-btn{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--pink)
+        );
+
+    color:white;
+
 }
 
-.volume {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 8px;
+/* =====================================================
+   PLAYER
+===================================================== */
+
+.player{
+
+    position:fixed;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    z-index:200;
+
+    padding:13px 20px;
+
+    background:
+        rgba(9,9,17,.90);
+
+    border-top:
+        1px solid rgba(255,255,255,.10);
+
+    backdrop-filter:blur(25px);
+
+    box-shadow:
+        0 -15px 60px rgba(0,0,0,.30);
+
 }
 
-.volume-slider {
-  width: 100px;
-  accent-color: white;
+.player-inner{
+
+    width:min(1250px,100%);
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 2fr 1fr;
+
+    gap:20px;
+
+    align-items:center;
+
 }
 
-.status {
-  text-align: center;
-  color: #777;
-  font-size: 12px;
-  margin-top: 5px;
+.now-playing{
+
+    min-width:0;
+
 }
 
-@media (max-width: 750px) {
+.now-title{
 
-  header {
-    padding: 12px 15px;
-  }
+    font-weight:950;
 
-  nav {
-    display: none;
-  }
+    white-space:nowrap;
 
-  main {
-    padding-top: 25px;
-  }
+    overflow:hidden;
 
-  .hero {
-    padding: 30px 22px;
-  }
+    text-overflow:ellipsis;
 
-  .music-card {
-    grid-template-columns: 70px 1fr auto;
-  }
-
-  .cover {
-    width: 70px;
-    height: 70px;
-    font-size: 28px;
-  }
-
-  .music-title {
-    font-size: 16px;
-  }
-
-  .player-inner {
-    grid-template-columns: 1fr;
-    gap: 5px;
-  }
-
-  .volume {
-    display: none;
-  }
-
-  .player {
-    padding: 10px;
-  }
-
-  body {
-    padding-bottom: 150px;
-  }
 }
+
+.now-artist{
+
+    margin-top:4px;
+
+    color:#888;
+
+    font-size:12px;
+
+}
+
+.player-center{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:7px;
+
+}
+
+.controls{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:9px;
+
+}
+
+.control{
+
+    width:36px;
+    height:36px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:transparent;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    transition:.2s;
+
+}
+
+.control:hover{
+
+    background:
+        rgba(255,255,255,.09);
+
+    transform:scale(1.08);
+
+}
+
+.control.main{
+
+    width:45px;
+    height:45px;
+
+    color:#111;
+
+    background:white;
+
+    font-size:18px;
+
+    box-shadow:
+        0 8px 25px rgba(255,255,255,.14);
+
+}
+
+.progress-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.time{
+
+    width:35px;
+
+    color:#777;
+
+    font-size:10px;
+
+}
+
+.progress{
+
+    flex:1;
+
+    accent-color:white;
+
+    cursor:pointer;
+
+}
+
+.volume{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.volume-slider{
+
+    width:100px;
+
+    accent-color:white;
+
+}
+
+.status{
+
+    margin-top:5px;
+
+    text-align:center;
+
+    color:#666;
+
+    font-size:11px;
+
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:750px){
+
+    header{
+
+        padding:12px 16px;
+
+    }
+
+    nav{
+
+        display:none;
+
+    }
+
+    main{
+
+        padding-top:25px;
+
+    }
+
+    .hero{
+
+        padding:32px 23px;
+
+        border-radius:25px;
+
+    }
+
+    h1{
+
+        font-size:46px;
+
+    }
+
+    .toolbar{
+
+        flex-direction:column;
+
+    }
+
+    .filter-btn{
+
+        padding:14px;
+
+    }
+
+    .music-card{
+
+        grid-template-columns:
+            70px 1fr auto;
+
+        gap:12px;
+
+        padding:13px;
+
+    }
+
+    .cover{
+
+        width:70px;
+        height:70px;
+
+        font-size:28px;
+
+        border-radius:17px;
+
+    }
+
+    .music-title{
+
+        font-size:15px;
+
+    }
+
+    .artist{
+
+        font-size:11px;
+
+    }
+
+    .add-playlist-btn{
+
+        font-size:10px;
+
+    }
+
+    .player{
+
+        padding:9px 10px;
+
+    }
+
+    .player-inner{
+
+        grid-template-columns:1fr;
+
+        gap:3px;
+
+    }
+
+    .now-playing{
+
+        text-align:center;
+
+    }
+
+    .volume{
+
+        display:none;
+
+    }
+
+    .player-center{
+
+        gap:3px;
+
+    }
+
+    body{
+
+        padding-bottom:175px;
+
+    }
+
+}
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+
+        animation:none !important;
+        transition:none !important;
+
+    }
+
+}
+
 </style>
+
 </head>
 
 <body>
@@ -423,22 +1599,25 @@ JEUFREX
 </a>
 
 <nav>
+
 <a href="index.html">Ana Sayfa</a>
 <a href="games.html">🎮 Oyunlar</a>
 <a href="music.html">🎵 Müzik</a>
 <a href="videos.html">🎬 Videolar</a>
 <a href="community.html">👥 Topluluk</a>
 <a href="explore.html">✨ Keşfet</a>
+
 </nav>
 
 </header>
+
 
 <main>
 
 <section class="hero">
 
 <span class="badge">
-✨ ADMIN ORIGINALS
+✨ JEUFREX MUSIC
 </span>
 
 <h1>
@@ -446,33 +1625,71 @@ Müzik 🎵
 </h1>
 
 <p>
-JEUFREX'in özgün müziklerini keşfet.
-Yeni MP3 dosyaları <b>music</b> klasörüne
-eklendiğinde otomatik olarak burada görünür.
+JEUFREX müzik kütüphanesini keşfet.
+Favorilerini kaydet, kendi playlistlerini oluştur
+ve müziklerini istediğin gibi sırala.
 </p>
 
 <div id="userStatus" class="user-status">
-👤 Kullanıcı kontrol ediliyor...
+🔄 Oturum kontrol ediliyor...
 </div>
 
 </section>
 
+
+<!-- ==================================================
+     PLAYLISTLER
+================================================== -->
+
+<section class="playlist-section">
+
+<div class="section-title">
+
+<h2>
+🎧 Playlistlerim
+</h2>
+
+<button
+    id="createPlaylistBtn"
+    class="create-playlist"
+>
++ Playlist oluştur
+</button>
+
+</div>
+
+<div id="playlists" class="playlists">
+
+<div class="empty">
+🔄 Playlistler yükleniyor...
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ==================================================
+     SEARCH
+================================================== -->
+
 <div class="toolbar">
 
 <input
-  id="search"
-  class="search"
-  placeholder="🔎 Şarkı ara..."
+    id="search"
+    class="search"
+    placeholder="🔎 Şarkı ara..."
 >
 
 <button
-  id="favoritesBtn"
-  class="filter-btn"
+    id="favoritesBtn"
+    class="filter-btn"
 >
 ❤️ Favoriler
 </button>
 
 </div>
+
 
 <section id="musicList">
 
@@ -484,7 +1701,10 @@ eklendiğinde otomatik olarak burada görünür.
 
 </main>
 
-<!-- PLAYER -->
+
+<!-- ==================================================
+     PLAYER
+================================================== -->
 
 <div class="player">
 
@@ -492,58 +1712,92 @@ eklendiğinde otomatik olarak burada görünür.
 
 <div class="now-playing">
 
-<div id="nowTitle" class="now-title">
+<div
+    id="nowTitle"
+    class="now-title"
+>
 Bir şarkı seç
 </div>
 
-<div id="nowArtist" class="now-artist">
-JEUFREX • Admin Originals
+<div
+    id="nowArtist"
+    class="now-artist"
+>
+JEUFREX • Originals
 </div>
 
 </div>
+
 
 <div class="player-center">
 
 <div class="controls">
 
-<button id="shuffle" class="control" title="Karıştır">
+<button
+    id="shuffle"
+    class="control"
+    title="Karıştır"
+>
 🔀
 </button>
 
-<button id="previous" class="control" title="Önceki">
+<button
+    id="previous"
+    class="control"
+    title="Önceki"
+>
 ⏮
 </button>
 
-<button id="play" class="control main" title="Oynat">
+<button
+    id="play"
+    class="control main"
+    title="Oynat"
+>
 ▶
 </button>
 
-<button id="next" class="control" title="Sonraki">
+<button
+    id="next"
+    class="control"
+    title="Sonraki"
+>
 ⏭
 </button>
 
-<button id="repeat" class="control" title="Tekrar">
+<button
+    id="repeat"
+    class="control"
+    title="Tekrar"
+>
 🔁
 </button>
 
 </div>
 
+
 <div class="progress-row">
 
-<span id="currentTime" class="time">
+<span
+    id="currentTime"
+    class="time"
+>
 0:00
 </span>
 
 <input
-  id="progress"
-  class="progress"
-  type="range"
-  min="0"
-  max="100"
-  value="0"
+    id="progress"
+    class="progress"
+    type="range"
+    min="0"
+    max="100"
+    value="0"
 >
 
-<span id="duration" class="time">
+<span
+    id="duration"
+    class="time"
+>
 0:00
 </span>
 
@@ -551,33 +1805,124 @@ JEUFREX • Admin Originals
 
 </div>
 
+
 <div class="volume">
 
-<button id="mute" class="control">
+<button
+    id="mute"
+    class="control"
+>
 🔊
 </button>
 
 <input
-  id="volume"
-  class="volume-slider"
-  type="range"
-  min="0"
-  max="1"
-  step="0.01"
-  value="1"
+    id="volume"
+    class="volume-slider"
+    type="range"
+    min="0"
+    max="1"
+    step="0.01"
+    value="1"
 >
 
 </div>
 
 </div>
 
-<div id="status" class="status">
+
+<div
+    id="status"
+    class="status"
+>
 Hazırlanıyor...
 </div>
 
 </div>
 
+
 <audio id="audio"></audio>
+
+
+<!-- ==================================================
+     PLAYLIST MODAL
+================================================== -->
+
+<div
+    id="playlistModal"
+    class="modal"
+>
+
+<div class="modal-box">
+
+<h3>
+🎧 Yeni Playlist
+</h3>
+
+<input
+    id="playlistName"
+    class="modal-input"
+    maxlength="50"
+    placeholder="Örn. Gece müzikleri"
+/>
+
+<div class="modal-actions">
+
+<button
+    id="cancelPlaylist"
+    class="cancel-btn"
+>
+İptal
+</button>
+
+<button
+    id="confirmPlaylist"
+    class="confirm-btn"
+>
+Oluştur
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ==================================================
+     PLAYLIST SEÇİM MODAL
+================================================== -->
+
+<div
+    id="addModal"
+    class="modal"
+>
+
+<div class="modal-box">
+
+<h3>
+➕ Playlist'e ekle
+</h3>
+
+<div
+    id="playlistChoices"
+>
+</div>
+
+<div class="modal-actions">
+
+<button
+    id="cancelAdd"
+    class="cancel-btn"
+>
+Kapat
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 
 <script>
 
@@ -586,16 +1931,16 @@ Hazırlanıyor...
 ================================================== */
 
 const SUPABASE_URL =
-  "https://cqxxobmvycesunyxicjj.supabase.co";
+"https://cqxxobmvycesunyxicjj.supabase.co";
 
 const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoiY3F4eHhvYm12ZWNzunyxicjjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJc0xY3QxMjM0NTY3ODkwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NTQ3MzIsImV4cCI6MjEwMzIzMDczMn0.dzHRAvnBUf_sSkOFVrCCmuutG0RVzaxvxTjsEPSw0vk";
 
 const supabaseClient =
-  window.supabase.createClient(
+window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
-  );
+);
 
 
 /* ==================================================
@@ -603,17 +1948,17 @@ const supabaseClient =
 ================================================== */
 
 const GITHUB_OWNER =
-  "bagceciamine28-cell";
+"bagceciamine28-cell";
 
 const GITHUB_REPO =
-  "JEUFREX";
+"JEUFREX";
 
 const MUSIC_FOLDER =
-  "music";
+"music";
 
 
 /* ==================================================
-   KULLANICI
+   AUTH
 ================================================== */
 
 let AKTIF_KULLANICI = null;
@@ -622,76 +1967,14 @@ let KULLANICI_PROFILI = null;
 
 
 /* ==================================================
-   FAVORİLER
-================================================== */
-
-let SUPABASE_FAVORILER = [];
-
-
-/* ==================================================
-   ELEMENTLER
-================================================== */
-
-const musicList =
-  document.getElementById("musicList");
-
-const search =
-  document.getElementById("search");
-
-const favoritesBtn =
-  document.getElementById("favoritesBtn");
-
-const audio =
-  document.getElementById("audio");
-
-const playButton =
-  document.getElementById("play");
-
-const previousButton =
-  document.getElementById("previous");
-
-const nextButton =
-  document.getElementById("next");
-
-const shuffleButton =
-  document.getElementById("shuffle");
-
-const repeatButton =
-  document.getElementById("repeat");
-
-const muteButton =
-  document.getElementById("mute");
-
-const volumeSlider =
-  document.getElementById("volume");
-
-const progress =
-  document.getElementById("progress");
-
-const currentTime =
-  document.getElementById("currentTime");
-
-const duration =
-  document.getElementById("duration");
-
-const nowTitle =
-  document.getElementById("nowTitle");
-
-const nowArtist =
-  document.getElementById("nowArtist");
-
-const status =
-  document.getElementById("status");
-
-const userStatus =
-  document.getElementById("userStatus");
-
-
-/* ==================================================
-   DEĞİŞKENLER
+   DATA
 ================================================== */
 
 let songs = [];
+
+let SUPABASE_FAVORILER = [];
+
+let PLAYLISTLER = [];
 
 let currentIndex = -1;
 
@@ -701,146 +1984,210 @@ let repeatMode = false;
 
 let showFavorites = false;
 
+let selectedSongForPlaylist = null;
+
 
 /* ==================================================
-   BAŞLIK TEMİZLE
+   ELEMENTLER
 ================================================== */
 
-function cleanTitle(filename) {
+const musicList =
+document.getElementById("musicList");
 
-  return filename
-    .replace(/\.mp3$/i, "")
-    .replace(/[_-]+/g, " ")
-    .trim();
+const search =
+document.getElementById("search");
+
+const favoritesBtn =
+document.getElementById("favoritesBtn");
+
+const audio =
+document.getElementById("audio");
+
+const playButton =
+document.getElementById("play");
+
+const previousButton =
+document.getElementById("previous");
+
+const nextButton =
+document.getElementById("next");
+
+const shuffleButton =
+document.getElementById("shuffle");
+
+const repeatButton =
+document.getElementById("repeat");
+
+const muteButton =
+document.getElementById("mute");
+
+const volumeSlider =
+document.getElementById("volume");
+
+const progress =
+document.getElementById("progress");
+
+const currentTime =
+document.getElementById("currentTime");
+
+const duration =
+document.getElementById("duration");
+
+const nowTitle =
+document.getElementById("nowTitle");
+
+const nowArtist =
+document.getElementById("nowArtist");
+
+const status =
+document.getElementById("status");
+
+const userStatus =
+document.getElementById("userStatus");
+
+const playlistsContainer =
+document.getElementById("playlists");
+
+const playlistModal =
+document.getElementById("playlistModal");
+
+const playlistName =
+document.getElementById("playlistName");
+
+const addModal =
+document.getElementById("addModal");
+
+const playlistChoices =
+document.getElementById("playlistChoices");
+
+
+/* ==================================================
+   TITLE
+================================================== */
+
+function cleanTitle(filename){
+
+    return filename
+        .replace(/\.mp3$/i,"")
+        .replace(/[_-]+/g," ")
+        .trim();
 
 }
 
 
 /* ==================================================
-   AKTİF AUTH KULLANICISI
+   AUTH — DAHA SAĞLAM OTURUM KONTROLÜ
 ================================================== */
 
-async function aktifKullaniciyiGetir() {
+async function aktifKullaniciyiGetir(){
 
-  try {
+    try{
 
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.auth.getUser();
+        const {
+            data
+        } =
+        await supabaseClient.auth.getSession();
 
-    if (error)
-      throw error;
+        AKTIF_KULLANICI =
+            data?.session?.user || null;
 
-    AKTIF_KULLANICI =
-      data?.user || null;
+        updateUserUI();
 
-    if (AKTIF_KULLANICI) {
+        return AKTIF_KULLANICI;
 
-      userStatus.textContent =
+    }
+
+    catch(error){
+
+        console.error(
+            "Session hatası:",
+            error
+        );
+
+        AKTIF_KULLANICI = null;
+
+        updateUserUI();
+
+        return null;
+
+    }
+
+}
+
+
+/* ==================================================
+   USER UI
+================================================== */
+
+function updateUserUI(){
+
+    if(AKTIF_KULLANICI){
+
+        userStatus.textContent =
         "🟢 Giriş yapıldı";
 
-      userStatus.classList.add(
-        "logged"
-      );
-
-      console.log(
-        "👤 Aktif kullanıcı:",
-        AKTIF_KULLANICI
-      );
+        userStatus.classList.add(
+            "logged"
+        );
 
     }
 
-    else {
+    else{
 
-      userStatus.textContent =
+        userStatus.textContent =
         "👤 Giriş yapılmadı";
 
+        userStatus.classList.remove(
+            "logged"
+        );
+
     }
-
-    return AKTIF_KULLANICI;
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Auth kullanıcı hatası:",
-      error
-    );
-
-    AKTIF_KULLANICI =
-      null;
-
-    userStatus.textContent =
-      "👤 Giriş yapılmadı";
-
-    return null;
-
-  }
 
 }
 
 
 /* ==================================================
-   PROFILES TABLOSUNDAN PROFİLİ GETİR
+   PROFILE
 ================================================== */
 
-async function kullaniciProfiliniGetir() {
+async function kullaniciProfiliniGetir(){
 
-  KULLANICI_PROFILI = null;
+    KULLANICI_PROFILI = null;
 
-  if (!AKTIF_KULLANICI) {
+    if(!AKTIF_KULLANICI)
+        return;
 
-    console.log(
-      "ℹ️ Giriş yapan kullanıcı yok."
-    );
+    try{
 
-    return null;
-
-  }
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
+        const {
+            data,
+            error
+        } =
+        await supabaseClient
         .from("profiles")
         .select("*")
         .eq(
-          "id",
-          AKTIF_KULLANICI.id
+            "id",
+            AKTIF_KULLANICI.id
         )
         .maybeSingle();
 
-    if (error)
-      throw error;
+        if(error)
+            throw error;
 
-    KULLANICI_PROFILI =
-      data || null;
+        KULLANICI_PROFILI =
+            data || null;
 
-    console.log(
-      "👤 profiles kaydı:",
-      KULLANICI_PROFILI
-    );
+    }
 
-    return KULLANICI_PROFILI;
+    catch(error){
 
-  }
+        console.error(
+            "Profil okunamadı:",
+            error
+        );
 
-  catch (error) {
-
-    console.error(
-      "profiles okunamadı:",
-      error
-    );
-
-    return null;
-
-  }
+    }
 
 }
 
@@ -849,525 +2196,326 @@ async function kullaniciProfiliniGetir() {
    FAVORİLERİ GETİR
 ================================================== */
 
-async function favorileriGetir() {
-
-  SUPABASE_FAVORILER = [];
-
-  if (!AKTIF_KULLANICI)
-    return;
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("favoriler")
-        .select("song_name")
-        .eq(
-          "user_id",
-          AKTIF_KULLANICI.id
-        );
-
-    if (error)
-      throw error;
-
-    SUPABASE_FAVORILER =
-      (data || [])
-        .map(
-          item => item.song_name
-        );
-
-    console.log(
-      "❤️ Favoriler:",
-      SUPABASE_FAVORILER
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Favoriler alınamadı:",
-      error
-    );
+async function favorileriGetir(){
 
     SUPABASE_FAVORILER = [];
 
-  }
+    if(!AKTIF_KULLANICI)
+        return;
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+        await supabaseClient
+        .from("favoriler")
+        .select("song_name")
+        .eq(
+            "user_id",
+            AKTIF_KULLANICI.id
+        );
+
+        if(error)
+            throw error;
+
+        SUPABASE_FAVORILER =
+            (data || [])
+            .map(
+                item => item.song_name
+            );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Favoriler alınamadı:",
+            error
+        );
+
+    }
 
 }
 
 
-/* ==================================================
-   FAVORİ KONTROL
-================================================== */
+function isFavorite(name){
 
-function isFavorite(name) {
-
-  return SUPABASE_FAVORILER
+    return SUPABASE_FAVORILER
     .includes(name);
 
 }
 
 
 /* ==================================================
-   FAVORİ EKLE / ÇIKAR
+   FAVORİ TOGGLE
 ================================================== */
 
-async function toggleFavorite(name) {
+async function toggleFavorite(name){
 
-  if (!AKTIF_KULLANICI) {
+    if(!AKTIF_KULLANICI){
 
-    alert(
-      "❤️ Favorilere eklemek için önce giriş yapmalısın."
-    );
+        alert(
+            "❤️ Favorilere eklemek için önce giriş yapmalısın."
+        );
 
-    return;
+        return;
 
-  }
+    }
 
-  try {
+    try{
 
-    if (isFavorite(name)) {
+        if(isFavorite(name)){
 
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("favoriler")
-          .delete()
-          .eq(
-            "user_id",
-            AKTIF_KULLANICI.id
-          )
-          .eq(
-            "song_name",
-            name
-          );
+            const {
+                error
+            } =
+            await supabaseClient
+            .from("favoriler")
+            .delete()
+            .eq(
+                "user_id",
+                AKTIF_KULLANICI.id
+            )
+            .eq(
+                "song_name",
+                name
+            );
 
-      if (error)
-        throw error;
+            if(error)
+                throw error;
 
-      SUPABASE_FAVORILER =
-        SUPABASE_FAVORILER.filter(
-          song => song !== name
+            SUPABASE_FAVORILER =
+                SUPABASE_FAVORILER.filter(
+                    song => song !== name
+                );
+
+        }
+
+        else{
+
+            const {
+                error
+            } =
+            await supabaseClient
+            .from("favoriler")
+            .insert({
+
+                user_id:
+                    AKTIF_KULLANICI.id,
+
+                song_name:
+                    name
+
+            });
+
+            if(error)
+                throw error;
+
+            SUPABASE_FAVORILER.push(
+                name
+            );
+
+        }
+
+        renderSongs();
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Favori hatası:",
+            error
+        );
+
+        alert(
+            "❌ Favori işlemi başarısız."
         );
 
     }
 
-    else {
+}
 
-      const {
-        error
-      } =
+
+/* ==================================================
+   PLAYLISTLERİ GETİR
+================================================== */
+
+async function playlistleriGetir(){
+
+    PLAYLISTLER = [];
+
+    if(!AKTIF_KULLANICI){
+
+        renderPlaylists();
+
+        return;
+
+    }
+
+    try{
+
+        const {
+            data,
+            error
+        } =
         await supabaseClient
-          .from("favoriler")
-          .insert({
-            user_id:
-              AKTIF_KULLANICI.id,
-            song_name:
-              name
-          });
-
-      if (error)
-        throw error;
-
-      SUPABASE_FAVORILER.push(
-        name
-      );
-
-    }
-
-    renderSongs();
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Favori işlemi başarısız:",
-      error
-    );
-
-    alert(
-      "❌ Favori işlemi başarısız oldu."
-    );
-
-  }
-
-}
-
-
-/* ==================================================
-   ŞARKI KARTI
-================================================== */
-
-function createMusicCard(song, index) {
-
-  const card =
-    document.createElement("article");
-
-  card.className =
-    "music-card";
-
-
-  const cover =
-    document.createElement("div");
-
-  cover.className =
-    "cover";
-
-  cover.textContent =
-    "🎵";
-
-
-  const info =
-    document.createElement("div");
-
-  info.className =
-    "music-info";
-
-
-  const title =
-    document.createElement("h2");
-
-  title.className =
-    "music-title";
-
-  title.textContent =
-    cleanTitle(song.name);
-
-
-  const artist =
-    document.createElement("div");
-
-  artist.className =
-    "artist";
-
-  artist.textContent =
-    "JEUFREX • Admin Originals";
-
-
-  info.appendChild(title);
-
-  info.appendChild(artist);
-
-
-  const actions =
-    document.createElement("div");
-
-  actions.className =
-    "card-actions";
-
-
-  const favorite =
-    document.createElement("button");
-
-  favorite.className =
-    "favorite";
-
-  const favoriteState =
-    isFavorite(song.name);
-
-  favorite.textContent =
-    favoriteState
-      ? "♥"
-      : "♡";
-
-  if (favoriteState) {
-
-    favorite.classList.add(
-      "active"
-    );
-
-  }
-
-  favorite.title =
-    favoriteState
-      ? "Favorilerden çıkar"
-      : "Favorilere ekle";
-
-
-  favorite.onclick =
-    () =>
-      toggleFavorite(
-        song.name
-      );
-
-
-  const play =
-    document.createElement("button");
-
-  play.className =
-    "play-card";
-
-  play.textContent =
-    currentIndex === index &&
-    !audio.paused
-      ? "⏸"
-      : "▶";
-
-
-  play.onclick =
-    () =>
-      playSong(index);
-
-
-  actions.appendChild(
-    favorite
-  );
-
-  actions.appendChild(
-    play
-  );
-
-
-  card.appendChild(
-    cover
-  );
-
-  card.appendChild(
-    info
-  );
-
-  card.appendChild(
-    actions
-  );
-
-
-  return card;
-
-}
-
-
-/* ==================================================
-   ŞARKILARI GÖSTER
-================================================== */
-
-function renderSongs() {
-
-  const query =
-    search.value
-      .toLowerCase()
-      .trim();
-
-
-  let filtered =
-    songs.filter(song =>
-      cleanTitle(song.name)
-        .toLowerCase()
-        .includes(query)
-    );
-
-
-  if (showFavorites) {
-
-    filtered =
-      filtered.filter(song =>
-        isFavorite(song.name)
-      );
-
-  }
-
-
-  musicList.innerHTML =
-    "";
-
-
-  if (!filtered.length) {
-
-    musicList.innerHTML = `
-
-      <div class="empty">
-
-        🎵
-
-        <br><br>
-
-        ${
-          showFavorites
-            ? "Henüz favori şarkın yok."
-            : "Müzik bulunamadı."
-        }
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  filtered.forEach(song => {
-
-    const originalIndex =
-      songs.indexOf(song);
-
-    musicList.appendChild(
-      createMusicCard(
-        song,
-        originalIndex
-      )
-    );
-
-  });
-
-}
-
-
-/* ==================================================
-   GITHUB MUSIC KLASÖRÜ
-================================================== */
-
-async function loadMusic() {
-
-  try {
-
-    status.textContent =
-      "🎵 Müzikler yükleniyor...";
-
-
-    const apiUrl =
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${MUSIC_FOLDER}`;
-
-
-    const response =
-      await fetch(apiUrl);
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        "GitHub music klasörü okunamadı. HTTP " +
-        response.status
-      );
-
-    }
-
-
-    const files =
-      await response.json();
-
-
-    if (!Array.isArray(files)) {
-
-      throw new Error(
-        "music klasörü bulunamadı."
-      );
-
-    }
-
-
-    songs =
-      files.filter(file =>
-        file.type === "file" &&
-        /\.mp3$/i.test(
-          file.name
+        .from("playlists")
+        .select(`
+            id,
+            name,
+            created_at,
+            playlist_songs (
+                id,
+                song_name
+            )
+        `)
+        .eq(
+            "user_id",
+            AKTIF_KULLANICI.id
         )
-      );
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
 
+        if(error)
+            throw error;
 
-    songs.sort(
-      (a, b) =>
-        a.name.localeCompare(
-          b.name,
-          "tr"
-        )
-    );
+        PLAYLISTLER =
+            data || [];
 
+        renderPlaylists();
 
-    renderSongs();
+    }
 
+    catch(error){
 
-    status.textContent =
-      `${songs.length} şarkı hazır 🎵`;
+        console.error(
+            "Playlistler alınamadı:",
+            error
+        );
 
-  }
+        playlistsContainer.innerHTML = `
+            <div class="error">
+                ❌ Playlistler yüklenemedi.
+            </div>
+        `;
 
-  catch (error) {
-
-    console.error(
-      "Müzik yükleme hatası:",
-      error
-    );
-
-    musicList.innerHTML = `
-
-      <div class="error">
-
-        ❌ Müzikler yüklenemedi.
-
-        <br><br>
-
-        <small>
-          ${error.message}
-        </small>
-
-      </div>
-
-    `;
-
-    status.textContent =
-      "❌ Müzik sistemi hata verdi.";
-
-  }
+    }
 
 }
 
 
 /* ==================================================
-   ŞARKI OYNAT
+   PLAYLISTLERİ GÖSTER
 ================================================== */
 
-function playSong(index) {
+function renderPlaylists(){
 
-  if (!songs[index])
-    return;
+    playlistsContainer.innerHTML = "";
 
+    if(!AKTIF_KULLANICI){
 
-  currentIndex =
-    index;
+        playlistsContainer.innerHTML = `
+            <div class="empty">
+                🔐 Playlist oluşturmak için giriş yap.
+            </div>
+        `;
 
+        return;
 
-  const song =
-    songs[index];
+    }
 
+    if(!PLAYLISTLER.length){
 
-  audio.src =
-    song.download_url;
+        playlistsContainer.innerHTML = `
+            <div class="empty">
+                🎧 Henüz playlistin yok.
+                <br>
+                Yukarıdaki butondan ilk playlistini oluştur!
+            </div>
+        `;
 
+        return;
 
-  nowTitle.textContent =
-    cleanTitle(song.name);
+    }
 
-  nowArtist.textContent =
-    "JEUFREX • Admin Originals";
+    PLAYLISTLER.forEach(playlist => {
 
+        const card =
+        document.createElement("div");
 
-  audio.play()
-    .then(() => {
+        card.className =
+        "playlist-card";
 
-      playButton.textContent =
-        "⏸";
+        const count =
+        playlist.playlist_songs?.length || 0;
 
-      status.textContent =
-        "🎵 Çalıyor";
+        card.innerHTML = `
 
-      renderSongs();
+            <div class="playlist-icon">
+                🎧
+            </div>
 
-    })
-    .catch(error => {
+            <div class="playlist-name">
+                ${escapeHTML(playlist.name)}
+            </div>
 
-      console.error(
-        "Oynatma hatası:",
-        error
-      );
+            <div class="playlist-count">
+                ${count} şarkı
+            </div>
 
-      status.textContent =
-        "❌ Şarkı oynatılamadı.";
+            <button
+                class="playlist-delete"
+                data-id="${playlist.id}"
+            >
+                🗑 Playlisti sil
+            </button>
+
+        `;
+
+        card.addEventListener(
+            "click",
+            event => {
+
+                if(
+                    event.target
+                    .classList
+                    .contains("playlist-delete")
+                )
+                    return;
+
+                playPlaylist(
+                    playlist
+                );
+
+            }
+        );
+
+        const deleteButton =
+        card.querySelector(
+            ".playlist-delete"
+        );
+
+        deleteButton.onclick =
+        async event => {
+
+            event.stopPropagation();
+
+            await deletePlaylist(
+                playlist.id
+            );
+
+        };
+
+        playlistsContainer.appendChild(
+            card
+        );
 
     });
 
@@ -1375,551 +2523,1426 @@ function playSong(index) {
 
 
 /* ==================================================
-   OYNAT / DURDUR
+   PLAYLIST OLUŞTUR
+================================================== */
+
+async function createPlaylist(){
+
+    if(!AKTIF_KULLANICI){
+
+        alert(
+            "🎧 Playlist oluşturmak için önce giriş yapmalısın."
+        );
+
+        return;
+
+    }
+
+    const name =
+    playlistName.value.trim();
+
+    if(!name){
+
+        alert(
+            "Playlist adı yazmalısın."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+        await supabaseClient
+        .from("playlists")
+        .insert({
+
+            user_id:
+                AKTIF_KULLANICI.id,
+
+            name:
+                name
+
+        })
+        .select()
+        .single();
+
+        if(error)
+            throw error;
+
+        PLAYLISTLER.unshift({
+
+            ...data,
+
+            playlist_songs:[]
+
+        });
+
+        playlistName.value = "";
+
+        closePlaylistModal();
+
+        renderPlaylists();
+
+        status.textContent =
+        "🎧 Playlist oluşturuldu.";
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Playlist oluşturma hatası:",
+            error
+        );
+
+        alert(
+            "❌ Playlist oluşturulamadı."
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   PLAYLIST SİL
+================================================== */
+
+async function deletePlaylist(id){
+
+    if(!AKTIF_KULLANICI)
+        return;
+
+    const confirmDelete =
+    confirm(
+        "Bu playlist silinsin mi?"
+    );
+
+    if(!confirmDelete)
+        return;
+
+    try{
+
+        const {
+            error
+        } =
+        await supabaseClient
+        .from("playlists")
+        .delete()
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "user_id",
+            AKTIF_KULLANICI.id
+        );
+
+        if(error)
+            throw error;
+
+        PLAYLISTLER =
+            PLAYLISTLER.filter(
+                playlist =>
+                    playlist.id !== id
+            );
+
+        renderPlaylists();
+
+        status.textContent =
+        "🗑 Playlist silindi.";
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Playlist silme hatası:",
+            error
+        );
+
+        alert(
+            "❌ Playlist silinemedi."
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   PLAYLISTE ŞARKI EKLEME MODALI
+================================================== */
+
+function openAddPlaylistModal(songName){
+
+    if(!AKTIF_KULLANICI){
+
+        alert(
+            "🎧 Playlist kullanmak için önce giriş yapmalısın."
+        );
+
+        return;
+
+    }
+
+    selectedSongForPlaylist =
+    songName;
+
+    playlistChoices.innerHTML = "";
+
+    if(!PLAYLISTLER.length){
+
+        playlistChoices.innerHTML = `
+
+            <div class="empty">
+
+                Henüz playlistin yok.
+
+                <br><br>
+
+                Önce bir playlist oluştur.
+
+            </div>
+
+        `;
+
+    }
+
+    else{
+
+        PLAYLISTLER.forEach(
+            playlist => {
+
+                const button =
+                document.createElement(
+                    "button"
+                );
+
+                button.style.cssText = `
+                    width:100%;
+                    padding:14px;
+                    margin-bottom:9px;
+                    border:none;
+                    border-radius:13px;
+                    background:rgba(255,255,255,.07);
+                    color:white;
+                    cursor:pointer;
+                    text-align:left;
+                    font-weight:800;
+                `;
+
+                button.textContent =
+                `🎧 ${playlist.name}`;
+
+                button.onclick =
+                () =>
+                addSongToPlaylist(
+                    playlist.id,
+                    songName
+                );
+
+                playlistChoices.appendChild(
+                    button
+                );
+
+            }
+        );
+
+    }
+
+    addModal.classList.add(
+        "show"
+    );
+
+}
+
+
+/* ==================================================
+   PLAYLISTE ŞARKI EKLE
+================================================== */
+
+async function addSongToPlaylist(
+    playlistId,
+    songName
+){
+
+    if(!AKTIF_KULLANICI)
+        return;
+
+    try{
+
+        const playlist =
+        PLAYLISTLER.find(
+            item =>
+                item.id === playlistId
+        );
+
+        const alreadyExists =
+        playlist?.playlist_songs
+        ?.some(
+            item =>
+                item.song_name === songName
+        );
+
+        if(alreadyExists){
+
+            alert(
+                "🎵 Bu şarkı zaten playlistte."
+            );
+
+            return;
+
+        }
+
+        const {
+            data,
+            error
+        } =
+        await supabaseClient
+        .from("playlist_songs")
+        .insert({
+
+            playlist_id:
+                playlistId,
+
+            song_name:
+                songName
+
+        })
+        .select()
+        .single();
+
+        if(error)
+            throw error;
+
+        if(playlist){
+
+            if(!playlist.playlist_songs)
+                playlist.playlist_songs = [];
+
+            playlist.playlist_songs.push(
+                data
+            );
+
+        }
+
+        closeAddModal();
+
+        renderPlaylists();
+
+        status.textContent =
+        "🎧 Şarkı playlist'e eklendi.";
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Playlist şarkı ekleme hatası:",
+            error
+        );
+
+        alert(
+            "❌ Şarkı playlist'e eklenemedi."
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   PLAYLIST OYNAT
+================================================== */
+
+function playPlaylist(playlist){
+
+    const playlistSongs =
+    playlist.playlist_songs || [];
+
+    if(!playlistSongs.length){
+
+        alert(
+            "🎧 Bu playlist henüz boş."
+        );
+
+        return;
+
+    }
+
+    const names =
+    playlistSongs.map(
+        item => item.song_name
+    );
+
+    const firstSong =
+    songs.find(
+        song =>
+            names.includes(
+                song.name
+            )
+    );
+
+    if(!firstSong){
+
+        alert(
+            "🎵 Playlistteki şarkılar bulunamadı."
+        );
+
+        return;
+
+    }
+
+    const index =
+    songs.indexOf(
+        firstSong
+    );
+
+    playSong(index);
+
+}
+
+
+/* ==================================================
+   MUSIC CARD
+================================================== */
+
+function createMusicCard(
+    song,
+    index
+){
+
+    const card =
+    document.createElement(
+        "article"
+    );
+
+    card.className =
+    "music-card";
+
+    const favoriteState =
+    isFavorite(song.name);
+
+    card.innerHTML = `
+
+        <div class="cover">
+            🎵
+        </div>
+
+        <div class="music-info">
+
+            <h2 class="music-title">
+                ${escapeHTML(
+                    cleanTitle(song.name)
+                )}
+            </h2>
+
+            <div class="artist">
+                JEUFREX • Admin Originals
+            </div>
+
+            <button
+                class="add-playlist-btn"
+            >
+                ➕ Playlist'e ekle
+            </button>
+
+        </div>
+
+        <div class="card-actions">
+
+            <button
+                class="favorite ${
+                    favoriteState
+                        ? "active"
+                        : ""
+                }"
+            >
+                ${
+                    favoriteState
+                        ? "♥"
+                        : "♡"
+                }
+            </button>
+
+            <button
+                class="play-card"
+            >
+                ${
+                    currentIndex === index &&
+                    !audio.paused
+                        ? "⏸"
+                        : "▶"
+                }
+            </button>
+
+        </div>
+
+    `;
+
+    const favorite =
+    card.querySelector(
+        ".favorite"
+    );
+
+    favorite.onclick =
+    () =>
+    toggleFavorite(
+        song.name
+    );
+
+    const play =
+    card.querySelector(
+        ".play-card"
+    );
+
+    play.onclick =
+    () =>
+    playSong(index);
+
+    const addPlaylist =
+    card.querySelector(
+        ".add-playlist-btn"
+    );
+
+    addPlaylist.onclick =
+    () =>
+    openAddPlaylistModal(
+        song.name
+    );
+
+    return card;
+
+}
+
+
+/* ==================================================
+   RENDER SONGS
+================================================== */
+
+function renderSongs(){
+
+    const query =
+    search.value
+    .toLowerCase()
+    .trim();
+
+    let filtered =
+    songs.filter(
+        song =>
+        cleanTitle(song.name)
+        .toLowerCase()
+        .includes(query)
+    );
+
+    if(showFavorites){
+
+        filtered =
+        filtered.filter(
+            song =>
+            isFavorite(
+                song.name
+            )
+        );
+
+    }
+
+    musicList.innerHTML = "";
+
+    if(!filtered.length){
+
+        musicList.innerHTML = `
+
+            <div class="empty">
+
+                🎵
+
+                <br><br>
+
+                ${
+                    showFavorites
+                        ? "Henüz favori şarkın yok."
+                        : "Müzik bulunamadı."
+                }
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    filtered.forEach(
+        song => {
+
+            const originalIndex =
+            songs.indexOf(song);
+
+            musicList.appendChild(
+                createMusicCard(
+                    song,
+                    originalIndex
+                )
+            );
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   GITHUB MUSIC
+================================================== */
+
+async function loadMusic(){
+
+    try{
+
+        status.textContent =
+        "🎵 Müzikler yükleniyor...";
+
+        const apiUrl =
+        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${MUSIC_FOLDER}`;
+
+        const response =
+        await fetch(
+            apiUrl,
+            {
+                cache:"no-store"
+            }
+        );
+
+        if(!response.ok){
+
+            throw new Error(
+                "GitHub HTTP " +
+                response.status
+            );
+
+        }
+
+        const files =
+        await response.json();
+
+        if(!Array.isArray(files)){
+
+            throw new Error(
+                "music klasörü bulunamadı."
+            );
+
+        }
+
+        songs =
+        files.filter(
+            file =>
+            file.type === "file" &&
+            /\.mp3$/i.test(
+                file.name
+            )
+        );
+
+        songs.sort(
+            (a,b) =>
+            a.name.localeCompare(
+                b.name,
+                "tr"
+            )
+        );
+
+        renderSongs();
+
+        status.textContent =
+        `${songs.length} şarkı hazır 🎵`;
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Music load error:",
+            error
+        );
+
+        musicList.innerHTML = `
+
+            <div class="error">
+
+                ❌ Müzikler yüklenemedi.
+
+                <br><br>
+
+                <small>
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </small>
+
+            </div>
+
+        `;
+
+        status.textContent =
+        "❌ Müzik sistemi hata verdi.";
+
+    }
+
+}
+
+
+/* ==================================================
+   PLAY SONG
+================================================== */
+
+function playSong(index){
+
+    if(!songs[index])
+        return;
+
+    currentIndex =
+    index;
+
+    const song =
+    songs[index];
+
+    audio.src =
+    song.download_url;
+
+    nowTitle.textContent =
+    cleanTitle(song.name);
+
+    nowArtist.textContent =
+    "JEUFREX • Admin Originals";
+
+    audio.play()
+    .then(
+        () => {
+
+            playButton.textContent =
+            "⏸";
+
+            status.textContent =
+            "🎵 Çalıyor";
+
+            renderSongs();
+
+        }
+    )
+    .catch(
+        error => {
+
+            console.error(
+                "Oynatma hatası:",
+                error
+            );
+
+            status.textContent =
+            "❌ Şarkı oynatılamadı.";
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   PLAY / PAUSE
 ================================================== */
 
 playButton.onclick =
-function() {
+function(){
 
-  if (currentIndex === -1) {
+    if(currentIndex === -1){
 
-    if (songs.length) {
+        if(songs.length)
+            playSong(0);
 
-      playSong(0);
+        return;
 
     }
 
-    return;
+    if(audio.paused){
 
-  }
+        audio.play()
+        .catch(
+            console.error
+        );
 
+    }
 
-  if (audio.paused) {
+    else{
 
-    audio.play()
-      .catch(error =>
-        console.error(error)
-      );
+        audio.pause();
 
-  }
-
-  else {
-
-    audio.pause();
-
-  }
+    }
 
 };
 
 
 /* ==================================================
-   ÖNCEKİ
+   PREVIOUS
 ================================================== */
 
 previousButton.onclick =
-function() {
+function(){
 
-  if (!songs.length)
-    return;
+    if(!songs.length)
+        return;
 
-
-  let index =
+    let index =
     currentIndex - 1;
 
+    if(index < 0)
+        index =
+        songs.length - 1;
 
-  if (index < 0)
-    index = songs.length - 1;
-
-
-  playSong(index);
+    playSong(index);
 
 };
 
 
 /* ==================================================
-   SONRAKİ
+   NEXT
 ================================================== */
 
 nextButton.onclick =
-function() {
-
-  playNext();
-
-};
-
-
-function playNext() {
-
-  if (!songs.length)
-    return;
-
-
-  let index;
-
-
-  if (shuffleMode) {
-
-    if (songs.length === 1) {
-
-      index = 0;
-
-    }
-
-    else {
-
-      do {
-
-        index =
-          Math.floor(
-            Math.random() *
-            songs.length
-          );
-
-      }
-
-      while (
-        index === currentIndex
-      );
-
-    }
-
-  }
-
-  else {
-
-    index =
-      currentIndex + 1;
-
-
-    if (
-      index >= songs.length
-    ) {
-
-      index = 0;
-
-    }
-
-  }
-
-
-  playSong(index);
-
-}
-
-
-/* ==================================================
-   KARIŞTIR
-================================================== */
-
-shuffleButton.onclick =
-function() {
-
-  shuffleMode =
-    !shuffleMode;
-
-  shuffleButton.style.opacity =
-    shuffleMode
-      ? "1"
-      : ".5";
-
-  status.textContent =
-    shuffleMode
-      ? "🔀 Karıştırma açık"
-      : "🔀 Karıştırma kapalı";
-
-};
-
-
-/* ==================================================
-   TEKRAR
-================================================== */
-
-repeatButton.onclick =
-function() {
-
-  repeatMode =
-    !repeatMode;
-
-  repeatButton.style.opacity =
-    repeatMode
-      ? "1"
-      : ".5";
-
-  status.textContent =
-    repeatMode
-      ? "🔁 Tekrar açık"
-      : "🔁 Tekrar kapalı";
-
-};
-
-
-/* ==================================================
-   ŞARKI BİTİNCE
-================================================== */
-
-audio.addEventListener(
-  "ended",
-  function() {
-
-    if (repeatMode) {
-
-      audio.currentTime =
-        0;
-
-      audio.play();
-
-      return;
-
-    }
+function(){
 
     playNext();
 
-  }
-);
+};
+
+
+function playNext(){
+
+    if(!songs.length)
+        return;
+
+    let index;
+
+    if(shuffleMode){
+
+        if(songs.length === 1){
+
+            index = 0;
+
+        }
+
+        else{
+
+            do{
+
+                index =
+                Math.floor(
+                    Math.random() *
+                    songs.length
+                );
+
+            }
+            while(
+                index === currentIndex
+            );
+
+        }
+
+    }
+
+    else{
+
+        index =
+        currentIndex + 1;
+
+        if(
+            index >= songs.length
+        )
+            index = 0;
+
+    }
+
+    playSong(index);
+
+}
 
 
 /* ==================================================
-   PLAY
+   SHUFFLE
+================================================== */
+
+shuffleButton.onclick =
+function(){
+
+    shuffleMode =
+    !shuffleMode;
+
+    shuffleButton.style.opacity =
+    shuffleMode
+        ? "1"
+        : ".5";
+
+    status.textContent =
+    shuffleMode
+        ? "🔀 Karıştırma açık"
+        : "🔀 Karıştırma kapalı";
+
+};
+
+
+/* ==================================================
+   REPEAT
+================================================== */
+
+repeatButton.onclick =
+function(){
+
+    repeatMode =
+    !repeatMode;
+
+    repeatButton.style.opacity =
+    repeatMode
+        ? "1"
+        : ".5";
+
+    status.textContent =
+    repeatMode
+        ? "🔁 Tekrar açık"
+        : "🔁 Tekrar kapalı";
+
+};
+
+
+/* ==================================================
+   AUDIO EVENTS
 ================================================== */
 
 audio.addEventListener(
-  "play",
-  function() {
+    "ended",
+    function(){
 
-    playButton.textContent =
-      "⏸";
+        if(repeatMode){
 
-    renderSongs();
+            audio.currentTime = 0;
 
-  }
+            audio.play();
+
+            return;
+
+        }
+
+        playNext();
+
+    }
 );
 
-
-/* ==================================================
-   PAUSE
-================================================== */
 
 audio.addEventListener(
-  "pause",
-  function() {
+    "play",
+    function(){
 
-    playButton.textContent =
-      "▶";
+        playButton.textContent =
+        "⏸";
 
-    renderSongs();
+        renderSongs();
 
-  }
+    }
+);
+
+
+audio.addEventListener(
+    "pause",
+    function(){
+
+        playButton.textContent =
+        "▶";
+
+        renderSongs();
+
+    }
 );
 
 
 /* ==================================================
-   SÜRE
+   TIME
 ================================================== */
 
-function formatTime(seconds) {
+function formatTime(seconds){
 
-  if (
-    !Number.isFinite(seconds)
-  ) {
+    if(
+        !Number.isFinite(seconds)
+    )
+        return "0:00";
 
-    return "0:00";
-
-  }
-
-
-  const minutes =
+    const minutes =
     Math.floor(
-      seconds / 60
+        seconds / 60
     );
 
-  const secs =
+    const secs =
     Math.floor(
-      seconds % 60
+        seconds % 60
     )
     .toString()
     .padStart(
-      2,
-      "0"
+        2,
+        "0"
     );
 
-
-  return `${minutes}:${secs}`;
+    return `${minutes}:${secs}`;
 
 }
 
 
 audio.addEventListener(
-  "loadedmetadata",
-  function() {
+    "loadedmetadata",
+    function(){
 
-    duration.textContent =
-      formatTime(
-        audio.duration
-      );
+        duration.textContent =
+        formatTime(
+            audio.duration
+        );
 
-    progress.value = 0;
+        progress.value = 0;
 
-    currentTime.textContent =
-      "0:00";
+        currentTime.textContent =
+        "0:00";
 
-  }
+    }
 );
 
 
-/* ==================================================
-   İLERLEME
-================================================== */
-
 audio.addEventListener(
-  "timeupdate",
-  function() {
+    "timeupdate",
+    function(){
 
-    if (!audio.duration)
-      return;
+        if(!audio.duration)
+            return;
 
+        progress.value =
+        (
+            audio.currentTime /
+            audio.duration
+        ) * 100;
 
-    progress.value =
-      (
-        audio.currentTime /
-        audio.duration
-      ) * 100;
+        currentTime.textContent =
+        formatTime(
+            audio.currentTime
+        );
 
-
-    currentTime.textContent =
-      formatTime(
-        audio.currentTime
-      );
-
-  }
+    }
 );
 
 
 progress.addEventListener(
-  "input",
-  function() {
+    "input",
+    function(){
 
-    if (!audio.duration)
-      return;
+        if(!audio.duration)
+            return;
 
+        audio.currentTime =
+        (
+            Number(
+                progress.value
+            ) / 100
+        ) *
+        audio.duration;
 
-    audio.currentTime =
-      (
-        Number(progress.value) /
-        100
-      ) *
-      audio.duration;
-
-  }
+    }
 );
 
 
 /* ==================================================
-   SES
+   VOLUME
 ================================================== */
 
 audio.volume = 1;
 
-
 volumeSlider.addEventListener(
-  "input",
-  function() {
+    "input",
+    function(){
 
-    audio.volume =
-      Number(
-        volumeSlider.value
-      );
+        audio.volume =
+        Number(
+            volumeSlider.value
+        );
 
-    audio.muted =
-      audio.volume === 0;
+        audio.muted =
+        audio.volume === 0;
 
-    updateMuteIcon();
+        updateMuteIcon();
 
-  }
+    }
 );
 
 
 muteButton.onclick =
-function() {
+function(){
 
-  audio.muted =
+    audio.muted =
     !audio.muted;
 
-  updateMuteIcon();
+    updateMuteIcon();
 
 };
 
 
-function updateMuteIcon() {
+function updateMuteIcon(){
 
-  if (
-    audio.muted ||
-    audio.volume === 0
-  ) {
+    if(
+        audio.muted ||
+        audio.volume === 0
+    ){
 
-    muteButton.textContent =
-      "🔇";
+        muteButton.textContent =
+        "🔇";
 
-  }
+    }
 
-  else if (
-    audio.volume < .5
-  ) {
+    else if(
+        audio.volume < .5
+    ){
 
-    muteButton.textContent =
-      "🔉";
+        muteButton.textContent =
+        "🔉";
 
-  }
+    }
 
-  else {
+    else{
 
-    muteButton.textContent =
-      "🔊";
+        muteButton.textContent =
+        "🔊";
 
-  }
+    }
 
 }
 
 
 /* ==================================================
-   ARAMA
+   SEARCH
 ================================================== */
 
 search.addEventListener(
-  "input",
-  renderSongs
+    "input",
+    renderSongs
 );
 
 
 /* ==================================================
-   FAVORİLER BUTONU
+   FAVORITES FILTER
 ================================================== */
 
 favoritesBtn.onclick =
-function() {
+function(){
 
-  if (!AKTIF_KULLANICI) {
+    if(!AKTIF_KULLANICI){
 
-    alert(
-      "❤️ Favorileri kullanmak için önce giriş yapmalısın."
-    );
+        alert(
+            "❤️ Favorileri kullanmak için önce giriş yapmalısın."
+        );
 
-    return;
+        return;
 
-  }
+    }
 
-
-  showFavorites =
+    showFavorites =
     !showFavorites;
 
+    favoritesBtn.classList.toggle(
+        "active",
+        showFavorites
+    );
 
-  favoritesBtn.classList.toggle(
-    "active",
-    showFavorites
-  );
-
-
-  renderSongs();
+    renderSongs();
 
 };
 
 
 /* ==================================================
-   AUTH DEĞİŞİKLİĞİNİ DİNLE
+   CREATE PLAYLIST MODAL
+================================================== */
+
+document
+.getElementById(
+    "createPlaylistBtn"
+)
+.onclick =
+function(){
+
+    if(!AKTIF_KULLANICI){
+
+        alert(
+            "🎧 Playlist oluşturmak için önce giriş yapmalısın."
+        );
+
+        return;
+
+    }
+
+    playlistModal.classList.add(
+        "show"
+    );
+
+    setTimeout(
+        () =>
+        playlistName.focus(),
+        50
+    );
+
+};
+
+
+function closePlaylistModal(){
+
+    playlistModal.classList.remove(
+        "show"
+    );
+
+}
+
+
+document
+.getElementById(
+    "cancelPlaylist"
+)
+.onclick =
+closePlaylistModal;
+
+
+document
+.getElementById(
+    "confirmPlaylist"
+)
+.onclick =
+createPlaylist;
+
+
+playlistName.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key === "Enter"
+        )
+            createPlaylist();
+
+        if(
+            event.key === "Escape"
+        )
+            closePlaylistModal();
+
+    }
+);
+
+
+/* ==================================================
+   ADD PLAYLIST MODAL
+================================================== */
+
+function closeAddModal(){
+
+    addModal.classList.remove(
+        "show"
+    );
+
+    selectedSongForPlaylist = null;
+
+}
+
+
+document
+.getElementById(
+    "cancelAdd"
+)
+.onclick =
+closeAddModal;
+
+
+playlistModal.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target ===
+            playlistModal
+        )
+            closePlaylistModal();
+
+    }
+);
+
+
+addModal.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target ===
+            addModal
+        )
+            closeAddModal();
+
+    }
+);
+
+
+/* ==================================================
+   AUTH STATE
 ================================================== */
 
 supabaseClient.auth.onAuthStateChange(
-  async (event, session) => {
+    async (
+        event,
+        session
+    ) => {
 
-    console.log(
-      "🔐 Auth değişikliği:",
-      event
+        console.log(
+            "🔐 Auth:",
+            event
+        );
+
+        AKTIF_KULLANICI =
+        session?.user || null;
+
+        updateUserUI();
+
+        if(AKTIF_KULLANICI){
+
+            /*
+             Supabase auth callback içinde
+             ağır sorguları direkt yapmak yerine
+             küçük bir timeout kullanıyoruz.
+            */
+
+            setTimeout(
+                async () => {
+
+                    await kullaniciProfiliniGetir();
+
+                    await favorileriGetir();
+
+                    await playlistleriGetir();
+
+                    renderSongs();
+
+                },
+                0
+            );
+
+        }
+
+        else{
+
+            KULLANICI_PROFILI = null;
+
+            SUPABASE_FAVORILER = [];
+
+            PLAYLISTLER = [];
+
+            showFavorites = false;
+
+            favoritesBtn.classList.remove(
+                "active"
+            );
+
+            renderPlaylists();
+
+            renderSongs();
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   ESCAPE HTML
+================================================== */
+
+function escapeHTML(value){
+
+    return String(value)
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
     );
 
-    AKTIF_KULLANICI =
-      session?.user || null;
-
-    if (AKTIF_KULLANICI) {
-
-      userStatus.textContent =
-        "🟢 Giriş yapıldı";
-
-      userStatus.classList.add(
-        "logged"
-      );
-
-      await kullaniciProfiliniGetir();
-
-      await favorileriGetir();
-
-    }
-
-    else {
-
-      userStatus.textContent =
-        "👤 Giriş yapılmadı";
-
-      userStatus.classList.remove(
-        "logged"
-      );
-
-      KULLANICI_PROFILI = null;
-
-      SUPABASE_FAVORILER = [];
-
-      showFavorites = false;
-
-      favoritesBtn.classList.remove(
-        "active"
-      );
-
-    }
-
-    renderSongs();
-
-  }
-);
+}
 
 
 /* ==================================================
    BAŞLAT
 ================================================== */
 
-async function baslat() {
+async function baslat(){
 
-  try {
+    try{
 
-    status.textContent =
-      "🔌 Supabase bağlanıyor...";
+        status.textContent =
+        "🔌 Supabase bağlanıyor...";
 
+        await aktifKullaniciyiGetir();
 
-    await aktifKullaniciyiGetir();
+        /*
+         Session bilgisini aldıktan sonra
+         kullanıcıya özel verileri yüklüyoruz.
+        */
 
+        if(AKTIF_KULLANICI){
 
-    await kullaniciProfiliniGetir();
+            await kullaniciProfiliniGetir();
 
+            await favorileriGetir();
 
-    await favorileriGetir();
+            await playlistleriGetir();
 
+        }
 
-    await loadMusic();
+        else{
 
+            renderPlaylists();
 
-    status.textContent =
-      `${songs.length} şarkı hazır 🎵`;
+        }
 
-  }
+        await loadMusic();
 
-  catch (error) {
+        status.textContent =
+        `${songs.length} şarkı hazır 🎵`;
 
-    console.error(
-      "Başlatma hatası:",
-      error
-    );
+    }
 
-    status.textContent =
-      "❌ Sistem başlatılamadı.";
+    catch(error){
 
-  }
+        console.error(
+            "Başlatma hatası:",
+            error
+        );
+
+        status.textContent =
+        "❌ Sistem başlatılamadı.";
+
+    }
 
 }
 
