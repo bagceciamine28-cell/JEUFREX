@@ -1,0 +1,84 @@
+name: Modernize Profile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'profile.html'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  modernize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upgrade profile design safely
+        shell: python
+        run: |
+          from pathlib import Path
+
+          p = Path('profile.html')
+          s = p.read_text(encoding='utf-8')
+
+          if '/* JEUFREX MODERN PROFILE v1 */' not in s:
+              modern_css = r'''
+          /* JEUFREX MODERN PROFILE v1 */
+          :root{--bg:#060611;--card:rgba(255,255,255,.075);--line:rgba(255,255,255,.13);--muted:#9b9bab;--text:#fff;--purple:#7c5cff;--pink:#ff4d91;}
+          html{background:var(--bg)}
+          body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;color:var(--text)!important;background:#060611!important;min-height:100vh;overflow-x:hidden;position:relative}
+          body:before{content:"";position:fixed;inset:-25%;z-index:-2;pointer-events:none;background:radial-gradient(circle at 15% 15%,#7658ff55,transparent 26%),radial-gradient(circle at 85% 20%,#ff4d9150,transparent 25%),radial-gradient(circle at 50% 100%,#4de7ff22,transparent 28%);filter:blur(16px);animation:jeoFloat 16s ease-in-out infinite alternate}
+          body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(120deg,transparent 25%,#fff7 50%,transparent 75%);opacity:.025;transform:translateX(-100%);animation:jeoSweep 9s linear infinite}
+          @keyframes jeoFloat{to{transform:translate(6%,4%) scale(1.1) rotate(3deg)}}
+          @keyframes jeoSweep{to{transform:translateX(100%)}}
+          header{background:#070711c9!important;border-bottom:1px solid var(--line)!important;backdrop-filter:blur(24px)!important;box-shadow:0 12px 50px #0005;position:sticky!important;top:0;z-index:50}
+          .logo{color:#fff!important;letter-spacing:1px;transition:.25s}.logo:hover{transform:scale(1.05);text-shadow:0 0 25px #fff7}
+          nav a{color:#a5a5b2!important;transition:.25s}nav a:hover{color:#fff!important;transform:translateY(-2px)}
+          main{width:min(900px,calc(100% - 30px))!important;margin:0 auto!important;padding:44px 0 80px}
+          .profile-card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.045))!important;border:1px solid var(--line)!important;border-radius:34px!important;padding:38px!important;box-shadow:0 30px 100px #0008!important;backdrop-filter:blur(28px);animation:jeoCard .65s ease both}
+          .profile-card:before{content:"";position:absolute;width:330px;height:330px;right:-160px;top:-190px;background:linear-gradient(135deg,#7c5cff55,#ff4d9140);filter:blur(5px);border-radius:50%;pointer-events:none}
+          .profile-card:after{content:"✦";position:absolute;right:30px;top:25px;color:#fff2;font-size:120px;line-height:1;pointer-events:none;transform:rotate(12deg)}
+          @keyframes jeoCard{from{opacity:0;transform:translateY(20px) scale(.985)}to{opacity:1;transform:none}}
+          .top{position:relative;z-index:2;gap:26px!important}
+          .avatar-wrap{width:120px!important;height:120px!important}
+          .avatar{width:120px!important;height:120px!important;background:linear-gradient(135deg,#7c5cff,#ff4d91)!important;border:4px solid #ffffff22;box-shadow:0 18px 50px #0008,0 0 35px #7c5cff33;font-size:44px!important}
+          .avatar img{transition:transform .45s}.avatar:hover img{transform:scale(1.06)}
+          .photo-button{background:#fff!important;color:#111!important;border-color:#171722!important;box-shadow:0 8px 25px #0007;transition:.25s}.photo-button:hover{transform:scale(1.1) rotate(8deg)}
+          .name{font-size:clamp(30px,5vw,42px)!important;letter-spacing:-1.5px;color:#fff!important}
+          .username{color:#aaa!important}
+          .bio{color:#c0c0ca!important;background:#ffffff07;border:1px solid #ffffff0d;border-radius:18px;padding:17px 18px;margin-top:28px!important;min-height:54px}
+          .stats{border-top-color:#ffffff12!important;gap:12px!important}
+          .stat{min-width:115px;padding:15px 20px;border-radius:18px;background:#ffffff08;border:1px solid #ffffff0c;transition:.25s}.stat:hover{transform:translateY(-3px);background:#ffffff0e}
+          .stat strong{color:#fff!important}.stat span{color:#9292a0!important}
+          .actions{position:relative;z-index:3}.actions button{background:linear-gradient(135deg,#7c5cff,#ff4d91)!important;color:#fff!important;border:1px solid #ffffff1c!important;box-shadow:0 10px 30px #7c5cff22;transition:.25s!important}.actions button:hover{transform:translateY(-3px);box-shadow:0 16px 40px #7c5cff35;opacity:1!important}.actions button.secondary{background:#ffffff0c!important;color:#fff!important}
+          .actions button.admin{background:linear-gradient(135deg,#8b5cf6,#ec4899)!important}
+          .edit-modal{background:#000c!important;backdrop-filter:blur(18px)!important}
+          .edit-box{background:linear-gradient(145deg,#1d1d2b,#0c0c15)!important;color:#fff!important;border:1px solid #ffffff16;box-shadow:0 35px 100px #000b!important}
+          .edit-label{color:#ccc}.edit-input,.edit-textarea{background:#ffffff08!important;color:#fff!important;border-color:#ffffff16!important}.readonly{background:#ffffff06!important;color:#999!important}.file-label{background:#ffffff0d!important;color:#fff}
+          .cancel{background:#ffffff0c!important;color:#fff!important}.save{background:linear-gradient(135deg,#7c5cff,#ff4d91)!important}
+          .loading{color:#999!important}.error{background:#ffffff08!important;color:#ffb5c7!important;border:1px solid #ff4d9130}
+          @media(max-width:700px){main{padding:24px 0 55px}.profile-card{padding:25px 19px!important;border-radius:27px!important}.avatar-wrap,.avatar{width:92px!important;height:92px!important}.avatar{font-size:34px!important}.top{gap:16px}.name{font-size:25px!important}.stats{display:grid!important;grid-template-columns:1fr 1fr;gap:9px!important}.stat{min-width:0}.profile-card:after{font-size:80px;right:8px;top:15px}}
+          @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+          '''
+              s = s.replace('</style>', modern_css + '\n</style>', 1)
+
+          # Add a small modern status line without touching the existing data logic.
+          marker = '<div id="photoHelp" class="photo-help"></div>'
+          replacement = marker + '<div class="jeufrex-profile-badge">✦ JEUFREX PROFİL</div>'
+          if 'jeufrex-profile-badge' not in s and marker in s:
+              s = s.replace(marker, replacement, 1)
+              s = s.replace('</style>', '<style>.jeufrex-profile-badge{margin-top:8px;display:inline-flex;padding:6px 10px;border-radius:999px;background:#ffffff09;border:1px solid #ffffff12;color:#aaa;font-size:10px;font-weight:900;letter-spacing:.7px}</style>\n</style>', 1)
+
+          p.write_text(s, encoding='utf-8')
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add profile.html
+          git diff --cached --quiet || git commit -m "✨ Modernize profile UI"
+          git push
