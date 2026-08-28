@@ -1,0 +1,32 @@
+name: Expand Books
+on:
+  push:
+    paths:
+      - '.github/workflows/add-books.yml'
+permissions:
+  contents: write
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add books and improve chapter picker
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('books.html')
+          s=p.read_text(encoding='utf-8')
+          extra="""['Gece Treni','Gizem','🚉','#4857a8','Son treni kaçıran üç arkadaş, istasyonun hiç kayda geçmemiş peronunu bulur.',['Elif','Mert','Baran']],['Kırmızı Şemsiye','Romantik Dram','☂️','#b94f72','Yağmurlu bir şehirde yolları kesişen iki gencin dostluk ve cesaret hikâyesi.',['Lina','Ege','Sena']],['Kod Adı Lale','Aksiyon','🌷','#c24d58','Bir okul teknoloji kulübü, kaybolan proje dosyasının peşinde beklenmedik bir maceraya sürüklenir.',['Ada','Kerem','Naz']],['Bulutların Altındaki Ev','Macera','🏡','#4c9b82','Dağ evinde bulunan eski bir harita, bir ailenin geçmişindeki sırrı ortaya çıkarır.',['Defne','Ali','Mina']],['Yıldız Tozu Günlükleri','Bilim Kurgu','✨','#7556b8','Gökyüzünden düşen gizemli bir cihaz, iki öğrencinin dünyasını değiştirir.',['Dora','Can','Atlas']],['Mahalle Dedektifleri','Komedi','🔍','#d18a38','Üç arkadaş mahallede kaybolan eşyaları araştırırken her seferinde daha komik bir olaya bulaşır.',['Efe','Zeynep','Oğuz']]"""
+          marker=']\nconst beats='
+          if marker in s and 'Gece Treni' not in s:
+              s=s.replace(marker, ','+extra+']\nconst beats=',1)
+          # Make chapter picker visibly selectable even when later chapters are unavailable.
+          s=s.replace("<option value=\"${i}\" ${x.published?'':'disabled'}>","<option value=\"${i}\" ${x.published?'':'disabled'}>")
+          p.write_text(s,encoding='utf-8')
+      - name: Commit
+        run: |
+          git config user.name 'JEUFREX Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add books.html
+          git diff --cached --quiet || git commit -m 'Add six new books to JEUFREX Books'
+          git push
