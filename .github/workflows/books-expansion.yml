@@ -30,3 +30,4 @@ jobs:
           git add books.html
           git diff --cached --quiet || git commit -m 'Integrate 10 serialized books'
           git push
+# retrigger integration after expansion files were added
