@@ -1,0 +1,32 @@
+name: Expand JEUFREX Books
+on:
+  push:
+    paths:
+      - 'books10.js'
+      - 'books10-ui.js'
+      - '.github/workflows/books-expansion.yml'
+permissions:
+  contents: write
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Integrate books expansion
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('books.html')
+          s=p.read_text(encoding='utf-8')
+          if 'books10.js' not in s:
+              s=s.replace('</body>','<script src="books10.js"></script><script src="books10-ui.js"></script></body>')
+          s=s.replace('<option>Macera</option><option>Fantastik</option><option>Bilim Kurgu</option><option>Gizem</option><option>Dram</option>', '<option>Macera</option><option>Fantastik</option><option>Bilim Kurgu</option><option>Gizem</option><option>Dram</option><option>K-Drama</option><option>Korku / Gerilim</option><option>Türk Komedi</option><option>Spor</option><option>Tarih</option><option>Günlük Yaşam</option>')
+          s=s.replace('Gerçek kitap hissine yakın tasarlanmış okuma ekranı, animasyonlu kapaklar ve sayfa çevirme sistemiyle JEUFREX kitaplığını keşfet.', '10 özgün seri, farklı türler, bölüm bölüm yayın ve her bölümde 50 sayfa. Yeni bölümler yakında gelecek; okuma deneyimi sayfa çevirme animasyonuyla devam ediyor.')
+          p.write_text(s,encoding='utf-8')
+      - name: Commit integration
+        run: |
+          git config user.name 'JEUFREX Books Bot'
+          git config user.email 'actions@github.com'
+          git add books.html
+          git diff --cached --quiet || git commit -m 'Integrate 10 serialized books'
+          git push
