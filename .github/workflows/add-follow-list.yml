@@ -1,0 +1,50 @@
+name: Add follower/following lists
+
+on:
+  push:
+    paths-ignore:
+      - profile.html
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-profile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add follower/following list UI
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('profile.html')
+          s = p.read_text(encoding='utf-8')
+          if 'id="followListModal"' in s:
+              print('Already patched')
+              raise SystemExit(0)
+
+          css = r'''\n<style id="follow-list-style">\n.follow-list-modal{position:fixed;inset:0;z-index:160;display:none;place-items:center;padding:20px;background:#000b;backdrop-filter:blur(18px)}\n.follow-list-modal.show{display:grid;animation:followFade .2s ease}\n.follow-list-box{width:min(500px,100%);max-height:min(700px,88vh);display:flex;flex-direction:column;border:1px solid #ffffff18;border-radius:28px;background:linear-gradient(145deg,#1b1b2a,#0d0d17);box-shadow:0 35px 100px #000a;overflow:hidden;animation:followPop .28s cubic-bezier(.2,.8,.2,1)}\n.follow-list-head{display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-bottom:1px solid #ffffff10}\n.follow-list-head h2{margin:0;font-size:20px}\n.follow-list-close{width:38px;height:38px;border:0;border-radius:50%;background:#ffffff0b;color:#fff;font-size:20px;cursor:pointer}\n.follow-list-body{overflow:auto;padding:12px}\n.follow-user{display:flex;align-items:center;gap:13px;padding:13px;border-radius:17px;color:#fff;text-decoration:none;transition:.2s}\n.follow-user:hover{background:#ffffff0b;transform:translateX(3px)}\n.follow-avatar{width:50px;height:50px;flex:0 0 50px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,#7c5cff,#ff4d91);font-weight:900}\n.follow-avatar img{width:100%;height:100%;object-fit:cover}\n.follow-user-info{min-width:0}.follow-user-name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.follow-user-username{margin-top:3px;color:#858592;font-size:12px}\n.follow-empty{text-align:center;padding:55px 20px;color:#777}.follow-loading{text-align:center;padding:45px;color:#999}\n@keyframes followFade{from{opacity:0}}@keyframes followPop{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}\n@media(max-width:700px){.follow-list-modal{padding:10px}.follow-list-box{max-height:92vh;border-radius:23px}}\n</style>\n'''
+
+          html = r'''\n<div id="followListModal" class="follow-list-modal" aria-hidden="true">\n  <div class="follow-list-box">\n    <div class="follow-list-head"><h2 id="followListTitle">👥 Takipçiler</h2><button id="followListClose" class="follow-list-close" aria-label="Kapat">×</button></div>\n    <div id="followListBody" class="follow-list-body"><div class="follow-loading">Yükleniyor...</div></div>\n  </div>\n</div>\n'''
+
+          js = r'''\n<script id="follow-list-script">\n(function(){\n  const modal=document.getElementById('followListModal');\n  const body=document.getElementById('followListBody');\n  const titleEl=document.getElementById('followListTitle');\n  const closeBtn=document.getElementById('followListClose');\n  if(!modal||!body||!titleEl||!closeBtn||typeof db==='undefined') return;\n  const esc2=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));\n  const norm2=v=>{if(!v)return '@kullanici';v=String(v).trim();return v.startsWith('@')?v:'@'+v};\n  const avatar2=(p)=>p?.avatar_url ? `<img src="${esc2(p.avatar_url)}" alt="">` : esc2((p?.display_name||'?').trim().charAt(0).toUpperCase()||'?');\n  async function openList(type){\n    if(!currentProfile?.id) return;\n    modal.classList.add('show');modal.setAttribute('aria-hidden','false');\n    titleEl.textContent=type==='followers'?'👥 Takipçiler':'👤 Takip Edilenler';\n    body.innerHTML='<div class="follow-loading">🔄 Liste yükleniyor...</div>';\n    const column=type==='followers'?'following_id':'follower_id';\n    const other=type==='followers'?'follower_id':'following_id';\n    try{\n      const {data:rows,error}=await db.from('follows').select(`${other}`).eq(column,currentProfile.id);\n      if(error) throw error;\n      const ids=(rows||[]).map(x=>x[other]).filter(Boolean);\n      if(!ids.length){body.innerHTML=`<div class="follow-empty">${type==='followers'?'Henüz seni takip eden kimse yok.':'Henüz kimseyi takip etmiyorsun.'}</div>`;return;}\n      const {data:profiles,error:pe}=await db.from('profiles').select('id,username,display_name,avatar_url').in('id',ids);\n      if(pe) throw pe;\n      const map=new Map((profiles||[]).map(p=>[p.id,p]));\n      body.innerHTML=ids.map(id=>{const p=map.get(id);if(!p)return '';return `<a class="follow-user" href="profile.html?user=${encodeURIComponent(norm2(p.username).slice(1))}"><div class="follow-avatar">${avatar2(p)}</div><div class="follow-user-info"><div class="follow-user-name">${esc2(p.display_name||'Kullanıcı')}</div><div class="follow-user-username">${esc2(norm2(p.username))}</div></div></a>`}).join('')||'<div class="follow-empty">Profil bulunamadı.</div>';\n    }catch(e){\n      console.error('Follow list error:',e);\n      body.innerHTML='<div class="follow-empty">❌ Liste yüklenemedi.<br><small>'+esc2(e.message)+'</small></div>';\n    }\n  }\n  function close(){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}\n  const statsEls=document.querySelectorAll('.stat');\n  if(statsEls[0]){statsEls[0].style.cursor='pointer';statsEls[0].title='Takipçileri görüntüle';statsEls[0].addEventListener('click',()=>openList('followers'));}\n  if(statsEls[1]){statsEls[1].style.cursor='pointer';statsEls[1].title='Takip ettiklerini görüntüle';statsEls[1].addEventListener('click',()=>openList('following'));}\n  closeBtn.addEventListener('click',close);\n  modal.addEventListener('click',e=>{if(e.target===modal)close();});\n  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('show'))close();});\n})();\n</script>\n'''
+
+          s = s.replace('</style>', css + '</style>', 1)
+          s = s.replace('</body>', html + js + '</body>', 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Commit profile update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add profile.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "feat: show follower and following lists on profile"
+            git push
+          fi
