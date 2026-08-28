@@ -1,0 +1,36 @@
+name: Fix profile HTML
+on:
+  push:
+    paths:
+      - ".github/profile-fix-trigger"
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Repair escaped follow-list markup
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('profile.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('\\\\n', '\n')
+          s = s.replace('</style>\n</style>\n</head>', '</style>\n</head>')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit repair
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add profile.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Fix profile follow list markup'
+          git push
+      - name: Remove helper workflow and trigger
+        if: success()
+        run: |
+          git rm .github/profile-fix-trigger .github/workflows/fix-profile-html.yml || true
+          git commit -m 'Remove profile repair helper' || true
+          git push || true
