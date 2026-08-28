@@ -1,0 +1,66 @@
+name: Add admin support mode
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - admin-support-trigger.txt
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add support mode to admin panel
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('admin.html')
+          s = p.read_text(encoding='utf-8')
+          if 'admin-support-mode-v1' not in s:
+              old = '''<button id="profileButton" class="secondary">
+            👤 Profili Gör
+          </button>'''
+              new = '''<button id="profileButton" class="secondary">
+            👤 Profili Gör
+          </button>
+
+          <button id="supportButton" class="support">
+            🛡️ Destek Modunda Aç
+          </button>'''
+              if old not in s:
+                  raise SystemExit('profileButton block not found')
+              s = s.replace(old, new, 1)
+
+              marker = '''  button.admin {
+      background: #6d28d9;
+    }'''
+              css = '''  button.admin {
+      background: #6d28d9;
+    }
+
+    button.support {
+      background: linear-gradient(135deg, #7c3aed, #ec4899);
+      box-shadow: 0 8px 24px rgba(124, 58, 237, .22);
+    }'''
+              if marker in s:
+                  s = s.replace(marker, css, 1)
+
+              js = '''\n\n  // admin-support-mode-v1\n  const supportButton = document.getElementById("supportButton");\n\n  if (supportButton) {\n    supportButton.addEventListener("click", () => {\n      if (!selectedUser) {\n        showStatus("Önce destek almak istediğin kullanıcıyı seç.", false);\n        return;\n      }\n\n      const usernameValue = String(selectedUser.username || "").replace(/^@/, "");\n      if (!usernameValue) {\n        showStatus("Bu kullanıcının kullanıcı adı bulunamadı.", false);\n        return;\n      }\n\n      const url = "admin-support.html?user=" + encodeURIComponent(usernameValue);\n      window.open(url, "_blank", "noopener,noreferrer");\n    });\n  }\n'''
+              pos = s.rfind('</script>')
+              if pos == -1:
+                  raise SystemExit('</script> not found')
+              s = s[:pos] + js + s[pos:]
+              p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add admin.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Add support mode button to admin panel"
+          git push
