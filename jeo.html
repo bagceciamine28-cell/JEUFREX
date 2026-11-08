@@ -59,7 +59,7 @@ nav a{transition:color .2s,transform .2s}
 const SUPABASE_URL="https://cqxxobmvycesunyxicjj.supabase.co";
 const SUPABASE_KEY="sb_publishable_C0BYpv-9sknEu1EXbeKLwQ_lMddpL5V";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);const historyEl=$("history"),messagesEl=$("messages"),input=$("input"),send=$("sendButton"),newChat=$("newChatButton"),chatTitle=$("chatTitle"),chatSearch=$("chatSearch"),app=$(".app"),mobileMenu=$("mobileMenu");
+const $=id=>document.getElementById(id);const historyEl=$("history"),messagesEl=$("messages"),input=$("input"),send=$("sendButton"),newChat=$("newChatButton"),chatTitle=$("chatTitle"),chatSearch=$("chatSearch"),app=document.querySelector(".app"),mobileMenu=$("mobileMenu");
 let user=null,currentChatId=null,busy=false,context=[];
 const KNOWLEDGE={
  jeufrex:"JEUFREX; oyun, müzik, video, topluluk, profil ve keşfet özelliklerini bir araya getiren kişisel sosyal platform.",
