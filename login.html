@@ -1,15 +1,111 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Giriş Yap | JEUFREX</title>
-<style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;background:#f4f5f7;color:#171717}.container{width:min(440px,calc(100% - 30px));background:#fff;padding:35px;border-radius:24px;box-shadow:0 15px 50px rgba(0,0,0,.08)}.logo{text-align:center;font-size:30px;font-weight:900;letter-spacing:1px;margin-bottom:8px}.subtitle{text-align:center;color:#777;margin-bottom:28px}label{display:block;margin-top:17px;margin-bottom:7px;font-size:14px;font-weight:700}input{width:100%;padding:14px;border:1px solid #d9d9df;border-radius:12px;font-size:15px;outline:none}input:focus{border-color:#111}button{width:100%;margin-top:25px;padding:14px;border:none;border-radius:12px;background:#111;color:#fff;font-size:15px;font-weight:800;cursor:pointer}button:disabled{opacity:.6;cursor:wait}#message{display:none;margin-top:18px;padding:13px;border-radius:11px;font-size:14px;line-height:1.4}.register{text-align:center;margin-top:22px;color:#777;font-size:14px}.register a{color:#111;font-weight:700;text-decoration:none}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080812">
+<title>Giriş Yap | JEUFREX</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;font-family:Inter,Arial,sans-serif;color:#fff;background:radial-gradient(circle at 15% 15%,#7658ff35,transparent 32%),radial-gradient(circle at 85% 80%,#ff4d9130,transparent 30%),#060611}
+.container{width:min(440px,100%);padding:36px;border:1px solid #ffffff1b;border-radius:26px;background:#ffffff0c;backdrop-filter:blur(22px);box-shadow:0 24px 80px #0008}
+.logo{text-align:center;font-size:32px;font-weight:950;letter-spacing:1px}.subtitle{text-align:center;color:#aaa;margin:9px 0 28px}
+label{display:block;margin:17px 0 8px;font-size:13px;font-weight:800}
+input{width:100%;padding:14px;border:1px solid #ffffff25;border-radius:12px;background:#ffffff0b;color:#fff;font-size:15px;outline:none}
+input:focus{border-color:#a99aff;box-shadow:0 0 0 3px #8c70ff25}
+.password-wrap{display:flex;gap:8px}.password-wrap input{flex:1;min-width:0}.toggle{padding:0 12px;border:1px solid #ffffff25;border-radius:12px;background:#ffffff0b;color:#ddd;cursor:pointer}
+button[type=submit]{width:100%;margin-top:24px;padding:14px;border:0;border-radius:12px;background:linear-gradient(110deg,#7c5cff,#e94d9b);color:#fff;font-size:15px;font-weight:900;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+#message{display:none;margin-top:17px;padding:13px;border-radius:11px;font-size:14px;line-height:1.5}
+.register{text-align:center;margin-top:22px;color:#aaa;font-size:14px}.register a{color:#fff;font-weight:800;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid #c7baff;outline-offset:3px}
+@media(max-width:480px){.container{padding:27px 22px}}
+</style>
 </head>
-<body><div class="container"><div class="logo">JEUFREX</div><div class="subtitle">Hesabına giriş yap.</div><form id="loginForm"><label for="email">E-posta</label><input id="email" type="email" placeholder="ornek@gmail.com" autocomplete="email" required><label for="password">Şifre</label><input id="password" type="password" placeholder="Şifren" autocomplete="current-password" required><button id="loginButton" type="submit">Giriş Yap</button><div id="message"></div></form><div class="register">Hesabın yok mu? <a href="register.html">Kayıt Ol</a></div></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+<body>
+<main class="container">
+<div class="logo">JEUFREX</div>
+<div class="subtitle">Hesabına giriş yap ve kaldığın yerden devam et.</div>
+<form id="loginForm">
+<label for="email">E-posta adresi</label>
+<input id="email" name="email" type="email" placeholder="ornek@gmail.com" autocomplete="email" autocapitalize="none" spellcheck="false" required>
+<label for="password">Şifre</label>
+<div class="password-wrap">
+<input id="password" name="password" type="password" placeholder="Şifren" autocomplete="current-password" required>
+<button class="toggle" id="togglePassword" type="button" aria-label="Şifreyi göster" aria-pressed="false">Göster</button>
+</div>
+<button id="loginButton" type="submit">Giriş Yap</button>
+<div id="message" role="status" aria-live="polite"></div>
+</form>
+<div class="register">Hesabın yok mu? <a href="register.html">Kayıt Ol</a></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
 const SUPABASE_URL="https://cqxxobmvycesunyxicjj.supabase.co";
 const SUPABASE_KEY="sb_publishable_C0BYpv-9sknEu1EXbeKLwQ_lMddpL5V";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const form=document.getElementById("loginForm"),button=document.getElementById("loginButton"),message=document.getElementById("message");
-function showMessage(text,success=false){message.style.display="block";message.textContent=text;message.style.background=success?"#e9f8ee":"#fff0f0";message.style.color=success?"#176b35":"#a30000";}
-form.addEventListener("submit",async event=>{event.preventDefault();button.disabled=true;button.textContent="Giriş yapılıyor...";try{const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;if(!data.session)throw new Error("Oturum oluşturulamadı.");showMessage("🎉 Giriş başarılı!",true);setTimeout(()=>window.location.replace("index.html"),300);}catch(error){console.error(error);showMessage("Giriş başarısız: "+(error.message||"Bilinmeyen hata."));button.disabled=false;button.textContent="Giriş Yap";}});
-</script></body></html>
+const form=document.getElementById("loginForm");
+const button=document.getElementById("loginButton");
+const message=document.getElementById("message");
+const emailInput=document.getElementById("email");
+const passwordInput=document.getElementById("password");
+const togglePassword=document.getElementById("togglePassword");
+let supabaseClient=null;
+function showMessage(text,success=false){
+ message.style.display="block";
+ message.textContent=text;
+ message.style.background=success?"#123b28":"#421d28";
+ message.style.color=success?"#a8f5c5":"#ffc0cb";
+}
+function friendlyError(error){
+ const code=error?.code||error?.message||"";
+ if(/invalid login credentials/i.test(code))return "E-posta veya şifre hatalı. Bilgilerini kontrol edip tekrar dene.";
+ if(/email not confirmed/i.test(code))return "E-posta adresin henüz doğrulanmamış. Gelen kutunu ve gereksiz klasörünü kontrol et.";
+ if(/too many requests|rate limit/i.test(code))return "Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.";
+ if(/network|fetch/i.test(code))return "Bağlantı kurulamadı. İnternetini kontrol edip yeniden dene.";
+ return error?.message||"Beklenmeyen bir hata oluştu. Biraz sonra tekrar dene.";
+}
+if(!window.supabase?.createClient){
+ showMessage("Giriş sistemi yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.",false);
+ button.disabled=true;
+}else{
+ supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+ });
+ supabaseClient.auth.getSession().then(({data,error})=>{
+  if(error){console.error("Oturum kontrolü:",error);return;}
+  if(data.session?.user)window.location.replace("index.html");
+ }).catch(error=>console.error("Oturum kontrolü başarısız:",error));
+}
+togglePassword.addEventListener("click",()=>{
+ const visible=passwordInput.type==="password";
+ passwordInput.type=visible?"text":"password";
+ togglePassword.textContent=visible?"Gizle":"Göster";
+ togglePassword.setAttribute("aria-label",visible?"Şifreyi gizle":"Şifreyi göster");
+ togglePassword.setAttribute("aria-pressed",String(visible));
+});
+form.addEventListener("submit",async event=>{
+ event.preventDefault();
+ if(!supabaseClient)return;
+ if(!form.reportValidity())return;
+ const email=emailInput.value.trim().toLowerCase();
+ const password=passwordInput.value;
+ button.disabled=true;
+ button.textContent="Giriş yapılıyor...";
+ message.style.display="none";
+ try{
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  if(!data?.session?.user)throw new Error("Giriş tamamlandı ancak oturum doğrulanamadı. Tekrar dene.");
+  showMessage("Giriş başarılı! JEUFREX açılıyor...",true);
+  window.location.replace("index.html");
+ }catch(error){
+  console.error("Giriş hatası:",error);
+  showMessage(friendlyError(error));
+  button.disabled=false;
+  button.textContent="Giriş Yap";
+ }
+});
+</script>
+</body>
+</html>
