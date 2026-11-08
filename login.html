@@ -44,6 +44,9 @@ a:focus-visible,button:focus-visible{outline:2px solid #c7baff;outline-offset:3p
 "use strict";
 const SUPABASE_URL="https://cqxxobmvycesunyxicjj.supabase.co";
 const SUPABASE_KEY="sb_publishable_C0BYpv-9sknEu1EXbeKLwQ_lMddpL5V";
+// The hosted JS bundle is loaded above; use a bounded request timeout and
+// surface transport failures separately from invalid credentials.
+const AUTH_REQUEST_TIMEOUT_MS=15000;
 const form=document.getElementById("loginForm");
 const button=document.getElementById("loginButton");
 const message=document.getElementById("message");
@@ -62,7 +65,8 @@ function friendlyError(error){
  if(/invalid login credentials/i.test(code))return "E-posta veya şifre hatalı. Bilgilerini kontrol edip tekrar dene.";
  if(/email not confirmed/i.test(code))return "E-posta adresin henüz doğrulanmamış. Gelen kutunu ve gereksiz klasörünü kontrol et.";
  if(/too many requests|rate limit/i.test(code))return "Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.";
- if(/network|fetch/i.test(code))return "Bağlantı kurulamadı. İnternetini kontrol edip yeniden dene.";
+ if(/network|fetch|failed to fetch|aborterror|aborted/i.test(code))return "JEUFREX, Supabase sunucusuna ulaşamadı. İnternet bağlantını kontrol et. Sorun sürerse Supabase projesinin aktif ve API ayarlarının doğru olduğundan emin olunmalı.";
+ if(/timeout/i.test(code))return "Sunucudan yanıt zamanında gelmedi. Biraz bekleyip tekrar dene.";
  return error?.message||"Beklenmeyen bir hata oluştu. Biraz sonra tekrar dene.";
 }
 if(!window.supabase?.createClient){
@@ -70,7 +74,17 @@ if(!window.supabase?.createClient){
  button.disabled=true;
 }else{
  supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
-  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true},
+  global:{fetch:(url,options={})=>{
+   const controller=new AbortController();
+   const timeout=setTimeout(()=>controller.abort(),AUTH_REQUEST_TIMEOUT_MS);
+   const externalSignal=options.signal;
+   if(externalSignal){
+    if(externalSignal.aborted)controller.abort();
+    else externalSignal.addEventListener("abort",()=>controller.abort(),{once:true});
+   }
+   return fetch(url,{...options,signal:controller.signal}).finally(()=>clearTimeout(timeout));
+  }}
  });
  supabaseClient.auth.getSession().then(({data,error})=>{
   if(error){console.error("Oturum kontrolü:",error);return;}
