@@ -237,7 +237,27 @@
         flex-direction: column;
       }
     }
-  </style>
+  
+/* JEUFREX 2.0 community visual refresh */
+:root{color-scheme:dark}
+html{scroll-behavior:smooth}body{background:radial-gradient(ellipse at 12% 0%,#7857ff24,transparent 30%),radial-gradient(ellipse at 95% 10%,#ff5ca51c,transparent 28%),#090914;color:#f7f5ff;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{height:72px!important;position:sticky;top:0;z-index:20;background:#090914df!important;border-bottom:1px solid #ffffff16!important;backdrop-filter:blur(20px);padding:0 max(16px,calc((100vw - 1120px)/2))!important}
+.logo{background:linear-gradient(90deg,#fff,#c4b4ff,#ff9ac9);-webkit-background-clip:text;background-clip:text;color:transparent!important;letter-spacing:1px}
+nav{gap:16px!important}nav a{color:#aaa6bf!important;font-size:12px!important}nav a:hover{color:#fff!important}
+main{width:min(850px,calc(100% - 28px))!important;margin:34px auto!important}h1{font-size:clamp(30px,5vw,46px);letter-spacing:-1.5px;margin-bottom:24px}
+.composer,.post{background:linear-gradient(145deg,#ffffff10,#ffffff06)!important;border:1px solid #ffffff16;border-radius:22px!important;box-shadow:0 18px 55px #0003!important;backdrop-filter:blur(18px)}
+.composer{padding:20px!important}.post{padding:22px!important;margin-bottom:16px!important}
+textarea,.comment-input{background:#09091480!important;color:#fff!important;border:1px solid #ffffff20!important;border-radius:14px!important;transition:.2s}
+textarea:focus,.comment-input:focus{border-color:#9875ff!important;box-shadow:0 0 0 3px #9875ff20;outline:none}
+button{background:linear-gradient(110deg,#795cff,#b05cff 55%,#ff65aa)!important;color:white!important;border-radius:12px!important;transition:.2s!important}button:hover{transform:translateY(-2px);filter:brightness(1.08)}button:disabled{transform:none}
+.avatar{background:linear-gradient(135deg,#795cff,#ff65aa)!important;box-shadow:0 6px 20px #795cff35}
+.username{color:#d4caff!important}.date,.empty{color:#aaa6bf!important}.post-content{line-height:1.75!important;color:#eeeaf8}
+.post-actions{border-color:#ffffff16!important}.action-btn{background:#ffffff12!important;color:#eee!important}.action-btn.liked{background:#ff477e!important;color:white!important}
+.comments{border-color:#ffffff16!important}.comment{background:#ffffff0b!important;color:#eeeaf8;border:1px solid #ffffff0b}.delete-btn{background:transparent!important;color:#ff8da9!important}
+.error{background:#ff55551a!important;color:#ffb1b1!important;border:1px solid #ff555533}
+@media(max-width:700px){header{height:64px!important;padding:0 14px!important}nav{display:none!important}main{margin:24px auto!important}.post{padding:17px!important}.composer{padding:15px!important}}
+
+</style>
 </head>
 
 <body>
@@ -248,11 +268,11 @@
 
   <nav>
     <a href="index.html">Ana Sayfa</a>
-    <a href="#">🎮 Oyunlar</a>
-    <a href="#">🎵 Müzik</a>
-    <a href="#">🎬 Videolar</a>
+    <a href="games.html">🎮 Oyunlar</a>
+    <a href="music.html">🎵 Müzik</a>
+    <a href="videos.html">🎬 Videolar</a>
     <a href="community.html">👥 Topluluk</a>
-    <a href="#">✨ Keşfet</a>
+    <a href="explore.html">✨ Keşfet</a>
     <a href="profile.html">👤 Profil</a>
   </nav>
 
